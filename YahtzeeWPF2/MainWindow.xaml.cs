@@ -37,9 +37,6 @@ namespace YahtzeeWPF2
         List<TextBlock> postColumn;
         public List<List<TextBlock>> posts;
 
-        List<FrameworkElement> elementsColumn;
-        List<List<FrameworkElement>> scoresheetElements;
-
         // List of five "dice" button lists.=> List of four buttons ( parent - container button holding the top, left and "right die" face buttons).
         List<List<Button>> visualDiceList;
 
@@ -65,7 +62,7 @@ namespace YahtzeeWPF2
             NameScope.SetNameScope ( this, new NameScope () );
             Init1SetFields ();
             //InitializeScoreSheetVisual ();
-            InitializeScoresheetVisual1 ();
+            InitializeScoresheetVisual ();
             InitializeDiceVisual ();
             // StartNewGame 
             GameModel.NewGame ();
@@ -406,234 +403,40 @@ namespace YahtzeeWPF2
         }
         // End of InitializeDiceVisual method.
 
-
-        void InitializeScoresheetVisual1 ()
+        
+        
+        void InitializeScoresheetVisual ()
         {
+            entries = new List<List<Button>> ();
             postColumn = new List<TextBlock> ();
             posts = new List<List<TextBlock>> ();
-            FrameworkElement _element;
-            elementsColumn = new List<FrameworkElement> ();
-            scoresheetElements = new List<List<FrameworkElement>> ();
-            entries = new List<List<Button>> ();
 
-            ScoresheetBuilder1.InitializeScoreSheetVisual2 ( ref scoresheetElements, ref posts );
+            FrameworkElement _element;
+            List<List<FrameworkElement>> _elementColumns = new List<List<FrameworkElement>> ();
+
+            ScoresheetBuilder.InitializeScoreSheetVisual2 ( ref _elementColumns, ref posts, ref entries );
+
+            foreach ( var _buttonColumn in entries )
+            {
+                foreach ( var _button in _buttonColumn )
+                {
+                     _button.Click += TakeScore_Click;
+                }
+            }
+
             for ( int _column = 0; _column < 6; _column++ )
             {
-
-                entryColumn = new List<Button> ();
-
                 for ( int _row = 0; _row < 20; _row++ )
                 {
                     _element = new FrameworkElement ();
-                    _element = scoresheetElements [ _column ] [ _row ];
+                    _element = _elementColumns [ _column ] [ _row ];
                     Scoresheet.Children.Add ( _element );
                     Grid.SetColumn ( _element, _column );
                     Grid.SetRow ( _element, _row );
-
-                    if ( _element is Button )
-                    {
-                        entryColumn.Add ( ( Button ) _element );
-                        //_entry.Click += TakeScore_Click;
-                        ( _element as Button ).Click += TakeScore_Click;
-                    }
                 }
-                entries.Add ( entryColumn );
             }
         }
 
-
-        // Standard, three players on one scoresheet.
-        void InitializeScoreSheetVisual ()
-        {
-            Border _border;
-            Button _entry;
-            //  Except for LowerTable label. 
-            TextBlock _post;
-            string _name;
-            string _text;
-            double _width;
-
-            // The buttons will coordinate by row  for highlight animations, enabled, 
-            entryColumn = new List<Button> ();
-            entries = new List<List<Button>> ();
-            postColumn = new List<TextBlock> ();
-            posts = new List<List<TextBlock>> ();
-
-            // Two row header columns,  plus three player columns, plus Take Score Buttons.
-            for ( int _col = 0; _col < 6; _col++ )
-            {
-                entryColumn = new List<Button> ();
-
-                for ( int _row = 0; _row < 20; _row++ )
-                {
-                    _width = ( ( _col >= 2 ) && ( _col <= 4 ) ) ? 40.0 : 150.0;
-
-                    _text = GetHeaderString ( _col, _row );
-
-
-                    _name = $"postC{_col}R{_row}";
-                    // Create a TextBlock for every cell.
-                    _post = new TextBlock ()
-                    {
-                        Name = _name,
-                        TextAlignment = TextAlignment.Center,
-                        /* FontFamily = new FontFamily ( "Ebrima" ),*/
-                        FontWeight = FontWeights.Bold,
-                        FontSize = ( _row != 9 ) ? 18.0 : 16.0,
-                        Text = _text,
-                        /*Height = 25,
-                        Width = _width,*/
-                        Padding = new Thickness ( 3 ),
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        /*TextWrapping = TextWrapping.WrapWithOverflow*/
-                    };
-
-
-                    _post.Background = Brushes.Transparent;
-                    postColumn.Add ( _post );
-
-                    // For Post rows:  Add TextBlock with Border  to grid cell.
-                    if ( ( _row == 0 ) || ( ( _row >= 7 ) && ( _row <= 9 ) ) || ( _row >= 17 ) )
-                    {
-                        _border = new Border ()
-                        {
-                            BorderBrush = Brushes.Black,
-                            BorderThickness = new Thickness ( 2 ),
-                            Child = _post,
-                        };
-                        if ( _col == 4 )
-                            _border.BorderThickness = new Thickness ( 2, 2, 4, 2 );
-                        else if ( _col == 5 )
-                            _border.BorderThickness = new Thickness ( 0 );
-                        else if ( _col == 0 )
-                            _border.BorderThickness = new Thickness ( 4, 2, 2, 2 );
-
-                        Scoresheet.Children.Add ( _border );
-
-                        Grid.SetColumn ( _border, _col );
-                        Grid.SetRow ( _border, _row );
-                        // Do I need this????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-                        //this.RegisterName ( _post.Name, _post );
-                    }
-                    // End Post textbox.
-
-
-                    // Begin  textbox in Button for entry rows.
-                    else
-                    {
-                        // For Entry rows:  Add Button with a TextBlock and Border  to a Scoresheet grid cell.
-                        _name = $"entryC{_col}R{_row}";
-                        _entry = new Button ()
-                        {
-                            Name = $"{_name}",
-                            HorizontalAlignment = HorizontalAlignment.Stretch,
-                            VerticalAlignment = VerticalAlignment.Stretch,
-                            HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                            VerticalContentAlignment = VerticalAlignment.Stretch,
-                            BorderBrush = Brushes.Black,
-                            BorderThickness = new Thickness ( 2 ),
-                        };
-
-                        _entry.Click += TakeScore_Click;
-                        _entry.Background = Brushes.Transparent;
-                        //_entry.BorderThickness = GetEntryBorderThickness ( _col );
-
-                        // Set BorderThickness for different columns.
-                        if ( _col == 4 )
-                            _entry.BorderThickness = new Thickness ( 2, 2, 4, 2 );
-                        else if ( _col == 0 )
-                            _entry.BorderThickness = new Thickness ( 4, 2, 2, 2 );
-                        else if ( _col == 5 )
-                        {
-                            _entry.BorderThickness = new Thickness ( 0 );
-                            _entry.Background = ( _row % 2 == 0 ) ? Brushes.AliceBlue : Brushes.Gainsboro;
-                        }
-
-                        if ( _col != 5 )
-                        {
-                            if ( ( _row != 16 ) || ( _col <= 1 ) )
-                            // Most buttons are finished here.
-                            {
-                                _entry.Content = _post;
-                            }
-                            // Begin 5OK buttons.
-                            else
-                            {
-                                Grid buttonGrid = new Grid ();
-                                //_post.Opacity = 0;
-                                //buttonGrid.Children.Add ( _post );
-                                StackPanel stackPanel = new StackPanel ()
-                                {
-                                    Orientation = Orientation.Horizontal,
-                                };
-                                buttonGrid.Children.Add ( stackPanel );
-
-
-                                _entry.Content = buttonGrid;
-                            }
-
-                        }
-                        // End _col != 5.
-
-                        // Begin TakeScore buttons.
-                        else
-                        {
-                            //_entry.Click += TakeScore_Click ;
-                            StackPanel _stackPanel = new StackPanel ();
-                            _entry.Content = _stackPanel;
-                            _stackPanel.Children.Add ( _post );
-                            _post.FontSize = 12;
-                            _post.Text = _text = $"{headerLabels [ ( 42 ) ]}";
-
-                            // TakeScore pretty lines
-                            SolidColorBrush solidColorBrush = new SolidColorBrush ()
-                            {
-                                Color = Color.FromArgb ( 255, 0, 255, 0 ),
-                            };
-                            for ( int lines = 0; lines < 5; lines++ )
-                            {
-                                Line line = new Line ()
-                                {
-                                    Margin = new Thickness ( 10, 0, 10, 0 ),
-                                    X1 = 0,
-                                    Y1 = 0,
-                                    X2 = 150,
-                                    Y2 = 0,
-                                    Stretch = Stretch.Uniform,
-                                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                                    Stroke = ( lines % 2 == 1 ) ? solidColorBrush : Brushes.Green,
-                                    StrokeThickness = ( lines % 2 == 1 ) ? 3 : 1,
-                                    /*Stroke = gradientBrush,*/
-                                    /*StrokeDashArray = {4,2}, */
-                                };
-                                _stackPanel.Children.Add ( line );
-                            }
-                            // End TakeScore lines.
-                        }
-
-                        Scoresheet.Children.Add ( _entry );
-
-                        Grid.SetColumn ( _entry, _col );
-                        Grid.SetRow ( _entry, _row );
-
-                        entryColumn.Add ( _entry );
-
-                        // Do I need this?? (dice didn't?).     *********************************************************************************  ( cuz I set NameScope? )
-                        //this.RegisterName ( _entry.Name, _entry );
-                    }
-                    // End of Entry-buttons.
-                }
-                // End of _row loop
-
-                entries.Add ( entryColumn );
-                //entryColumn.Clear ();
-
-                posts.Add ( postColumn );
-                postColumn = new List<TextBlock> ();
-            }
-            // End _col loop.
-        }
-        // End of  InitializeScoreSheetVisual method.
 
 
         /// <summary>

@@ -17,15 +17,12 @@ using System.Windows.Shapes;
 
 namespace YahtzeeWPF2
 {
-    public static class ScoresheetBuilder1
+    public static class ScoresheetBuilder
     {
         // Fields
 
-        //static int [] borderStyle = { 2, 2, 2, 2 };
-        
-        // Lists of buttons and borders; each containing textblock(s).
-        //static List<Control> controlColumn;
-        //static List<List<Control>> controlColumns;
+        static List<Button> buttonColumn;
+        static List<List<Button>> buttonColumns;
 
         static List<FrameworkElement> elementColumn;
         static List<List<FrameworkElement>> elementColumns;
@@ -38,23 +35,21 @@ namespace YahtzeeWPF2
 
         // Constructor 
         // Unused, because useless without params
-        static ScoresheetBuilder1 ()
+        static ScoresheetBuilder ()
         {
         }
 
-        // Is "ref" necessary ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
         /// <summary>
         /// Main entry point for this class.
         /// </summary>
         /// <param name="scoresheetElements"></param>
         /// <param name="scoresheetTextBlocks"></param>
-        public static void InitializeScoreSheetVisual2 ( ref List<List<FrameworkElement>> scoresheetElements, ref List<List<TextBlock>> scoresheetTextBlocks )
+        public static void InitializeScoreSheetVisual2 ( ref List<List<FrameworkElement>> scoresheetElements,
+            ref List<List<TextBlock>> scoresheetTextBlocks, ref List<List<Button>> scoresheetButtons )
         {
-            //scoresheetControls = new List<List<Control>> ();
-            //scoresheetTextBlocks = new List<List<TextBlock>> ();
-
             BuildColumns ();
 
+            scoresheetButtons = buttonColumns;
             scoresheetElements = elementColumns;
             scoresheetTextBlocks = textBlockColumns;
         }
@@ -63,32 +58,34 @@ namespace YahtzeeWPF2
 
         static void BuildColumns ()
         {
+            buttonColumns = new List<List<Button>> ();
             elementColumns = new List<List<FrameworkElement>> ();
             textBlockColumns = new List<List<TextBlock>> ();
 
             for ( int _column = 0; _column < 6; _column++ )
             {
-
                 BuildColumn ( _column );
+                buttonColumns.Add ( buttonColumn );
                 elementColumns.Add ( elementColumn );
                 textBlockColumns.Add ( textBlockColumn );
-
             }
         }
 
-
-
+        
         static void BuildColumn ( int column )
         {
+            // buttonColumn is populated in GetButton method.
+            buttonColumn = new List<Button> ();
             elementColumn = new List<FrameworkElement> ();
+            // textBlockColumn is populated in GetTextBlock method.
             textBlockColumn = new List<TextBlock> ();
 
             // Create twenty rows for each column.
             for ( int _row = 0; _row < 20; _row++ )
             {
-                if ((( _row >= 1 ) && ( _row <= 6 )) || (( _row >= 10) && ( _row <= 16 )))
+                if ( ( ( _row >= 1 ) && ( _row <= 6 ) ) || ( ( _row >= 10 ) && ( _row <= 16 ) ) )
                 {
-                    elementColumn.Add ( GetButton ( column, _row ));
+                    elementColumn.Add ( GetButton ( column, _row ) );
                 }
                 else
                 {
@@ -97,13 +94,7 @@ namespace YahtzeeWPF2
             }
         }
 
-
-        /// <summary>
-        /// Used to create even borders for the scoresheet
-        /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
+        
         static double [] GetBorderStyle ( int column, int row )
         {
             double x1 = 2;
@@ -111,7 +102,7 @@ namespace YahtzeeWPF2
             double y1 = 2;
             double y2 = 2;
 
-            // Doubling the thickness of the unpaired borders of the outer edge of the scoresheet.
+            // Doubling the thickness of the unpaired borders of the outer vertical edges of the scoresheet.
             if ( column == 0 )
                 x1 = 4;
             else if ( column == 4 )
@@ -119,20 +110,19 @@ namespace YahtzeeWPF2
 
             if ( column == 5 )
                 // No BorderThickness for  column 5 textboxes in a border.
-                //if ( columnType == ScoresheetColumnType.TakeScore )
             {
                 x1 = 0;
                 x2 = 0;
                 y1 = 0;
                 y2 = 0;
             }
+            // Doubling the thickness of the unpaired borders of the outer horizontal edges of the scoresheet.
             else if ( row == 0 )
-            //else if ( rowType == ScoresheetRowType.ColumnHeader )
                 y1 = 4;
             else if ( row == 19 )
                 y2 = 4;
+            // Special visual for the "Lower Section" scoresheet divider.
             else if ( row == 9 )
-            //else if ( rowType == ScoresheetRowType.Divider )
             {
                 x1 = ( column == 0 ) ? 4 : 0;
                 x2 = ( column == 4 ) ? 4 : 0;
@@ -142,8 +132,7 @@ namespace YahtzeeWPF2
             return borderParams;
         }
 
-
-
+        
         static Border GetBorder ( int column, int row )
         {
             double [] thick = GetBorderStyle ( column, row );
@@ -179,6 +168,7 @@ namespace YahtzeeWPF2
             if ( column == 5 )
             {
                 _button.Content = GetTakeScoreContent ( column, row );
+                _button.Margin = new Thickness ( 0, 2, 0, 2 );
             }
             else if (( row == 16 ) && ( column >= 2 ))
             {
@@ -188,21 +178,17 @@ namespace YahtzeeWPF2
             {
                 _button.Content = GetTextBlock ( column, row );
             }
+            buttonColumn.Add ( _button );
             return _button;
         }
 
 
         static StackPanel Get5OkContent ( int column, int row )
         {
-            //_entry.Content = _stackPanel;
-            //_stackPanel.Children.Add ( _post );
-            //_post.FontSize = 12;
-            //_post.Text = _text = $"{headerLabels [ ( 42 ) ]}";
             StackPanel _stackPanel = new StackPanel ()
             {
                 Orientation = Orientation.Horizontal,
             };
-            //_stackPanel.Children.Add ( GetTextBlock ( column, row ));
             for ( int i = 0; i < 4; i++ )
             {
                 Border _border = new Border ()
@@ -218,8 +204,7 @@ namespace YahtzeeWPF2
             return _stackPanel;
         }
 
-
-
+        
         static StackPanel GetTakeScoreContent ( int column, int row )
         {
             StackPanel _stackPanel = new StackPanel ()
@@ -285,7 +270,6 @@ namespace YahtzeeWPF2
                 TextAlignment = TextAlignment.Center,
                 /* FontFamily = new FontFamily ( "Ebrima" ),*/
                 FontWeight = fontWeight,
-                /*FontSize = ( row != 9 ) ? 18.0 : 16.0,*/
                 /*Height = 25,
                 Width = _width,*/
                 Text = GetText ( column, row ),
@@ -294,11 +278,12 @@ namespace YahtzeeWPF2
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
             if ( column == 5 )
-                _textBlock.FontSize = 12;
+            {
+                _textBlock.FontSize = 11;
+                //_textBlock.VerticalAlignment = VerticalAlignment.Top;
+            }
             else if ( row == 9 )
                 _textBlock.FontSize = 14;
-            //else if ( ( row == 16 ) && ( column >= 2 ) )
-            //    _textBlock.FontSize = 18;
             else
                 _textBlock.FontSize = 18;
 
@@ -307,26 +292,6 @@ namespace YahtzeeWPF2
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     }
 }

@@ -18,8 +18,6 @@ namespace YahtzeeWPF2
 
         static GameStatus ()
         {
-            // Initialize Properties.
-            //GameRows = new List<GameRow> ();
         }
 
         // Properties ( No param required. )
