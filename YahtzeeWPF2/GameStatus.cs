@@ -14,23 +14,17 @@ namespace YahtzeeWPF2
     {
         // Fields
 
-
         // Constructor
 
         static GameStatus ()
         {
             // Initialize Properties.
-            GameRows = new List<GameRow> ();
-            //RowPosts = new List<RowPost> ();
-            //HeaderPosts = new List<Post> ();
+            //GameRows = new List<GameRow> ();
         }
 
-
-        // Properties?  (or is-a Indexer!)?
+        // Properties ( No param required. )
 
         public static List<GameRow> GameRows { get; set; }
-        //public static List<RowPost> RowPosts { get; set; }
-        //public static List<Post> HeaderPosts { get; set; }
 
         #region Methods
         // Method
@@ -46,8 +40,9 @@ namespace YahtzeeWPF2
             GameRows = new List<GameRow> ();
 
             // Generate thirteen GameRow objects to fill GameRows.
-            for ( int _takeScoreRow = 0; _takeScoreRow < 13; _takeScoreRow++ )
-            {
+            for ( int _takeScoreRow = 0; _takeScoreRow < 16; _takeScoreRow++ )
+                //for ( int _takeScoreRow = 0; _takeScoreRow < 13; _takeScoreRow++ )
+                {
                 _gameRow = new GameRow ();
                 _score = 0;
                 
@@ -107,9 +102,10 @@ namespace YahtzeeWPF2
                         }
 
                         // Evaluate for 5OK, Bonus 5OK.
-                        else if ( ( _takeScoreRow == 12 && GameDice.MultiplesList [ 0 ] [ 1 ] == 5 ) )
+                        else if ( ( _takeScoreRow == 12 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 5 ) )
                         {
                             _score = ( GameModel.ScoreTable [ _scoreTableColumn, 18 ] == null ) ? 50 : 100;
+
                         }
                     }
 
@@ -139,10 +135,29 @@ namespace YahtzeeWPF2
             }
             //      End of GameRows loop.
         }
-        //      End of UpdateGameRows private method.
+        //      End of UpdateGameRows method.
         #endregion GameStatus methods
 
+        public static void UpdateGameRows1 ()
+        {
+            int _rowOffset = 0;
+            int _score = 0;
+            int _scoreTableColumn = GameModel.GameClock.PlayerUp - 1;
+            int _scoreTableRow;
 
+            GameRow _gameRow = new GameRow ();
+            GameRows = new List<GameRow> ();
+
+            EvaluateAceySixey ();
+        }
+
+        static void EvaluateAceySixey ()
+        {
+            for ( int _row = 0; _row < 6; _row++ )
+            {
+
+            }
+        }
 
 
 

@@ -24,8 +24,10 @@ namespace YahtzeeWPF2
         //TODO:  Add ToolTips, OnEsc, Tab order,  OnClickAnywhere, Drag and Toss Dice flick, Touch screen/ Tablet
         #region Fields
         // Fields
+
         // The commit button's textblock.
         List<TextBlock> commitTextBlocks;
+        
 
         // The scoresheet's buttons for each grid cell, for rows that can be selected by a player. [TakeScore rows ]
         List<Button> entryColumn;
@@ -34,6 +36,9 @@ namespace YahtzeeWPF2
         // The scoresheet's textblocks for each grid cell.
         List<TextBlock> postColumn;
         public List<List<TextBlock>> posts;
+
+        List<FrameworkElement> elementsColumn;
+        List<List<FrameworkElement>> scoresheetElements;
 
         // List of five "dice" button lists.=> List of four buttons ( parent - container button holding the top, left and "right die" face buttons).
         List<List<Button>> visualDiceList;
@@ -52,13 +57,15 @@ namespace YahtzeeWPF2
 
 
         #region MainWindow Constructor
-        // Initialize Main Window     *****      Initialize Main Window     *****      Initialize Main Window     *****      Initialize Main Window     *****      Initialize Main Window     *****     
+        // Constructor
+
         public MainWindow ()
         {
             InitializeComponent ();
             NameScope.SetNameScope ( this, new NameScope () );
             Init1SetFields ();
-            InitializeScoreSheetVisual ();
+            //InitializeScoreSheetVisual ();
+            InitializeScoresheetVisual1 ();
             InitializeDiceVisual ();
             // StartNewGame 
             GameModel.NewGame ();
@@ -71,7 +78,7 @@ namespace YahtzeeWPF2
 
 
         #region Events
-        //      Events      ******            Events      ******            Events      ******      
+        // Events
 
         private void Die_Click ( object sender, RoutedEventArgs e )
         {
@@ -128,7 +135,7 @@ namespace YahtzeeWPF2
         private void TakeScore_Click ( object sender, RoutedEventArgs e )
         {
             Button _button = ( Button ) sender;
-            int _clickedRow = ConvertNameToRow ( _button.Name );
+            int _clickedRow = ConvertButtonNameToRow ( _button.Name );
             GameModel.RowClickedHandler ( _clickedRow );
             UpdateCommitVisual ();
         }
@@ -217,6 +224,12 @@ namespace YahtzeeWPF2
                 button = new Button ();
                 button = entryColumn [ _row ];
                 button.Visibility = ( gamerow.TakeScoreVisible ) ? Visibility.Visible : Visibility.Hidden;
+                if ( gamerow.RowHighlight == GameStatus.GameRow.HighlightStyle.Scratch )
+                {
+                    button.Background = Brushes.LightPink;
+                }
+                else
+                    button.Background = ( _row % 2 == 0 ) ? Brushes.AliceBlue : Brushes.Gainsboro;
 
                 _postRow = ( _row < 6 ) ? _row + 1 : _row + 4;
                 textBlock = new TextBlock ();
@@ -229,10 +242,11 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Commits player score, Updates counters for next turn(?), round and player and calls for new dice. 
         /// </summary>
-        public void NextPlayer ()
-        {
+        //public void NextPlayer ()
+        //{
 
-        }
+        //}
+        
 
         void InitializeDiceVisual ()
         {
@@ -392,6 +406,42 @@ namespace YahtzeeWPF2
         }
         // End of InitializeDiceVisual method.
 
+
+        void InitializeScoresheetVisual1 ()
+        {
+            postColumn = new List<TextBlock> ();
+            posts = new List<List<TextBlock>> ();
+            FrameworkElement _element;
+            elementsColumn = new List<FrameworkElement> ();
+            scoresheetElements = new List<List<FrameworkElement>> ();
+            entries = new List<List<Button>> ();
+
+            ScoresheetBuilder1.InitializeScoreSheetVisual2 ( ref scoresheetElements, ref posts );
+            for ( int _column = 0; _column < 6; _column++ )
+            {
+
+                entryColumn = new List<Button> ();
+
+                for ( int _row = 0; _row < 20; _row++ )
+                {
+                    _element = new FrameworkElement ();
+                    _element = scoresheetElements [ _column ] [ _row ];
+                    Scoresheet.Children.Add ( _element );
+                    Grid.SetColumn ( _element, _column );
+                    Grid.SetRow ( _element, _row );
+
+                    if ( _element is Button )
+                    {
+                        entryColumn.Add ( ( Button ) _element );
+                        //_entry.Click += TakeScore_Click;
+                        ( _element as Button ).Click += TakeScore_Click;
+                    }
+                }
+                entries.Add ( entryColumn );
+            }
+        }
+
+
         // Standard, three players on one scoresheet.
         void InitializeScoreSheetVisual ()
         {
@@ -463,7 +513,7 @@ namespace YahtzeeWPF2
                         Grid.SetColumn ( _border, _col );
                         Grid.SetRow ( _border, _row );
                         // Do I need this????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-                        this.RegisterName ( _post.Name, _post );
+                        //this.RegisterName ( _post.Name, _post );
                     }
                     // End Post textbox.
 
@@ -587,7 +637,7 @@ namespace YahtzeeWPF2
 
 
         /// <summary>
-        /// Moving this to GameModel
+        /// Moving this to GameModel  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         /// </summary>
         void Init1SetFields ()
         {
@@ -645,7 +695,7 @@ namespace YahtzeeWPF2
 
 
         //TODO:  Insert logic to convert row #?
-        private int ConvertNameToRow ( string Name )
+        private int ConvertButtonNameToRow ( string Name )
         {
             int result = 0;
             string rowString;
@@ -659,6 +709,172 @@ namespace YahtzeeWPF2
             return result;
         }
         #endregion MainWindow methods
+
+        // Doesn't seem to have access to MainWindow; but does let me make buttons, so return a List of all controls to Main and add from there?
+        // Moved to GameViewModel
+        //public static class ScoreSheetBuilder
+        //{
+        //    // Fields
+
+        //    static List<TextBlock> postColumn;
+            
+        //    static ScoresheetColumnType columnType;
+        //    static ScoresheetRowType rowType;
+            
+
+
+        //    // Enums
+
+        //    enum ScoresheetRowType
+        //    {
+        //        ColumnHeader,
+        //        Entry,
+        //        Entry5OK,
+        //        Post,
+        //        Divider,
+        //        Nil
+        //    }
+
+        //    enum ScoresheetColumnType
+        //    {
+        //        RowHeader,
+        //        Player,
+        //        TakeScore
+        //    }
+
+        //    // Is "ref" necessary ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+        //    static void InitializeScoreSheetVisual2 ( ref List < List < TextBlock >> posts )
+        //    {
+        //        //entryColumn = new List<Button> ();
+        //        //entries = new List<List<Button>> ();
+        //        posts = new List<List<TextBlock>> ();
+        //        InitializeScoreSheetColumns ();
+        //    }
+
+
+        //    static void InitializeScoreSheetColumns ()
+        //    {
+        //        for ( int _col = 0; _col < 6; _col++ )
+        //        {
+        //            if ( _col <= 1 )
+        //                columnType = ScoresheetColumnType.RowHeader;
+        //            else if ( _col == 5 )
+        //                columnType = ScoresheetColumnType.TakeScore;
+        //            else
+        //                columnType = ScoresheetColumnType.Player;
+
+        //            posts.Add ( BuildScoresheetColumn ( _col ) );
+        //        }
+        //    }
+
+
+        //    static List<TextBlock> BuildScoresheetColumn ( int column )
+        //    {
+        //        postColumn = new List<TextBlock> ();
+        //        // Create twenty rows for each column.
+        //        for ( int _row = 0; _row < 20; _row++ )
+        //        {
+        //            if ( _row == 0 )
+        //            {
+        //                rowType = ScoresheetRowType.ColumnHeader;
+        //            }
+        //            else if ( _row == 9 )
+        //            {
+        //                rowType = ScoresheetRowType.Divider;
+        //            }
+        //            else if ( ( _row == 7 ) || ( _row == 8 ) || ( _row >= 17 ) )
+        //            {
+        //                rowType = ScoresheetRowType.Post;
+        //            }
+        //            else
+        //            {
+        //                rowType = ScoresheetRowType.Entry;
+        //            }
+        //        }
+        //        return postColumn;
+        //    }
+
+        //    static int [] CreateBorderParams ( int column, int row )
+        //    {
+        //        int x1 = 2;
+        //        int x2 = 2;
+        //        int y1 = 2;
+        //        int y2 = 2;
+        //        if ( column == 0 )
+        //            y1 = 4;
+        //        else if ( column == 4 )
+        //            y2 = 4;
+
+        //        //if ( column == 5 )
+        //        if ( columnType == ScoresheetColumnType.TakeScore )
+        //        {
+        //            x1 = 0;
+        //            x2 = 0;
+        //            y1 = 0;
+        //            y2 = 0;
+        //        }
+        //        //else if ( row == 0 )
+        //        else if ( rowType == ScoresheetRowType.ColumnHeader )
+        //            x1 = 4;
+        //        else if ( row == 19 )
+        //            x2 = 4;
+        //        //else if ( row == 9 )
+
+        //        else if ( rowType == ScoresheetRowType.Divider )
+        //        {
+        //            if ( column != 0 )
+        //                x1 = 0;
+        //            else if ( column != 4 )
+        //                x2 = 0;
+        //        }
+        //        int [] borderParams = { x1, y1, x2, y2 };
+        //        return borderParams;
+        //    }
+
+        //    Border CreateScoreSheetBorder ( int column, int row )
+        //    {
+        //        int [] thick = CreateBorderParams ( column, row );
+        //        var _border = new Border ()
+        //        {
+        //            BorderThickness = new Thickness ( thick [ 0 ], thick [ 1 ], thick [ 2 ], thick [ 3 ] ),
+        //            //BorderThickness = ( column < 5 ) ? new Thickness ( thick [ 0 ], thick [ 1 ], thick [ 2 ], thick [ 3 ] ) : new Thickness ( 0 ),
+        //        };
+        //        return _border;
+        //    }
+
+        //    // Check for columnType == takeScore or RowType == 5OK entry.
+        //    Button CreateScoreSheetButton ( int column, int row )
+        //    {
+        //        int [] thick = CreateBorderParams ( column, row );
+        //        var _button = new Button ()
+        //        {
+        //            Background = Brushes.Transparent,
+        //            Name = $"entryC{column}R{row}",
+        //            BorderThickness = new Thickness ( thick [ 0 ], thick [ 1 ], thick [ 2 ], thick [ 3 ] )
+        //        };
+        //        return _button;
+        //    }
+
+        //    TextBox CreateScoreSheetTextbox ( string text )
+        //    {
+
+        //        var _textBox = new TextBox ()
+        //        {
+        //            Background = Brushes.Transparent,
+        //            FontSize = ( rowType == ScoresheetRowType.Divider ) ? 16.0 : 18.0,
+        //            FontWeight = FontWeights.Bold,
+        //            Padding = new Thickness ( 3 ),
+        //            Text = text,
+        //            TextAlignment = TextAlignment.Center,
+        //            VerticalAlignment = VerticalAlignment.Stretch,
+        //            Width = ( columnType == ScoresheetColumnType.Player ) ? 40 : 150,
+        //        };
+        //        return _textBox;
+        //    }
+
+
+
+        //}
 
     }
 }

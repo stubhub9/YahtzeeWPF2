@@ -20,6 +20,8 @@ namespace YahtzeeWPF2
     {
         #region Fields
         //      Fields.
+
+        //static Button button = new Button ();
         static List<List<string>> playerEntryAndPostStrings;
         static List<int [,]> results;
         static int [,] result;
@@ -175,21 +177,25 @@ namespace YahtzeeWPF2
         {
             // Upper section _row = row +1.
             int _postRow = row + 1;
-            // 3OK thru Chance _row = row +2.  >>  _row = ( row >= 8 ) && ( row <= 13) => row+2 
-            if (( row >= 8) && ( row <= 13 ))
+            if ( row >= 8 )
             {
                 _postRow = row + 2;
             }
-            // 5OK scoreTable rows 14 thru 17 = scoreSheet row 16. ( 0 = X, >0 = +, (?row 14 gets filled last?)).
-            if (( row >= 14 ) && ( row <= 17 ))
-            {
-                _postRow = 16;
-            }
-            // 5OK score row 18 = scoreSheet row 19.  >>> _row = ( row >= 18)  => row -1
-            if ( row >= 18 )
-            {
-                _postRow = row - 1;
-            }
+            //// 3OK thru Chance _row = row +2.  >>  _row = ( row >= 8 ) && ( row <= 13) => row+2 
+            //if (( row >= 8) && ( row <= 13 ))
+            //{
+            //    _postRow = row + 2;
+            //}
+            //// 5OK scoreTable rows 14 thru 17 = scoreSheet row 16. ( 0 = X, >0 = +, (?row 14 gets filled last?)).
+            //if (( row >= 14 ) && ( row <= 17 ))
+            //{
+            //    _postRow = 16;
+            //}
+            //// 5OK score row 18 = scoreSheet row 19.  >>> _row = ( row >= 18)  => row -1
+            //if ( row >= 18 )
+            //{
+            //    _postRow = row - 1;
+            //}
             
             return _postRow;
         }
@@ -312,10 +318,10 @@ namespace YahtzeeWPF2
                 CommitActionStrings = new string [] { ">>>  Press to Roll Dice  <<<", "<<<<<<<  Choose a scoring option", ">>>  Press to Accept  <<<", "Press to start a new game." };
                 CommitDescriptionStrings = new string [] { "You have", "rolls left.", "Take", "has won the game." };
                 //TODO: headerLabels will only be used as row header texts for the first two columns, and for string building elsewhere.
-                headerLabels = new string [] { "Upper Section", "Aces", "Deuces", "Threes", "Fours", "Fives", "Sixes", "Upper Score", "> 63 Bonus", "Lower Section",
+                headerLabels = new string [] { "Upper Section", "Aces", "Deuces", "Threes", "Fours", "Fives", "Sixes", "> 63 Bonus", "Upper Score", "Lower Section",
                 "3 o’Kind", "4 o’Kind", "Full House", "Small Straight", "Large Straight","Chance", "5 o’Kind", "5OK Bonus",
                 /* "Bonus", */"Lower Total", "Grand Total", "Points Scored", "Add Aces", "Add Deuces", "Add Threes", "Add Fours",
-                "Add Fives", "Add Sixes", "===>", "Score 35", "   ", "Add All Dice", "Add All Dice", "Score 25", "Score 30", "Score 40", "Add All Dice", /*"Score 50", */"+ For Each 5OK",
+                "Add Fives", "Add Sixes", "Score 35", "===>", "   ", "Add All Dice", "Add All Dice", "Score 25", "Score 30", "Score 40", "Add All Dice", /*"Score 50", */"+ For Each 5OK",
                 "+ ADD 50/100", "===>", "===>", /*"Player",*/ "            ", "You have a XX% chance ", "0" };
                 // Default player names provided.
                 PlayerNames = new string [] { "Player 1", "Player 2", "Player 3" };
@@ -323,15 +329,18 @@ namespace YahtzeeWPF2
             }
             // End  GameStrings Constructor
             #endregion GameStrings  Constructor
-
+            
+            // Indexers 
             public static string [] CommitActionStrings { get; set; }
 
             public static string [] CommitDescriptionStrings { get; set; }
 
             public static string [] PlayerNames { get; set; }
 
+
             #region GameStrings Methods
-            //      Methods
+            // Methods
+
             public static string GetTakeScoreString ( int takeScoreRow, int score )
             {
                 int _row = ( takeScoreRow < 6 ) ? ( takeScoreRow + 1 ) : ( takeScoreRow + 4 );
@@ -354,6 +363,21 @@ namespace YahtzeeWPF2
 
                 return _string;
             }
+
+
+            public static string GetHeaderString  ( int column, int row )
+            {
+                string text = headerLabels [ ( ( column * 20 ) + row ) ];
+                return text;
+            }
+
+
+            public static string GetPlayerName ( int column )
+            {
+                string text = PlayerNames [ column ];
+                return text;
+            }
+
 
             #endregion GameStrings Methods
         }
