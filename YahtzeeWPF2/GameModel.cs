@@ -20,11 +20,7 @@ namespace YahtzeeWPF2
     {
         #region Fields
         //      Fields.
-
-        //static Button button = new Button ();
-        static List<List<string>> playerEntryAndPostStrings;
-        static List<int [,]> results;
-        static int [,] result;
+        
         static int? [,] scoreTable;
         #endregion Fields
 
@@ -39,7 +35,7 @@ namespace YahtzeeWPF2
         
 
         #region Properties
-        // Properties ( or Indexer?)
+        // Properties
 
         public static int? [,] ScoreTable
         {
@@ -58,7 +54,8 @@ namespace YahtzeeWPF2
             scoreTable = new int? [ 3, 21 ];
             GameClock.NewGame ();
             GameDice.NewDice ();
-            GameStatus.UpdateGameRows ();
+            //GameStatus.UpdateGameRows ();
+            GameScoring.UpdateGameRows ();
             CommitDetails.NextPlayer ();
             CommitDetails.RollText ();
             
@@ -85,7 +82,8 @@ namespace YahtzeeWPF2
                 GameClock.NextRoll ();
                 GameDice.RollDice ();
             }
-            GameStatus.UpdateGameRows ();
+            //GameStatus.UpdateGameRows ();
+            GameScoring.UpdateGameRows ();
 
             if ( GameClock.DiceRoll < 3 )
             {
@@ -98,17 +96,25 @@ namespace YahtzeeWPF2
         }
 
         static void RecordScore ()
-        { 
-            GameStatus.GameRow _gamerow = GameStatus.GameRows [ CommitDetails.TakeScoreRow ];
-            int _row = ConvertTakeScoreRowToScoreTableRow ( CommitDetails.TakeScoreRow );
-            int _col = GameClock.PlayerUp - 1;
+        {
+            GameScoring.GameRow _gamerow = GameScoring.GameRows [ CommitDetails.TakeScoreRow ];
+            //GameStatus.GameRow _gamerow = GameStatus.GameRows [ CommitDetails.TakeScoreRow ];
             int _scoreDelta = _gamerow.TakeScoreValue;
+            int _row = ConvertTakeScoreRowToScoreTableRow ( CommitDetails.TakeScoreRow, _scoreDelta );
+            int _col = GameClock.PlayerUp - 1;
             // The first item in CommitDetails sets the posts column.
             CommitDetails.UpdateResults ( ConvertPlayerUpToScoresheetColumn (), 0 );
 
             // Update the entry selected.
             scoreTable [ _col, _row ] =_scoreDelta;
             CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( _row ), _scoreDelta );
+
+            if (( _row >= 14 ) && ( _row <= 17 ))
+            {
+                scoreTable [ _col, 18 ] = (scoreTable [ _col, 18 ] ?? 0 )+ _scoreDelta;
+                CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( 18 ), (int) scoreTable [ _col, 18 ] );
+
+            }
 
             if ( _row < 6 )
             {
@@ -135,10 +141,13 @@ namespace YahtzeeWPF2
         }
 
 
-        public static void RowClickedHandler ( int visualScoresheetRow )
+        public static void RowClickedHandler ( string buttonName )
+        //public static void RowClickedHandler ( int visualScoresheetRow )
         {
+            int visualScoresheetRow = VisualScoresheetButtonNameToRowNumberConverter ( buttonName );
             int _takeScoreRow = VisualScoresheetToTakeScoreRowConverter ( visualScoresheetRow );
-            GameStatus.GameRow _gamerow = GameStatus.GameRows [ _takeScoreRow ];
+            GameScoring.GameRow _gamerow = GameScoring.GameRows [ _takeScoreRow ];
+            //GameStatus.GameRow _gamerow = GameStatus.GameRows [ _takeScoreRow ];
             // If TakeScore button is not visible then return.
             if ( !_gamerow.TakeScoreVisible )
             {
@@ -158,12 +167,26 @@ namespace YahtzeeWPF2
         //{
 
         //}
-        
+
+        static int VisualScoresheetButtonNameToRowNumberConverter ( string buttonName )
+        //private int ConvertButtonNameToRow ( string Name )
+        {
+            int result = 0;
+            string rowString;
+            // Could remove all letters and the first number.
+            ////  Name = $"entryC{_col}R{_row}";
+            //char [] trimChars = { 'e', 'n', 't', 'r', 'y', 'C', 'R' };
+            //colAndRowString = Name.Trim ( trimChars );
+            //result [ 0 ] = Int32.Parse ( $"{colAndRowString [ 0 ]}" );
+            rowString = buttonName.Remove ( 0, 8 );
+            result = Int32.Parse ( $"{rowString}" );
+            return result;
+        }
+
         static int VisualScoresheetToTakeScoreRowConverter ( int visualScoresheetRow )
         {
-             int _visRow = visualScoresheetRow;
+            int _visRow = visualScoresheetRow;
             int _takeScoreRow = ( _visRow < 7 ) ? _visRow - 1 : _visRow - 4;
-            //_postRow = ( _row < 6 ) ? _row + 1 : _row + 4;
             return _takeScoreRow;
         }
 
@@ -181,21 +204,6 @@ namespace YahtzeeWPF2
             {
                 _postRow = row + 2;
             }
-            //// 3OK thru Chance _row = row +2.  >>  _row = ( row >= 8 ) && ( row <= 13) => row+2 
-            //if (( row >= 8) && ( row <= 13 ))
-            //{
-            //    _postRow = row + 2;
-            //}
-            //// 5OK scoreTable rows 14 thru 17 = scoreSheet row 16. ( 0 = X, >0 = +, (?row 14 gets filled last?)).
-            //if (( row >= 14 ) && ( row <= 17 ))
-            //{
-            //    _postRow = 16;
-            //}
-            //// 5OK score row 18 = scoreSheet row 19.  >>> _row = ( row >= 18)  => row -1
-            //if ( row >= 18 )
-            //{
-            //    _postRow = row - 1;
-            //}
             
             return _postRow;
         }
@@ -205,6 +213,31 @@ namespace YahtzeeWPF2
             int _row = ( takeScoreRow < 6 )? takeScoreRow : (takeScoreRow + 2);
             return _row;
         }
+
+
+        static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow, int score )
+        {
+            int _row = 0;
+            if ( takeScoreRow < 12 )
+            {
+                _row = ( takeScoreRow < 6 ) ? takeScoreRow : ( takeScoreRow + 2 );
+            }
+            else
+            {
+                List<int> _open5OkRows = new List<int> ();
+                for ( int i = 14; i < 18; i++ )
+                {
+                    if ( ScoreTable [ ( GameClock.PlayerUp - 1 ), i ] == null )
+                        _open5OkRows.Add ( i );
+                }
+
+                _row = ( score > 0 ) ? _open5OkRows [ 0 ] : _open5OkRows [ ( _open5OkRows.Count - 1 ) ];
+            }
+            return _row;
+        }
+
+
+
 
 
         #endregion GameModel Methods
@@ -274,7 +307,7 @@ namespace YahtzeeWPF2
                 CommitDetails.NextPlayer ();
             }
         }
-        //      End GameClock class.        *****             End GameClock class.        *****             End GameClock class.        ***** 
+        //      End GameClock class.  
         #endregion GameClockClass
 
         //#region GameColors class

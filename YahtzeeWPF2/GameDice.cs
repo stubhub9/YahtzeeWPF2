@@ -258,6 +258,7 @@ namespace YahtzeeWPF2
         public void RollDie ()
         {
             faceValue = randomDieValue.Next ( 1, 7 );
+            //faceValue = 6;
         }
     }
     //     End of Die Class
