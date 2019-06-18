@@ -54,7 +54,6 @@ namespace YahtzeeWPF2
             scoreTable = new int? [ 3, 21 ];
             GameClock.NewGame ();
             GameDice.NewDice ();
-            //GameStatus.UpdateGameRows ();
             GameScoring.UpdateGameRows ();
             CommitDetails.NextPlayer ();
             CommitDetails.RollText ();
@@ -64,6 +63,9 @@ namespace YahtzeeWPF2
 
         public static void CommitClickedHandler ()
         {
+            // If game over, click new game.
+            if ( GameClock.GameRound == 17 )
+                return;
             // Results will be null unless scoring happenned.
             CommitDetails.ResultsList = new List<int []> ();
             if ( GameClock.DiceRoll == 3 )
@@ -87,7 +89,12 @@ namespace YahtzeeWPF2
 
             if ( GameClock.DiceRoll < 3 )
             {
-                CommitDetails.RollText ();
+                if ( GameClock.GameRound == 17 )
+                {
+                    CommitDetails.DeclareWinner ();
+                }
+                else
+                    CommitDetails.RollText ();
             }
             else
                 CommitDetails.ChooseText ();
@@ -95,10 +102,21 @@ namespace YahtzeeWPF2
             // ?????????If a  "can't do better than 5OK/ 5Str, ..." then a score needs to/ could be taken.  TRIGGERED BY GameStatus  ????????
         }
 
+        static int GetWinner ()
+        {
+            int _winner = 0;
+            if ( ( ScoreTable [ 0, 20 ] > ScoreTable [ 1, 20 ] ) && ( ScoreTable [ 0, 20 ] > ScoreTable [ 2, 20 ] ) )
+                _winner = 0;
+            else if ( ScoreTable [ 1, 20 ] > ScoreTable [ 2, 20 ] )
+                _winner = 1;
+            else
+                _winner = 2;
+            return _winner;
+        }
+
         static void RecordScore ()
         {
             GameScoring.GameRow _gamerow = GameScoring.GameRows [ CommitDetails.TakeScoreRow ];
-            //GameStatus.GameRow _gamerow = GameStatus.GameRows [ CommitDetails.TakeScoreRow ];
             int _scoreDelta = _gamerow.TakeScoreValue;
             int _row = ConvertTakeScoreRowToScoreTableRow ( CommitDetails.TakeScoreRow, _scoreDelta );
             int _col = GameClock.PlayerUp - 1;
@@ -108,7 +126,7 @@ namespace YahtzeeWPF2
             // Update the entry selected.
             scoreTable [ _col, _row ] =_scoreDelta;
             CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( _row ), _scoreDelta );
-
+            // 5OK section.
             if (( _row >= 14 ) && ( _row <= 17 ))
             {
                 scoreTable [ _col, 18 ] = (scoreTable [ _col, 18 ] ?? 0 )+ _scoreDelta;
@@ -163,13 +181,7 @@ namespace YahtzeeWPF2
         }
         // End RowClickedHandler.
 
-        //public static List < int [,]> Scoring ()
-        //{
-
-        //}
-
         static int VisualScoresheetButtonNameToRowNumberConverter ( string buttonName )
-        //private int ConvertButtonNameToRow ( string Name )
         {
             int result = 0;
             string rowString;
@@ -196,6 +208,7 @@ namespace YahtzeeWPF2
             return _column;
         }
 
+
         static int ConvertScoreTableRowToPostRow ( int row )
         {
             // Upper section _row = row +1.
@@ -207,6 +220,7 @@ namespace YahtzeeWPF2
             
             return _postRow;
         }
+
 
         static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow)
         {
@@ -236,10 +250,7 @@ namespace YahtzeeWPF2
             return _row;
         }
 
-
-
-
-
+        
         #endregion GameModel Methods
 
 
@@ -348,8 +359,9 @@ namespace YahtzeeWPF2
             //      Constructor
             static GameStrings ()
             {
-                CommitActionStrings = new string [] { ">>>  Press to Roll Dice  <<<", "<<<<<<<  Choose a scoring option", ">>>  Press to Accept  <<<", "Press to start a new game." };
-                CommitDescriptionStrings = new string [] { "You have", "rolls left.", "Take", "has won the game." };
+                CommitActionStrings = new string [] { ">>>  Press to Roll Dice  <<<", "<<<<<<<  Choose a scoring option",
+                    ">>>  Press to Accept  <<<", /*"Press to start a new game."*/ "^^^^  HAS WON THE GAME (no ties)  ^^^^" };
+                CommitDescriptionStrings = new string [] { "You have", "rolls left.", "Take", /*"has won the game.",*/ "Press the New Game button or Quit" };
                 //TODO: headerLabels will only be used as row header texts for the first two columns, and for string building elsewhere.
                 headerLabels = new string [] { "Upper Section", "Aces", "Deuces", "Threes", "Fours", "Fives", "Sixes", "> 63 Bonus", "Upper Score", "Lower Section",
                 "3 o’Kind", "4 o’Kind", "Full House", "Small Straight", "Large Straight","Chance", "5 o’Kind", "5OK Bonus",
@@ -438,6 +450,13 @@ namespace YahtzeeWPF2
 
             //      Methods
             // 
+            public static void DeclareWinner ()
+            {
+                PlayerName = GameStrings.PlayerNames [ GameModel.GetWinner () ];
+                Action = GameStrings.CommitActionStrings [ 3 ];
+                Description = GameStrings.CommitDescriptionStrings [ 3 ];
+            }
+
             public static void NextPlayer ()
             {
                 PlayerName = GameStrings.PlayerNames [ ( GameClock.PlayerUp - 1 ) ];

@@ -8,7 +8,7 @@ namespace YahtzeeWPF2
 {
     //TODO: Break up the UpdateGameRows method into smaller blocks
     /// <summary>
-    ///  Track and Update all texts and flags needed by the UI and game.
+    ///  Deprecated
     /// </summary>
     public static class GameStatus
     {

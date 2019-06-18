@@ -96,14 +96,16 @@ namespace YahtzeeWPF2
             pointsList.Add (( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 5 ) )
                 || ( ( GameDice.MultiplesList.Count > 1 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 3 ) ))
                 ? 25 : 0 );
-            pointsList.Add ( ( GameDice.MaxStraight == 4 ) ? 30 : 0 );
+            pointsList.Add ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 );
             pointsList.Add ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 );
             pointsList.Add ( _sum );
             // Check for 5OK.
             if ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 5 ) )
             {
                 // Check for Bonus 5OK.
-                pointsList.Add ( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] != null ) ? 100 : 50 );
+
+                pointsList.Add (( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == null )
+                    || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0) ) ? 50 : 100 );
             }
             else
                 pointsList.Add ( 0 );

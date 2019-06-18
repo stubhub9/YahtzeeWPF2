@@ -140,6 +140,7 @@ namespace YahtzeeWPF2
             }
             // End of sort by face value.
 
+
             // Compute the sum of all dice, and populate the valueIndexedMultiples array.
             foreach ( var die in dice )
             {
@@ -258,7 +259,13 @@ namespace YahtzeeWPF2
         public void RollDie ()
         {
             faceValue = randomDieValue.Next ( 1, 7 );
+            if ( GameModel.GameClock.GameRound == 17 )
+                faceValue = 0;
             //faceValue = 6;
+            //if ( GameModel.GameClock.GameRound > 1 )
+            //{
+            //    faceValue = 5;
+            //}
         }
     }
     //     End of Die Class
