@@ -100,7 +100,7 @@ namespace YahtzeeWPF2
             GameModel.CommitClickedHandler ();
             if ( GameModel.CommitDetails.ResultsList.Count != 0 )
             {
-                UpdateScoresheetVisual ();
+                UpdateScoresheetEntriesVisual ();
             }
             UpdateDiceVisual ();
             UpdateTakeScoresVisual ();
@@ -154,6 +154,7 @@ namespace YahtzeeWPF2
             commitTextBlocks [ 2 ].Text = GameModel.CommitDetails.Description;
         }
 
+
         /// <summary>
         /// Updates dice that weren't held, and TakeScore displays.
         /// </summary>
@@ -178,7 +179,11 @@ namespace YahtzeeWPF2
 
         }
 
-        void UpdateScoresheetVisual ()
+
+        /// <summary>
+        /// Updates the entry of the score taken and the column totals. 
+        /// </summary>
+        void UpdateScoresheetEntriesVisual ()
         {
             List<int []> _results = GameModel.CommitDetails.ResultsList;
             int [] _result = _results [ 0 ];
@@ -197,8 +202,9 @@ namespace YahtzeeWPF2
             }
         }
 
+
         /// <summary>
-        ///  Display the TakeScore info from GameStatus
+        ///  Update the TakeScore buttons.
         /// </summary>
         void UpdateTakeScoresVisual ()
         {
@@ -238,16 +244,9 @@ namespace YahtzeeWPF2
             }
         }
         // End  UpdateTakeScoresVisual
-
-        /// <summary>
-        /// Commits player score, Updates counters for next turn(?), round and player and calls for new dice. 
-        /// </summary>
-        //public void NextPlayer ()
-        //{
-
-        //}
         
 
+        
         void InitializeDiceVisual ()
         {
             Button _playerCommit;
@@ -262,7 +261,7 @@ namespace YahtzeeWPF2
             List<Button> _buttons;
 
             visualDiceList = new List<List<Button>> ();
-
+            // Create the three faces for each die.
             TransformGroup topGroup = new TransformGroup ();
             topGroup.Children.Add ( new RotateTransform ( 45.0 ) );
             topGroup.Children.Add ( new ScaleTransform ( 1.45, 1.45 ) );

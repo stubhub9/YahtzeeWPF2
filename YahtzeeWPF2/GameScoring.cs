@@ -13,6 +13,8 @@ namespace YahtzeeWPF2
         static List <bool>  scoringRowsOpen;
         static List<int> pointsList;
 
+        // Constructor:  Using the default constructor.
+
         // Property  ( No param required. )
 
         public static List<GameRow> GameRows { get; set; }
@@ -25,10 +27,11 @@ namespace YahtzeeWPF2
         /// </summary>
         public static void UpdateGameRows ()
         {
-            CheckIfRowIsOpen ();
-            CheckForPoints ();
-            BuildGameRows ();
 
+            CheckIfRowIsOpen ();
+            //CheckForPoints ();
+            CheckForPointsAvailable ( ref pointsList );
+            BuildGameRows ();
         }
 
         static void BuildGameRows ()
@@ -61,7 +64,9 @@ namespace YahtzeeWPF2
 
         }
 
-
+        /// <summary>
+        /// Build the scoringRowsOpen list for this player's column in the ScoreTable.
+        /// </summary>
         static void CheckIfRowIsOpen ()
         {
             scoringRowsOpen = new List<bool> ();
@@ -73,55 +78,111 @@ namespace YahtzeeWPF2
                     _row = 8;
                 scoringRowsOpen.Add  (( GameModel.ScoreTable [ _column, _row ] == null ) ? true : false);
             }
-            // If any  5OK entry is open, then flag index 12 to true. 
+            // If any 5OK entry is open, then flag index 12 to true. 
             if ( ( scoringRowsOpen [ 12 ] ) || ( scoringRowsOpen [ 13 ] ) || ( scoringRowsOpen [ 14 ] ) || ( scoringRowsOpen [ 15 ] ) )
                 scoringRowsOpen [ 12 ] = true;
         }
 
+        
 
-        static void CheckForPoints (  )
+
+        
+        /// <summary>
+        /// Builds a list of the points available, for each row, using the current dice.
+        /// </summary>
+        /// <param name="pointsList"></param>
+        static void CheckForPointsAvailable ( ref List<int> pointsList )
         {
-            int _sum = GameDice.Sum;
             pointsList = new List<int> ();
-            for ( int _row = 1; _row < 7; _row++ )
+            // Using ref pointsList as a parameter for clarity.
+            CheckTheAcesThruSixes ( ref pointsList );
+            CheckThePairsOrBetter ( ref pointsList );
+            CheckTheStraightsPlusChance ( ref pointsList );
+        }
+
+
+        /// <summary>
+        /// Get the points for the Aces through Sixes rows.
+        /// </summary>
+        /// <param name="pointsList"></param>
+        static void CheckTheAcesThruSixes ( ref List <int> pointsList )
+        {
+            int [] _valueIndexedMultiples = GameDice.ValueIndexedMultiples;
+
+            for ( int _dieFaceValue = 1; _dieFaceValue < 7; _dieFaceValue++ )
             {
                 // Count all Aces through Sixes.
-                pointsList.Add ( ( _row ) * GameDice.ValueIndexedMultiples [ ( _row ) ] );
+                pointsList.Add ( ( _dieFaceValue ) * _valueIndexedMultiples [ ( _dieFaceValue ) ] );
             }
+        }
 
-            // Check for 3OK, 4OK.
-            pointsList.Add ( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 3 ) ) ? _sum : 0 );
-            pointsList.Add ( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 4 ) ) ? _sum : 0 );
-            // Score Full House for 5OK or 3OK and a pair.
-            pointsList.Add (( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 5 ) )
-                || ( ( GameDice.MultiplesList.Count > 1 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 3 ) ))
-                ? 25 : 0 );
-            pointsList.Add ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 );
-            pointsList.Add ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 );
-            pointsList.Add ( _sum );
-            // Check for 5OK.
-            if ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 5 ) )
+
+        /// <summary>
+        /// Get the points for all of the "of a Kind" rows.
+        /// </summary>
+        /// <param name="pointsList"></param>
+        static void CheckThePairsOrBetter (  ref List < int > pointsList )
+        {
+            // Score 50 for the first five of a kind or 100 for any additional five of a kind.
+            int _fiveOfAKind = ( ( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == null )
+                    || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0 ) ) ? 50 : 100 );
+            int _fullHouse = 25;
+            List<int []> _pairsOrBetter = GameDice.MultiplesList;
+            int _sumOfAllDice = GameDice.Sum;
+
+            int [] _points = { 0, 0, 0, 0 };
+
+            if (( _pairsOrBetter.Count != 0 ) && ( _pairsOrBetter [ 0 ] [ 1 ] >=3 ))
             {
-                // Check for Bonus 5OK.
+                // Score three of a kind.11
+                _points [ 0 ] = _sumOfAllDice;
 
-                pointsList.Add (( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == null )
-                    || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0) ) ? 50 : 100 );
+                if ( _pairsOrBetter [ 0 ] [ 1 ] >= 4 )
+                {
+                    // Score four of a kind.
+                    _points [ 1 ] = _sumOfAllDice;
+
+                    if ( _pairsOrBetter [ 0 ] [ 1 ] == 5 )
+                    {
+                        // Score five of a kind and full house.
+                        _points [ 2 ] = _fullHouse;
+                        _points [ 3 ] = _fiveOfAKind;
+                    }
+                }
+                else if ( GameDice.MultiplesList.Count > 1 )
+                    // Score full house for three of a kind and a pair.
+                    _points [ 2 ] = _fullHouse;
             }
-            else
-                pointsList.Add ( 0 );
+
+            foreach ( var value in _points )
+            {
+                pointsList.Add ( value );
+            }
+        }
+
+
+        /// <summary>
+        /// Get the points for straights and chance.
+        /// </summary>
+        /// <param name="pointsList"></param>
+        static void CheckTheStraightsPlusChance ( ref List < int > pointsList )
+        {
+            int _chance = GameDice.Sum;
+            int _maxStraight = GameDice.MaxStraight;
+            int _largeStraight = ( GameDice.MaxStraight == 5 ) ? 40 : 0;
+            int _smallStraight = ( GameDice.MaxStraight >= 4 ) ? 30 : 0;
+
+            pointsList.Insert ( ( pointsList.Count - 1 ), _smallStraight );
+            pointsList.Insert ( ( pointsList.Count - 1 ), _largeStraight );
+            pointsList.Insert ( ( pointsList.Count - 1 ), _chance );
         }
 
 
 
 
-
-
-
-
-
-
-
-
+        /// <summary>
+        /// Supplies GameModel with info for each scorable row.
+        /// </summary>
         public class GameRow
         {
             //      Fields      ******
@@ -172,5 +233,38 @@ namespace YahtzeeWPF2
         }
 
 
+        //Redacted:  static void CheckForPoints (  )
+        //{
+        //    int _sum = GameDice.Sum;
+        //    int [] valueIndexedMultiples = GameDice.ValueIndexedMultiples;
+        //    pointsList = new List<int> ();
+        //    for ( int _row = 1; _row < 7; _row++ )
+        //    {
+        //        // Count all Aces through Sixes.
+        //        pointsList.Add ( ( _row ) * GameDice.ValueIndexedMultiples [ ( _row ) ] );
+        //    }
+
+        //    // Check for 3OK, 4OK.
+        //    pointsList.Add ( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 3 ) ) ? _sum : 0 );
+        //    pointsList.Add ( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 4 ) ) ? _sum : 0 );
+        //    // Score Full House for 5OK or 3OK and a pair.
+        //    pointsList.Add (( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 5 ) )
+        //        || ( ( GameDice.MultiplesList.Count > 1 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 3 ) ))
+        //        ? 25 : 0 );
+
+        //    pointsList.Add ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 );
+        //    pointsList.Add ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 );
+        //    pointsList.Add ( _sum );
+        //    // Check for 5OK.
+        //    if ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 5 ) )
+        //    {
+        //        // Check for Bonus 5OK.
+
+        //        pointsList.Add (( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == null )
+        //            || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0) ) ? 50 : 100 );
+        //    }
+        //    else
+        //        pointsList.Add ( 0 );
+        //}
     }
 }
