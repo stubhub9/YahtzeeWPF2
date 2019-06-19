@@ -242,9 +242,25 @@ namespace YahtzeeWPF2
                 textBlock = postColumn [ _postRow ];
                 textBlock.Text = gamerow.TakeScoreString;
             }
+            UpdatePlayerHighlight ();
         }
         // End  UpdateTakeScoresVisual
         
+
+
+            void UpdatePlayerHighlight ()
+        {
+            int _player = GameModel.GameClock.PlayerUp;
+            player1HighlightRect.Fill = Brushes.Transparent;
+            player2HighlightRect.Fill = Brushes.Transparent;
+            player3HighlightRect.Fill = Brushes.Transparent;
+            if ( _player == 1 )
+                player1HighlightRect.Fill = Brushes.Goldenrod;
+            else if ( _player == 2 )
+                player2HighlightRect.Fill = Brushes.Goldenrod;
+            else
+                player3HighlightRect.Fill = Brushes.Goldenrod;
+        }
 
         
         void InitializeDiceVisual ()

@@ -79,6 +79,14 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="playerColumn"
+               TargetType="Rectangle">
+            <Setter Property="Grid.RowSpan" Value="19" />
+            <Setter Property="Grid.Row" Value="1"/>
+            <Setter Property="HorizontalAlignment"  Value="Stretch" />
+            <Setter Property="VerticalAlignment"  Value="Stretch" />
+        </Style>
+
         <!--<Style x:Key="RowButton"
                TargetType="Button" >
             <Setter Property="Grid.ColumnSpan" Value="6" />
@@ -426,8 +434,6 @@
                            Grid.Row="7"/>
             <Rectangle Name="r8" Style="{StaticResource normal}"
                            Grid.Row="8"/>
-            <Rectangle Name="r9" Style="{StaticResource normal}"
-                           Grid.Row="9"/>
 
             <!--<Border
                     BorderBrush="Black" BorderThickness="1" >-->
@@ -457,8 +463,18 @@
             <Rectangle Name="r20" Style="{StaticResource normal}"
                            Grid.Row="20"/>
 
+            <Rectangle Name="player1HighlightRect" Style="{StaticResource playerColumn}"
+                       Grid.Column="2" />
+            <Rectangle Name="player2HighlightRect" Style="{StaticResource playerColumn}"
+                       Grid.Column="3" />
+            <Rectangle Name="player3HighlightRect" Style="{StaticResource playerColumn}"
+                       Grid.Column="4" />
 
 
+
+
+            <Rectangle Name="r9" Style="{StaticResource normal}"
+                           Grid.Row="9"/>
         </Grid>
 
 

@@ -111,6 +111,7 @@ namespace YahtzeeWPF2
                 _winner = 1;
             else
                 _winner = 2;
+            GameClock.PlayerUp = _winner + 1;
             return _winner;
         }
 
