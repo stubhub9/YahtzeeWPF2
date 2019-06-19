@@ -244,6 +244,7 @@
             </Style.Triggers>
         </Style>-->
 
+        <!--  NOT IMPLEMENTED:  Early exploration-->
         <!-- A three button 2D die on a canvas. -->
         <Style x:Key="threeButtonDieOnCanvas" TargetType="{x:Type Button}" >
             <Setter  Property="Height" Value="155" />
@@ -347,7 +348,7 @@
                 Margin="20,10,10,10" 
                 FontSize="38" 
                 FontFamily="Monotype Corsiva" FontWeight="Bold" FontStyle="Italic" 
-                >Yahtzee
+                >YahClone
             </Label>
 
             <StackPanel 
@@ -359,15 +360,18 @@
             </StackPanel>
             <Border 
                 BorderBrush="#FF1933DC" 
-                BorderThickness="50,20">
+                BorderThickness="20,10">
                 <TextBlock 
                 Name="BannerHints" 
                 HorizontalAlignment="Right" 
                 VerticalAlignment="Center" 
                 FontFamily="Ebrima" 
-                FontSize="18" 
+                FontSize="13" 
                 Margin="0,10,20,10"
-                >Do this next</TextBlock>
+                    TextWrapping="WrapWithOverflow"
+                >Classroom style project, that is functional and could be used as a testbed for future .NET practice 
+                    (data templates, listviews, client/ server, Entity/ ADO, WPF animations, ...).  
+                    Currently working on refactoring for clarity and best practices.</TextBlock>
             </Border>
         </DockPanel>
 

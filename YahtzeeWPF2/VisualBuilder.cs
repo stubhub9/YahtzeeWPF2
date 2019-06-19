@@ -291,7 +291,170 @@ namespace YahtzeeWPF2
             return _textBlock;
         }
 
-
         
     }
+
+
+
+    /// <summary>
+    /// Work in progress, Refactoring MainWindow!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /// </summary>
+    public static class DiceBoxBuilder
+    {
+        // Fields
+
+        static Button _playerCommit;
+        // Create a die, parent is the container for a canvas containing three button faces.
+        static Button _parent;
+        static Button _topFace;
+        static Button _leftFace;
+        static Button _rightFace;
+
+        static Canvas _canvas;
+        static Double _dblNum;
+        static List<Button> _buttons;
+
+        // Constructor
+
+
+        // Methods
+
+        public static void BuildDiceBox ()
+        { }
+
+
+        public static void BuildDice ( ref List<List<Button>> diceList )
+        {
+            diceList = new List<List<Button>> ();
+
+
+            for ( int i = 0; i < 5; i++ )
+            {
+
+                _dblNum = 60.0 + ( i * 130 );
+                //x= 60 y= 365
+            }
+
+
+        }
+
+
+        public static void BuildDie ()
+        {
+
+            // Create the three faces for each die.
+            TransformGroup topGroup = new TransformGroup ();
+            topGroup.Children.Add ( new RotateTransform ( 45.0 ) );
+            topGroup.Children.Add ( new ScaleTransform ( 1.45, 1.45 ) );
+            topGroup.Children.Add ( new SkewTransform ( 0, 0 ) );
+
+            TransformGroup leftGroup = new TransformGroup ();
+            leftGroup.Children.Add ( new RotateTransform ( 100.0 ) );
+            leftGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
+            leftGroup.Children.Add ( new SkewTransform ( 10.0, 40.0 ) );
+
+            TransformGroup rightGroup = new TransformGroup ();
+            rightGroup.Children.Add ( new RotateTransform ( -101.0 ) );
+            rightGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
+            rightGroup.Children.Add ( new SkewTransform ( -11.0, -39.0 ) );
+
+
+            //for ( int i = 0; i < 5; i++ )
+            //{
+            int i = 0;  // TEMP PLACEHOLDER  *****************************************************************************************************************************
+
+                _dblNum = 60.0 + ( i * 130 );
+                //x= 60 y= 365
+
+                _parent = new Button
+                {
+                    Name = $"die{ i }face0",
+                    Margin = new Thickness ( _dblNum, 365, 0, 0 ),
+                    Height = 155,
+                    Width = 105,
+
+                    Background = Brushes.Transparent,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                    VerticalContentAlignment = VerticalAlignment.Stretch,
+                    BorderBrush = Brushes.Black,
+                    BorderThickness = new Thickness ( 2 ),
+                };
+                ////_parent.Click += Die_Click;
+
+                _topFace = new Button
+                {
+                    Name = $"die{ i }face1",
+                    BorderThickness = new Thickness ( 5 ),
+                    BorderBrush = Brushes.LightGreen,
+                    Margin = new Thickness ( 48, 1, 0, 0 ),
+                    Height = 50,
+                    Width = 50,
+                    Background = Brushes.LightGoldenrodYellow,
+                    FontSize = 22,
+                    FontWeight = FontWeights.ExtraBold,
+                    RenderTransform = topGroup
+                };
+
+                _leftFace = new Button
+                {
+                    Name = $"die{ i }face2",
+                    BorderThickness = new Thickness ( 2 ),
+                    BorderBrush = Brushes.LightGreen,
+                    Margin = new Thickness ( 47, 102, 0, 0 ),
+                    Height = 50,
+                    Width = 50,
+                    Background = Brushes.DarkGray,
+                    FontSize = 22,
+                    FontWeight = FontWeights.Medium,
+                    RenderTransform = leftGroup
+                };
+
+                _rightFace = new Button
+                {
+                    Name = $"die{ i }face2",
+                    BorderThickness = new Thickness ( 2 ),
+                    BorderBrush = Brushes.LightGreen,
+                    Margin = new Thickness ( 47, 144, 0, 0 ),
+                    Height = 50,
+                    Width = 50,
+                    Background = Brushes.DarkGray,
+                    FontSize = 22,
+                    FontWeight = FontWeights.Medium,
+                    RenderTransform = rightGroup
+                };
+
+                _canvas = new Canvas
+                {
+                    Background = Brushes.Transparent,
+                    Height = 148,
+                    Width = 97,
+                };
+                _canvas.Children.Add ( _topFace );
+                _canvas.Children.Add ( _leftFace );
+                _canvas.Children.Add ( _rightFace );
+                _parent.Content = _canvas;
+
+                //// Do this in visual.
+                ////diceBox.Children.Add ( _parent );
+
+                _buttons = new List<Button> ();
+                _buttons.Add ( _parent );
+                _buttons.Add ( _topFace );
+                _buttons.Add ( _leftFace );
+                _buttons.Add ( _rightFace );
+
+            ////    visualDiceList.Add ( _buttons );
+            ////}
+            //// End of Dice creation loop.
+
+        }
+
+    }
+
+
+
+
+
 }

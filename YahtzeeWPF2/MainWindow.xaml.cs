@@ -414,11 +414,14 @@ namespace YahtzeeWPF2
             }
             _playerCommit.Content = _stackPanel;
             diceBox.Children.Add ( _playerCommit );
+
+            // Need to add _Click for each die (? after they have been added to the visual?).
+            //_parent.Click += Die_Click;
         }
         // End of InitializeDiceVisual method.
 
-        
-        
+
+
         void InitializeScoresheetVisual ()
         {
             entries = new List<List<Button>> ();
@@ -429,6 +432,7 @@ namespace YahtzeeWPF2
             List<List<FrameworkElement>> _elementColumns = new List<List<FrameworkElement>> ();
 
             ScoresheetBuilder.InitializeScoreSheetVisual2 ( ref _elementColumns, ref posts, ref entries );
+            
 
             foreach ( var _buttonColumn in entries )
             {
