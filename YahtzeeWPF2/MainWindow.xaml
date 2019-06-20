@@ -5,8 +5,529 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:YahtzeeWPF2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" 
+        Height="864"   Width="1536"
+        Background="AliceBlue"
+        SnapsToDevicePixels="True"
+        Name="YahWindow"
+        >
+    <!--      *****   Begin Resources           *****   Begin Resources           *****   Begin Resources     -->
+    <Window.Resources>
+
+        <Style x:Key="normal"
+               TargetType="Rectangle" >
+            <Setter Property="Grid.ColumnSpan" Value="6" />
+            <Setter Property="Grid.Column" Value="0"/>
+            <Setter Property="HorizontalAlignment"  Value="Stretch" />
+            <Setter Property="VerticalAlignment"  Value="Stretch" />
+            <!--<Setter Property="Width" Value="800" />
+            <Setter Property="Height" Value="34" />-->
+            <Setter Property="IsHitTestVisible" Value="True" />
+            <!--<Setter Property="StrokeThickness" Value="1" />-->
+            <!--<Setter Property="Fill" Value="DarkGoldenrod" />-->
+
+
+            <Setter Property="Rectangle.Fill" >
+                <Setter.Value>
+                    <SolidColorBrush Color="DarkGoldenrod" />
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+
+                <!-- Animates the button's opacity on mouse over. -->
+                <EventTrigger RoutedEvent="Rectangle.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                    From="DarkGoldenrod" To="Goldenrod" Duration="0:0:0.5"
+                                    AutoReverse="False" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <!-- Returns the button's opacity to 1 when the mouse leaves. -->
+                <EventTrigger RoutedEvent="Rectangle.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                     To="DarkGoldenrod" Duration="0:0:0.5"
+                                    AutoReverse="False" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <!-- Changes the button's color when clicked,
+                Targeting the SolidColorBrush indirectly through Button.Background. -->
+                <EventTrigger RoutedEvent="Rectangle.MouseDown">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                    From="DarkGoldenrod" To="Fuchsia" Duration="0:0:1.1"
+                                    AutoReverse="True" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="playerColumn"
+               TargetType="Rectangle">
+            <Setter Property="Grid.RowSpan" Value="19" />
+            <Setter Property="Grid.Row" Value="1"/>
+            <Setter Property="HorizontalAlignment"  Value="Stretch" />
+            <Setter Property="VerticalAlignment"  Value="Stretch" />
+        </Style>
+
+        <!--<Style x:Key="RowButton"
+               TargetType="Button" >
+            <Setter Property="Grid.ColumnSpan" Value="6" />
+            <Setter Property="Grid.Column" Value="0"/>
+            <Setter Property="HorizontalAlignment"  Value="Stretch" />
+            <Setter Property="VerticalAlignment"  Value="Stretch" />
+            <Setter Property="Width" Value="800" />
+            <Setter Property="Height" Value="25" />
+            -->
+        <!--<Setter Property="Stroke" Value="Black" />-->
+        <!--<Setter Property="StrokeThickness" Value="1" />-->
+        <!--<Setter Property="Background" >
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF3C472" Offset="0"/>
+                        <GradientStop Color="#FFF3D4A2" Offset=".5"/>
+                        <GradientStop Color="#FFF3C472" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+
+        </Style>-->
+
+
+
+        <!--<ControlTemplate x:Key="RowEntryControl" TargetType="local:MainWindow"  >
+            <Border Name="ScoresheetBorder" 
+                    BorderThickness=".5" BorderBrush="DarkGoldenrod"
+                    Margin="0" Padding="0"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="DarkGoldenrod" Offset="0"/>
+                            <GradientStop Color="Goldenrod" Offset=".5"/>
+                            <GradientStop Color="DarkGoldenrod" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.5*" />
+                        <ColumnDefinition Width="2.5*" />
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border 
+                        BorderBrush="Black" BorderThickness="1"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Name="Col1" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                    </Border>
+
+                    <Border 
+                        BorderBrush="Black" BorderThickness="1"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Name="Col2" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                    </Border>
+
+                    <Border 
+                        BorderBrush="Black" BorderThickness="1"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Name="Col3" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                    </Border>
+
+                    <Border 
+                        BorderBrush="Black" BorderThickness="1"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Name="Col4" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                    </Border>
+
+                    <Border 
+                        BorderBrush="Black" BorderThickness="1"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Name="Col5" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                    </Border>
+                        
+                    
+                    
+                </Grid>
+            </Border>
+        </ControlTemplate>-->
+
+        <!-- Defines a Button style. -->
+        <!--
+        <Style TargetType="{x:Type Button}" x:Key="ButtonStyle1">
+            <Setter Property="Button.Background" >
+                <Setter.Value>
+                    <SolidColorBrush Color="DarkGoldenrod" />
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+
+                -->
+        <!-- Animates the button's opacity on mouse over. -->
+        <!--
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                    From="DarkGoldenrod" To="Goldenrod" Duration="0:0:0.5"
+                                    AutoReverse="False" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                -->
+        <!-- Returns the button's opacity to 1 when the mouse leaves. -->
+        <!--
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                     To="Goldenrod" Duration="0:0:0.5"
+                                    AutoReverse="False" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                -->
+        <!-- Changes the button's color when clicked,
+                Targeting the SolidColorBrush indirectly through Button.Background. -->
+        <!--
+                <EventTrigger RoutedEvent="Button.Click">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                    From="DarkGoldenrod" To="Fuchsia" Duration="0:0:1.1"
+                                    AutoReverse="True" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>-->
+
+        <!--  NOT IMPLEMENTED:  Early exploration-->
+        <!-- A three button 2D die on a canvas. -->
+        <Style x:Key="threeButtonDieOnCanvas" TargetType="{x:Type Button}" >
+            <Setter  Property="Height" Value="155" />
+            <Setter  Property="Width" Value="105" />
+            <Setter  Property="ClipToBounds" Value="True" />
+            <Setter Property="Template" >
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                        <Border
+                            Name="DieBorder"
+                            BorderThickness="2"
+                            BorderBrush="Teal">
+                            <Canvas
+                            Height="148" Width="97">
+
+                                <Button 
+                                Name="TopFace"
+                    Margin="48, 0, 0, 0"
+                    Height="50" Width="50"
+                    Background="Khaki"
+                    FontSize="22"
+                    FontWeight="ExtraBold"
+                                BorderThickness="5"
+                                BorderBrush="Teal">
+                                    <Button.RenderTransform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="45" />
+                                            <ScaleTransform ScaleX="1.45" ScaleY="1.45" />
+                                            <SkewTransform AngleX="0" />
+                                        </TransformGroup>
+                                    </Button.RenderTransform>
+                                    6
+                                </Button>
+
+                                <Button
+                                Name="LeftFace"
+                    Margin="47, 102, 0, 0"
+                    Height="50" Width="50"
+                    Background="DarkKhaki"
+                    FontSize="22"
+                    FontWeight="Medium"
+                                BorderThickness="5"
+                                BorderBrush="DarkSlateBlue">
+                                    <Button.RenderTransform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="100" />
+                                            <ScaleTransform ScaleX=".99" ScaleY=".99" />
+                                            <SkewTransform AngleX="10" />
+                                            <SkewTransform AngleY="40" />
+                                        </TransformGroup>
+                                    </Button.RenderTransform>
+                                    5
+                                </Button>
+
+                                <Button
+                                Name="RightFace"
+                    Margin="48, 150, 0, 0"
+                    Height="50" Width="50"
+                    Background="DarkKhaki"
+                    FontSize="22"
+                    FontWeight="Medium"
+                                BorderThickness="5"
+                                BorderBrush="DarkSlateGray">
+                                    <Button.RenderTransform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="-101" />
+                                            <ScaleTransform ScaleX=".99" ScaleY=".99" />
+                                            <SkewTransform AngleX="-11" />
+                                            <SkewTransform AngleY="-39" />
+                                        </TransformGroup>
+                                    </Button.RenderTransform>
+                                    4
+                                </Button>
+
+                            </Canvas>
+                        </Border>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <!-- *****  Begin Layout *****        *****  Begin Layout *****        *****  Begin Layout *****        *****  Begin Layout *****        *****  Begin Layout *****      -->
+
+    <DockPanel
+        LastChildFill="False"
+        Background="Coral">
+
+        <!-- Add Header: Banner, Menu, Info  -->
+        <DockPanel 
+            DockPanel.Dock="Top" 
+            Background="#FFC9662D"
+            >
+
+            <Label 
+                DockPanel.Dock="Left" 
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch" 
+                Margin="20,10,10,10" 
+                FontSize="38" 
+                FontFamily="Monotype Corsiva" FontWeight="Bold" FontStyle="Italic" 
+                >YahClone
+            </Label>
+
+            <StackPanel 
+                DockPanel.Dock="Right">
+
+                <Button Click="NewGame_Click">New Game</Button>
+                <!-- Options will activate Modal dialog boxes. -->
+                <Button Click="Options_Click">Options</Button>
+            </StackPanel>
+            <Border 
+                BorderBrush="#FF1933DC" 
+                BorderThickness="20,10">
+                <TextBlock 
+                Name="BannerHints" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Center" 
+                FontFamily="Ebrima" 
+                FontSize="13" 
+                Margin="0,10,20,10"
+                    TextWrapping="WrapWithOverflow"
+                >Classroom style project, that is functional and could be used as a testbed for future .NET practice 
+                    (data templates, listviews, client/ server, Entity/ ADO, WPF animations, ...).  
+                    Currently working on refactoring for clarity and best practices.</TextBlock>
+            </Border>
+        </DockPanel>
+
+        <!-- Add Scoresheet -->
+
+
+        <!--TODO: Add rectangles baseFill 100 Opacity layer 9, highlight 20 Opacity with the CellButtons being added later and on top with Transparent Fill 100 opacity -->
+        <!-- Scoresheet Grid panel -->
+        <Grid 
+                Name="Scoresheet" 
+                Background="Transparent"
+                Width="750"
+                Margin="5"
+                Grid.IsSharedSizeScope="False">
+
+            <!--TODO:  Why did I name the definitions, to change the grid Height Star?
+                        Should use colX, R20?-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Name="RowHeaders1"  Width="1.0*"/>
+                <ColumnDefinition Name="RowHeaders2"  Width="1.0*"/>
+                <ColumnDefinition Name="Player1" Width=".6*"/>
+                <ColumnDefinition Name="Player2" Width="0.6*"/>
+                <ColumnDefinition Name="Player3" Width="0.6*"/>
+                <ColumnDefinition Name="TakeScore" Width="1.0*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Name="rowHeader" Height="2*"/>
+                <RowDefinition Name="rowAce" Height="2*" />
+                <RowDefinition Name="row2"  Height="2*"/>
+                <RowDefinition Name="row3"  Height="2*"/>
+                <RowDefinition Name="row4" Height="2*" />
+                <RowDefinition Name="row5" Height="2*"/>
+                <RowDefinition Name="row6" Height="2*" />
+                <RowDefinition  Name="upperTotal" Height="2*" />
+                <RowDefinition  Name="bonus35" Height="2*" />
+                <RowDefinition   Name="LowerSectionLabel" Height="1.5*" />
+                <RowDefinition Name="ThreeOK"  Height="2*" />
+                <RowDefinition Name="FourOK"  Height="2*" />
+                <RowDefinition Name="FullHouse"  Height="2*" />
+                <RowDefinition Name="FourStraight"  Height="2*" />
+                <RowDefinition Name="FiveStraight"  Height="2*" />
+                <RowDefinition Name="Chance"  Height="2*" />
+                <RowDefinition Name="FiveOK"  Height="2*" />
+                <RowDefinition Name="Mult5OK"  Height="2*" />
+                <RowDefinition Name="MultiBonus"  Height="2*" />
+                <RowDefinition Name="LowerTotal"  Height="2*" />
+                <RowDefinition Name="GrandTotal"  Height="2*" />
+            </Grid.RowDefinitions>
+            <Rectangle Name="r0" Style="{StaticResource normal}"
+                           Grid.Row="0" Grid.Column="0 "/>
+            <Rectangle Name="r1" Style="{StaticResource normal}"
+                           Grid.Row="1"/>
+            <Rectangle Name="r2" Style="{StaticResource normal}"
+                           Grid.Row="2"/>
+            <Rectangle Name="r3" Style="{StaticResource normal}"
+                           Grid.Row="3"/>
+            <Rectangle Name="r4" Style="{StaticResource normal}"
+                           Grid.Row="4"/>
+            <Rectangle Name="r5" Style="{StaticResource normal}"
+                           Grid.Row="5"/>
+            <Rectangle Name="r6" Style="{StaticResource normal}"
+                           Grid.Row="6"/>
+            <Rectangle Name="r7" Style="{StaticResource normal}"
+                           Grid.Row="7"/>
+            <Rectangle Name="r8" Style="{StaticResource normal}"
+                           Grid.Row="8"/>
+
+            <!--<Border
+                    BorderBrush="Black" BorderThickness="1" >-->
+            <Rectangle Name="r10" Style="{StaticResource normal}"
+                           Grid.Row="10">
+            </Rectangle>
+            <!--</Border>-->
+
+            <Rectangle Name="r11" Style="{StaticResource normal}"
+                           Grid.Row="11"/>
+            <Rectangle Name="r12" Style="{StaticResource normal}"
+                           Grid.Row="12"/>
+            <Rectangle Name="r13" Style="{StaticResource normal}"
+                           Grid.Row="13"/>
+            <Rectangle Name="r14" Style="{StaticResource normal}"
+                           Grid.Row="14"/>
+            <Rectangle Name="r15" Style="{StaticResource normal}"
+                           Grid.Row="15"/>
+            <Rectangle Name="r16" Style="{StaticResource normal}"
+                           Grid.Row="16"/>
+            <Rectangle Name="r17" Style="{StaticResource normal}"
+                           Grid.Row="17"/>
+            <Rectangle Name="r18" Style="{StaticResource normal}"
+                           Grid.Row="18"/>
+            <Rectangle Name="r19" Style="{StaticResource normal}"
+                           Grid.Row="19"/>
+            <Rectangle Name="r20" Style="{StaticResource normal}"
+                           Grid.Row="20"/>
+
+            <Rectangle Name="player1HighlightRect" Style="{StaticResource playerColumn}"
+                       Grid.Column="2" />
+            <Rectangle Name="player2HighlightRect" Style="{StaticResource playerColumn}"
+                       Grid.Column="3" />
+            <Rectangle Name="player3HighlightRect" Style="{StaticResource playerColumn}"
+                       Grid.Column="4" />
+
+
+
+
+            <Rectangle Name="r9" Style="{StaticResource normal}"
+                           Grid.Row="9"/>
+        </Grid>
+
+
+        <!-- Add Dice boxes -->
+        <Canvas  
+            Name="diceBox"
+            DockPanel.Dock="Right"
+            Background="#FF2F591B" 
+            Width="750" 
+            Height="730" 
+            Margin="5"
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Bottom">
+
+            <TextBlock
+                Text="==========     HOLD LINE     ================     HOLD  LINE     ================     HOLD  LINE     ========"
+                Background="Transparent"
+                Foreground="Gold"
+                FontSize="12"
+                FontWeight="Normal"
+                FontStretch="UltraExpanded"
+                HorizontalAlignment="Stretch"
+                Margin="10, 525, 0, 0"/>
+
+
+            <!--    <Setter  Property="Height" Value="155" />      <Setter  Property="Width" Value="105" />-->
+
+            <!--<Button  x:Name="Die1"
+                Style="{StaticResource threeButtonDieOnCanvas}"
+                    Margin="165, 365, 0, 0"
+                    BorderBrush="Crimson" />
+
+            <Button Name="Die2"
+                Style="{StaticResource threeButtonDieOnCanvas}"
+                    
+                    Margin="100, 550, 0, 0"/>
+
+            <Button Name="Die3"
+                Style="{StaticResource threeButtonDieOnCanvas}"
+                    Margin="230, 550, 0, 0"/>
+
+            <Button Name="Die4"
+                Style="{StaticResource threeButtonDieOnCanvas}"
+                    Margin="295, 360, 0, 0"/>
+
+            <Button Name="Die5"
+                Style="{StaticResource threeButtonDieOnCanvas}"
+                    Margin="360, 500, 0, 0"/>-->
+
+        </Canvas>
+    </DockPanel>
 </Window>
