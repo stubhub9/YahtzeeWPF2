@@ -431,8 +431,10 @@ namespace YahtzeeWPF2
             FrameworkElement _element;
             List<List<FrameworkElement>> _elementColumns = new List<List<FrameworkElement>> ();
 
-            ScoresheetBuilderStatic.InitializeScoreSheetVisual2 ( ref _elementColumns, ref posts, ref entries );
-            
+            ScoresheetBuilderInstance build = new ScoresheetBuilderInstance ();
+            _elementColumns = build.ScoresheetElements;
+            entries = build.ScoresheetButtons;
+            posts = build.ScoresheetTextBlocks;
 
             foreach ( var _buttonColumn in entries )
             {

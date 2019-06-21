@@ -8,14 +8,13 @@ namespace YahtzeeWPF2
 {
     public static class GameScoring
     {
-        //App.RowHighlight
         // Fields
         static List <bool>  scoringRowsOpen;
         static List<int> pointsList;
 
-        // Constructor:  Using the default constructor.
+        // Default Constructor
 
-        // Property  ( No param required. )
+        // No Properties. 
 
         public static List<GameRow> GameRows { get; set; }
 
@@ -27,24 +26,23 @@ namespace YahtzeeWPF2
         /// </summary>
         public static void UpdateGameRows ()
         {
-
             CheckIfRowIsOpen ();
-            //CheckForPoints ();
             CheckForPointsAvailable ( ref pointsList );
             BuildGameRows ();
         }
 
+
         static void BuildGameRows ()
         {
             GameRows = new List<GameRow> ();
-            GameRow _gameRow; 
             for ( int _row = 0; _row < 13; _row++ )
             {
-                _gameRow = new GameRow ();
+                var _gameRow = new GameRow ();
                 GameRows.Add ( _gameRow );
 
                 if ( !scoringRowsOpen [ _row ] )
                     continue;
+
                 if ( pointsList [ _row ] > 0 )
                 {
                     _gameRow.RowHighlight = GameRow.HighlightStyle.Points;
@@ -64,6 +62,7 @@ namespace YahtzeeWPF2
 
         }
 
+
         /// <summary>
         /// Build the scoringRowsOpen list for this player's column in the ScoreTable.
         /// </summary>
@@ -82,10 +81,7 @@ namespace YahtzeeWPF2
             if ( ( scoringRowsOpen [ 12 ] ) || ( scoringRowsOpen [ 13 ] ) || ( scoringRowsOpen [ 14 ] ) || ( scoringRowsOpen [ 15 ] ) )
                 scoringRowsOpen [ 12 ] = true;
         }
-
         
-
-
         
         /// <summary>
         /// Builds a list of the points available, for each row, using the current dice.
@@ -94,7 +90,7 @@ namespace YahtzeeWPF2
         static void CheckForPointsAvailable ( ref List<int> pointsList )
         {
             pointsList = new List<int> ();
-            // Using ref pointsList as a parameter for clarity.
+            // Using ref pointsList as a parameter for clarity/ documentation.
             CheckTheAcesThruSixes ( ref pointsList );
             CheckThePairsOrBetter ( ref pointsList );
             CheckTheStraightsPlusChance ( ref pointsList );
@@ -167,14 +163,9 @@ namespace YahtzeeWPF2
         /// <param name="pointsList"></param>
         static void CheckTheStraightsPlusChance ( ref List < int > pointsList )
         {
-            int _chance = GameDice.Sum;
-            int _maxStraight = GameDice.MaxStraight;
-            int _largeStraight = ( GameDice.MaxStraight == 5 ) ? 40 : 0;
-            int _smallStraight = ( GameDice.MaxStraight >= 4 ) ? 30 : 0;
-
-            pointsList.Insert ( ( pointsList.Count - 1 ), _smallStraight );
-            pointsList.Insert ( ( pointsList.Count - 1 ), _largeStraight );
-            pointsList.Insert ( ( pointsList.Count - 1 ), _chance );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), GameDice.Sum );
         }
 
 
@@ -185,10 +176,10 @@ namespace YahtzeeWPF2
         /// </summary>
         public class GameRow
         {
-            //      Fields      ******
+            // No Fields 
 
 
-            //      Constructor     **********
+            // Default Constructor  
 
             public GameRow ()
             {
@@ -199,7 +190,7 @@ namespace YahtzeeWPF2
                 TakeScoreVisible = false;
             }
 
-            //      GameRow Enum
+            // Enum
 
             public enum HighlightStyle
             {
@@ -212,7 +203,7 @@ namespace YahtzeeWPF2
                 Insist
             }
 
-            //      GameRow Properties      *******
+            // Properties 
 
             //public List<bool> RowDiceFilter { get; set; }
             //public List<List<bool>> RowDiceFilter { get; set; }
@@ -228,43 +219,7 @@ namespace YahtzeeWPF2
 
             public bool TakeScoreVisible
             { get; set; }
-
-            //      End GameRowProperties
         }
-
-
-        //Redacted:  static void CheckForPoints (  )
-        //{
-        //    int _sum = GameDice.Sum;
-        //    int [] valueIndexedMultiples = GameDice.ValueIndexedMultiples;
-        //    pointsList = new List<int> ();
-        //    for ( int _row = 1; _row < 7; _row++ )
-        //    {
-        //        // Count all Aces through Sixes.
-        //        pointsList.Add ( ( _row ) * GameDice.ValueIndexedMultiples [ ( _row ) ] );
-        //    }
-
-        //    // Check for 3OK, 4OK.
-        //    pointsList.Add ( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 3 ) ) ? _sum : 0 );
-        //    pointsList.Add ( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 4 ) ) ? _sum : 0 );
-        //    // Score Full House for 5OK or 3OK and a pair.
-        //    pointsList.Add (( ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] >= 5 ) )
-        //        || ( ( GameDice.MultiplesList.Count > 1 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 3 ) ))
-        //        ? 25 : 0 );
-
-        //    pointsList.Add ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 );
-        //    pointsList.Add ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 );
-        //    pointsList.Add ( _sum );
-        //    // Check for 5OK.
-        //    if ( ( GameDice.MultiplesList.Count > 0 ) && ( GameDice.MultiplesList [ 0 ] [ 1 ] == 5 ) )
-        //    {
-        //        // Check for Bonus 5OK.
-
-        //        pointsList.Add (( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == null )
-        //            || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0) ) ? 50 : 100 );
-        //    }
-        //    else
-        //        pointsList.Add ( 0 );
-        //}
+        
     }
 }
