@@ -721,7 +721,7 @@ namespace YahtzeeWPF2
     public class DiceBoxBuilder
     {
         // Fields
-        
+
         List<List<Button>> diceList;
 
 
@@ -855,22 +855,6 @@ namespace YahtzeeWPF2
                     _thickness = new Thickness ( 47, 144, 0, 0 );
                     break;
             }
-            //switch ( dieElement )
-            //{
-            //    case DieElements.DieContainer:
-            //        _thickness = new Thickness ( ( 60.0 + ( dieNum * 130 ) ), 365.0, 0.0, 0.0 );
-            //        break;
-            //    case DieElements.TopFace:
-            //        _thickness = new Thickness ( 48, 1, 0, 0 );
-            //        break;
-            //    case DieElements.LeftFace:
-            //        _thickness = new Thickness ( 47, 102, 0, 0 );
-            //        break;
-            //    // Right face.
-            //    default:
-            //        _thickness = new Thickness ( 47, 144, 0, 0 );
-            //        break;
-            //}
             return _thickness;
         }
 
@@ -905,58 +889,41 @@ namespace YahtzeeWPF2
 
 
 
-
-
-
-
-    public class VisDie : Button
-{
-
-    //public Button Container { get; set; }  IS VisDie!!!!!!!!!!!!!!!!!!??????????????????????????!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public Button LeftFace { get; set; }
-    public Button RightFace { get; set; }
-    public Button TopFace { get; set; }
-    public Canvas ContentContainer { get; set; }
-}
-
-
-
-
-public class VisDice
-{
-
-    public VisDie Die1
+    public class VisDice
     {
-        get;
-        set;
-    }
-    public VisDie Die2
-    {
-        get;
-        set;
-    }
-    public VisDie Die3
-    {
-        get;
-        set;
-    }
-    public VisDie Die4
-    {
-        get;
-        set;
-    }
-    public VisDie Die5
-    {
-        get;
-        set;
-    }
 
-    public void MoveThisOrThat ()
-    {
-        // Probably return destinations for animations.
-    }
+        public VisDie Die1
+        {
+            get;
+            set;
+        }
+        public VisDie Die2
+        {
+            get;
+            set;
+        }
+        public VisDie Die3
+        {
+            get;
+            set;
+        }
+        public VisDie Die4
+        {
+            get;
+            set;
+        }
+        public VisDie Die5
+        {
+            get;
+            set;
+        }
 
-}
+        public void MoveThisOrThat ()
+        {
+            // Probably return destinations for animations.
+        }
+
+    }
 
 
 

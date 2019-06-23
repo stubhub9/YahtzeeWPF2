@@ -56,8 +56,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GameScoring.cs" />
+    <Compile Include="VisDie.cs" />
     <Compile Include="VisualBuilderClasses.cs" />
-    <Compile Include="VisualCommitButton.cs" />
+    <Compile Include="VisualCommitAsClass.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

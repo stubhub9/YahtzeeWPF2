@@ -24,7 +24,7 @@ namespace YahtzeeWPF2
         //TODO:  Add ToolTips, OnEsc, Tab order,  OnClickAnywhere, Drag and Toss Dice flick, Touch screen/ Tablet
         #region Fields
         // Fields
-        VisualCommitButton visCommit;
+        VisualCommitAsClass visCommit;
 
         // The scoresheet's buttons for each grid cell, for rows that can be selected by a player. [TakeScore rows ]
         List<Button> entryColumn;
@@ -137,7 +137,7 @@ namespace YahtzeeWPF2
         {
             InitializeDiceVisual1 ();
 
-            visCommit = new VisualCommitButton ();
+            visCommit = new VisualCommitAsClass ();
             diceBox.Children.Add ( visCommit.CommitContainer );
             visCommit.CommitContainer.Click += Commit_Click;
 

@@ -6,13 +6,18 @@ using System.Windows.Media;
 
 namespace YahtzeeWPF2
 {
-    public class VisualCommitButton
+    /// <summary>
+    /// Commit button for the dice box; if it inherited from button as the CommitContainer.
+    /// Implement IBuiltMyOwnControl
+    /// </summary>
+    //public class VisualCommitButton : Button
+    public class VisualCommitAsClass 
     {
 
         // Constructor
-        public VisualCommitButton ()
+        public VisualCommitAsClass ()
         {
-            BuildCommitControl ();
+            BuildControl ();
         }
 
 
@@ -63,17 +68,17 @@ namespace YahtzeeWPF2
         }
         #endregion Properties
 
-
+        #region Methods
         // Methods
-        void BuildCommitControl ()
+        void BuildControl ()
         {
-            BuildCommitContainer ();
-            BuildContentGrid ();
+            BuildContainer ();
+            BuildContentContainer ();
             BuildContent ();
         }
 
 
-        void BuildCommitContainer ()
+        void BuildContainer ()
         {
             var _button = new Button
             {
@@ -98,7 +103,7 @@ namespace YahtzeeWPF2
         /// Maybe I can use loops to build the grid definitions.
         /// </summary>
         /// <returns></returns>
-        void BuildContentGrid ()
+        void BuildContentContainer ()
         {
             var _grid = new Grid ();
             {
@@ -192,7 +197,7 @@ namespace YahtzeeWPF2
                 ContentGrid.Children.Add ( _textBlock );
             }
         }
-
+        #endregion Methods
 
     }
 
