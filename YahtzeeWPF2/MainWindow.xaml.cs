@@ -26,12 +26,6 @@ namespace YahtzeeWPF2
         // Fields
         VisualCommitButton visCommit;
 
-
-
-        // The commit button's textblock.
-        //List<TextBlock> commitTextBlocks;
-
-
         // The scoresheet's buttons for each grid cell, for rows that can be selected by a player. [TakeScore rows ]
         List<Button> entryColumn;
         List<List<Button>> entries;
@@ -59,15 +53,10 @@ namespace YahtzeeWPF2
             InitializeComponent ();
             NameScope.SetNameScope ( this, new NameScope () );
             InitializeScoresheetVisual ();
-            //InitializeDiceVisual ();
-            InitializeDiceVisual1 ();
-            visCommit = new VisualCommitButton ();
-            diceBox.Children.Add ( visCommit.CommitBtn );
-            visCommit.CommitBtn.Click += Commit_Click;
+            InitializeDiceBox ();
             GameModel.NewGame ();
             UpdateDiceVisual ();
             UpdateTakeScoresVisual ();
-            //UpdateCommitVisual ();
             UpdateCommitVisual1 ();
         }
         #endregion MainWindow Constructor
@@ -144,6 +133,17 @@ namespace YahtzeeWPF2
         #region Methods
         //      Methods   
 
+        void InitializeDiceBox ()
+        {
+            InitializeDiceVisual1 ();
+
+            visCommit = new VisualCommitButton ();
+            diceBox.Children.Add ( visCommit.CommitContainer );
+            visCommit.CommitContainer.Click += Commit_Click;
+
+        }
+
+
         public void NewGame ()
         {
             // Reset all of the Scoresheet items to "   ",
@@ -163,21 +163,7 @@ namespace YahtzeeWPF2
             visCommit.Description = GameModel.CommitDetails.Description;
         }
 
-
-        //public void UpdateCommitVisual ()
-        //{
-        //    SolidColorBrush _playerBrush = new SolidColorBrush ()
-        //    {
-        //        Color = Color.FromArgb ( 255, 255, 0, 0 ),
-        //        //Color = GameModel.CommitDetails.PlayerColor,
-        //    };
-        //    commitTextBlocks [ 0 ].Background = _playerBrush;
-
-        //    commitTextBlocks [ 0 ].Text = GameModel.CommitDetails.PlayerName;
-        //    commitTextBlocks [ 1 ].Text = GameModel.CommitDetails.Action;
-        //    commitTextBlocks [ 2 ].Text = GameModel.CommitDetails.Description;
-        //}
-
+        
 
         /// <summary>
         /// Updates dice that weren't held, and TakeScore displays.
@@ -297,164 +283,7 @@ namespace YahtzeeWPF2
                 die [ 0 ].Click += Die_Click;
             }
         }
-
-
-        //void InitializeDiceVisual ()
-        //{
-        //    Button _playerCommit;
-        //    // Create a die, parent is the container for a canvas containing three button faces.
-        //    Button _parent;
-        //    Button _topFace;
-        //    Button _leftFace;
-        //    Button _rightFace;
-
-        //    Canvas _canvas;
-        //    Double _dblNum;
-        //    List<Button> _buttons;
-
-        //    visualDiceList = new List<List<Button>> ();
-        //    // Create the three faces for each die.
-        //    TransformGroup topGroup = new TransformGroup ();
-        //    topGroup.Children.Add ( new RotateTransform ( 45.0 ) );
-        //    topGroup.Children.Add ( new ScaleTransform ( 1.45, 1.45 ) );
-        //    topGroup.Children.Add ( new SkewTransform ( 0, 0 ) );
-
-        //    TransformGroup leftGroup = new TransformGroup ();
-        //    leftGroup.Children.Add ( new RotateTransform ( 100.0 ) );
-        //    leftGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
-        //    leftGroup.Children.Add ( new SkewTransform ( 10.0, 40.0 ) );
-
-        //    TransformGroup rightGroup = new TransformGroup ();
-        //    rightGroup.Children.Add ( new RotateTransform ( -101.0 ) );
-        //    rightGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
-        //    rightGroup.Children.Add ( new SkewTransform ( -11.0, -39.0 ) );
-
-        //    for ( int i = 0; i < 5; i++ )
-        //    {
-        //        _dblNum = 60.0 + ( i * 130 );
-        //        //x= 60 y= 365
-
-        //        _parent = new Button
-        //        {
-        //            Name = $"die{ i }face0",
-        //            Margin = new Thickness ( _dblNum, 365, 0, 0 ),
-        //            Height = 155,
-        //            Width = 105,
-
-        //            Background = Brushes.Transparent,
-        //            HorizontalAlignment = HorizontalAlignment.Stretch,
-        //            VerticalAlignment = VerticalAlignment.Stretch,
-        //            HorizontalContentAlignment = HorizontalAlignment.Stretch,
-        //            VerticalContentAlignment = VerticalAlignment.Stretch,
-        //            BorderBrush = Brushes.Black,
-        //            BorderThickness = new Thickness ( 2 ),
-        //        };
-        //        _parent.Click += Die_Click;
-
-        //        _topFace = new Button
-        //        {
-        //            Name = $"die{ i }face1",
-        //            BorderThickness = new Thickness ( 5 ),
-        //            BorderBrush = Brushes.LightGreen,
-        //            Margin = new Thickness ( 48, 1, 0, 0 ),
-        //            Height = 50,
-        //            Width = 50,
-        //            Background = Brushes.LightGoldenrodYellow,
-        //            FontSize = 22,
-        //            FontWeight = FontWeights.ExtraBold,
-        //            RenderTransform = topGroup
-        //        };
-
-        //        _leftFace = new Button
-        //        {
-        //            Name = $"die{ i }face2",
-        //            BorderThickness = new Thickness ( 2 ),
-        //            BorderBrush = Brushes.LightGreen,
-        //            Margin = new Thickness ( 47, 102, 0, 0 ),
-        //            Height = 50,
-        //            Width = 50,
-        //            Background = Brushes.DarkGray,
-        //            FontSize = 22,
-        //            FontWeight = FontWeights.Medium,
-        //            RenderTransform = leftGroup
-        //        };
-
-        //        _rightFace = new Button
-        //        {
-        //            Name = $"die{ i }face2",
-        //            BorderThickness = new Thickness ( 2 ),
-        //            BorderBrush = Brushes.LightGreen,
-        //            Margin = new Thickness ( 47, 144, 0, 0 ),
-        //            Height = 50,
-        //            Width = 50,
-        //            Background = Brushes.DarkGray,
-        //            FontSize = 22,
-        //            FontWeight = FontWeights.Medium,
-        //            RenderTransform = rightGroup
-        //        };
-
-        //        _canvas = new Canvas
-        //        {
-        //            Background = Brushes.Transparent,
-        //            Height = 148,
-        //            Width = 97,
-        //        };
-        //        _canvas.Children.Add ( _topFace );
-        //        _canvas.Children.Add ( _leftFace );
-        //        _canvas.Children.Add ( _rightFace );
-        //        _parent.Content = _canvas;
-        //        diceBox.Children.Add ( _parent );
-
-        //        _buttons = new List<Button> ();
-        //        _buttons.Add ( _parent );
-        //        _buttons.Add ( _topFace );
-        //        _buttons.Add ( _leftFace );
-        //        _buttons.Add ( _rightFace );
-        //        visualDiceList.Add ( _buttons );
-        //    }
-            // End of Dice creation loop.
-
-            //_playerCommit = new Button
-            //{
-            //    Background = player1Brush,
-            //    Margin = new Thickness ( 10, 10, 0, 0 ),
-            //    Height = 150,
-            //    Width = 730,
-            //    BorderThickness = new Thickness ( 2 ),
-            //    BorderBrush = Brushes.Black,
-            //    FontSize = 22,
-            //    FontWeight = FontWeights.Medium,
-            //};
-            //_playerCommit.Click += Commit_Click;
-            //StackPanel _stackPanel = new StackPanel ();
-            ////commitTextBlocks = new List<TextBlock> ();
-            //TextBlock _commitTextBlock;
-            //for ( int i = 1; i < 6; i++ )
-            //{
-            //    _commitTextBlock = new TextBlock ()
-            //    {
-            //        Text = " ",
-            //        HorizontalAlignment = HorizontalAlignment.Center,
-            //    };
-            //    _stackPanel.Children.Add ( _commitTextBlock );
-            //    //if (( i % 2 ) != 0  )
-            //    if ( ( i == 1 ) || ( i == 3 ) || ( i == 4 ) )
-            //    {
-            //        //commitTextBlocks.Add ( _commitTextBlock );
-            //    }
-            //    if ( i == 3 )
-            //    {
-            //        _commitTextBlock.FontSize = 28;
-            //        _commitTextBlock.FontWeight = FontWeights.Bold;
-            //    }
-            //}
-            //_playerCommit.Content = _stackPanel;
-            //diceBox.Children.Add ( _playerCommit );
-
-            // Need to add _Click for each die (? after they have been added to the visual?).
-            //_parent.Click += Die_Click;
-        //}
-        // End of InitializeDiceVisual method.
+        
 
 
 
