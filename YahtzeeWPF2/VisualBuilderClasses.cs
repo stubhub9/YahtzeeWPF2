@@ -721,64 +721,18 @@ namespace YahtzeeWPF2
     public class DiceBoxBuilder
     {
         // Fields
-
-        Double _dblNum;
-
-        // Button with textblocks.
-        Button playerCommit;
-
-
-        // Create a die, parent is the container for a canvas containing three button faces.
-        Button _die;
-        Button _topFace;
-        Button _leftFace;
-        Button _rightFace;
-        Canvas _canvas;
-        List<Button> _dieList;
-
+        
         List<List<Button>> diceList;
 
-        // Constructor will build the dicebox elements and expose them as properties for the visual.
+
+        // Constructor
         public DiceBoxBuilder ()
         {
-            BuildDice ();
-        }
-
-        // Enums ( for documentation )
-        enum DieElements
-        {
-            DieContainer,
-            DieFaceContainer,
-            TopFace,
-            LeftFace,
-            RightFace,
-        }
-
-        enum DieMargins
-        {
-            Left = 60,
-            LeftSpacing = 130,
-            Top = 365,
-        }
-        enum Face
-        {
-            Top,
-            Left,
-            Right,
+            BuildDiceList ();
         }
 
 
-        // Properties
-
-        public Button PlayerCommit
-        {
-            get
-            {
-                return playerCommit;
-            }
-        }
-
-
+        // Property
         public List<List<Button>> DiceList
         {
             get
@@ -787,163 +741,404 @@ namespace YahtzeeWPF2
             }
         }
 
+
         // Methods
 
-
-        //void BuildDice ( ref List<List<Button>> diceList )
-        void BuildDice ()
+        void BuildDiceList ()
         {
             diceList = new List<List<Button>> ();
-
-
+            // Build five dice and add each one to the list.
             for ( int _dieNum = 0; _dieNum < 5; _dieNum++ )
             {
-                diceList.Add ( GetDieList ( _dieNum ) );
+                diceList.Add ( BuildDie ( _dieNum ) );
+            }
+        }
 
-                // Set margin's left thickness.
-                //Double _left = 60.0 + ( _dieNum * 130 );
-                //_dblNum = 60.0 + ( i * 130 );
-                //x= 60 y= 365
+        // Return a list that provides handles for all the buttons that make up each die.
+        List<Button> BuildDie ( int dieNum )
+        {
+            var _canvas = GetDieCanvas ();
+            var _dieButtonList = new List<Button> ();
+
+            // Build dieContainer and three die faces.
+            for ( int i = 0; i < 4; i++ )
+            {
+                var _dieButton = GetDieButton ( dieNum, i );
+
+                if ( i == 0 )
+                {
+                    _dieButton.Content = _canvas;
+                }
+                else
+                {
+                    _canvas.Children.Add ( _dieButton );
+                }
+
+                _dieButtonList.Add ( _dieButton );
             }
 
-
+            return _dieButtonList;
         }
 
 
-        List<Button> GetDieList ( int dieNum )
+        Button GetDieButton ( int dieNum, int i )
         {
-            // _dieButtons provides handles for all the buttons that make up each die.
-            // _dieList.Add ( _die,  _topFace,  _leftFace,  _rightFace );
-
-            var _dieControls = new List<Button> ();
-            var _dieControl = new Button ();
-            for ( var dieElements = DieElements.DieContainer; dieElements <= DieElements.RightFace; dieElements++ )
+            var name = $"die{ dieNum }face{ i }";
+            if ( i == 0 )
             {
-
+                var _dieContainer = new Button
+                {
+                    Name = name,
+                    Background = Brushes.Transparent,
+                    BorderBrush = Brushes.Black,
+                    BorderThickness = new Thickness ( 1 ),
+                    FontSize = 22,
+                    Margin = GetMarginThickness ( dieNum, i ),
+                    /*Margin = GetMarginThickness ( dieNum, dieElement ),*/
+                    Height = 155,
+                    Width = 105,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                    VerticalContentAlignment = VerticalAlignment.Stretch,
+                };
+                return _dieContainer;
             }
-
-            return _dieControls;
+            else
+            {
+                var _dieFace = new Button
+                {
+                    Name = name,
+                    BorderThickness = new Thickness ( 4 ),
+                    Background = ( i == 1 ) ? Brushes.LightGoldenrodYellow : Brushes.DarkGray,
+                    FontWeight = ( i == 1 ) ? FontWeights.ExtraBold : FontWeights.Medium,
+                    Margin = GetMarginThickness ( dieNum, i ),
+                    Height = 50,
+                    Width = 50,
+                    RenderTransform = GetTransformGroup ( i ),
+                };
+                return _dieFace;
+            }
         }
 
-        //Button GetButton (
 
-
-
-        void BuildDie ()
+        Canvas GetDieCanvas ()
         {
-
-            // Create the three faces for each die.
-            var topGroup = new TransformGroup ();
-            topGroup.Children.Add ( new RotateTransform ( 45.0 ) );
-            topGroup.Children.Add ( new ScaleTransform ( 1.45, 1.45 ) );
-            topGroup.Children.Add ( new SkewTransform ( 0, 0 ) );
-
-            var leftGroup = new TransformGroup ();
-            leftGroup.Children.Add ( new RotateTransform ( 100.0 ) );
-            leftGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
-            leftGroup.Children.Add ( new SkewTransform ( 10.0, 40.0 ) );
-
-            var rightGroup = new TransformGroup ();
-            rightGroup.Children.Add ( new RotateTransform ( -101.0 ) );
-            rightGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
-            rightGroup.Children.Add ( new SkewTransform ( -11.0, -39.0 ) );
-
-
-            //for ( int i = 0; i < 5; i++ )
-            //{
-            int i = 0;  // TEMP PLACEHOLDER  *****************************************************************************************************************************
-
-            _dblNum = 60.0 + ( i * 130 );
-            //x= 60 y= 365
-
-            _die = new Button
+            var _canvas = new Canvas
             {
-                Name = $"die{ i }face0",
-                Margin = new Thickness ( _dblNum, 365, 0, 0 ),
-                Height = 155,
-                Width = 105,
-
-                Background = Brushes.Transparent,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                VerticalContentAlignment = VerticalAlignment.Stretch,
-                BorderBrush = Brushes.Black,
-                BorderThickness = new Thickness ( 2 ),
-            };
-            ////_parent.Click += Die_Click;
-
-            _topFace = new Button
-            {
-                Name = $"die{ i }face1",
-                BorderThickness = new Thickness ( 5 ),
-                BorderBrush = Brushes.LightGreen,
-                Margin = new Thickness ( 48, 1, 0, 0 ),
-                Height = 50,
-                Width = 50,
-                Background = Brushes.LightGoldenrodYellow,
-                FontSize = 22,
-                FontWeight = FontWeights.ExtraBold,
-                RenderTransform = topGroup
-            };
-
-            _leftFace = new Button
-            {
-                Name = $"die{ i }face2",
-                BorderThickness = new Thickness ( 2 ),
-                BorderBrush = Brushes.LightGreen,
-                Margin = new Thickness ( 47, 102, 0, 0 ),
-                Height = 50,
-                Width = 50,
-                Background = Brushes.DarkGray,
-                FontSize = 22,
-                FontWeight = FontWeights.Medium,
-                RenderTransform = leftGroup
-            };
-
-            _rightFace = new Button
-            {
-                Name = $"die{ i }face2",
-                BorderThickness = new Thickness ( 2 ),
-                BorderBrush = Brushes.LightGreen,
-                Margin = new Thickness ( 47, 144, 0, 0 ),
-                Height = 50,
-                Width = 50,
-                Background = Brushes.DarkGray,
-                FontSize = 22,
-                FontWeight = FontWeights.Medium,
-                RenderTransform = rightGroup
-            };
-
-            _canvas = new Canvas
-            {
-                Background = Brushes.Transparent,
+                /*Background = Brushes.Transparent,*/
                 Height = 148,
                 Width = 97,
             };
-            _canvas.Children.Add ( _topFace );
-            _canvas.Children.Add ( _leftFace );
-            _canvas.Children.Add ( _rightFace );
-            _die.Content = _canvas;
+            return _canvas;
+        }
 
-            //// Do this in visual.
-            ////diceBox.Children.Add ( _parent );
 
-            _dieList = new List<Button> ();
-            _dieList.Add ( _die );
-            _dieList.Add ( _topFace );
-            _dieList.Add ( _leftFace );
-            _dieList.Add ( _rightFace );
+        Thickness GetMarginThickness ( int dieNum, int i )
+        //Thickness GetMarginThickness ( int dieNum, DieElements dieElement )
+        {
+            var _thickness = new Thickness ();
 
-            ////    visualDiceList.Add ( _buttons );
-            ////}
-            //// End of Dice creation loop.
+            switch ( i )
+            {
+                case 0:
+                    _thickness = new Thickness ( ( 60.0 + ( dieNum * 130 ) ), 365.0, 0.0, 0.0 );
+                    break;
+                case 1:
+                    _thickness = new Thickness ( 48, 1, 0, 0 );
+                    break;
+                case 2:
+                    _thickness = new Thickness ( 47, 102, 0, 0 );
+                    break;
+                // Right face.
+                default:
+                    _thickness = new Thickness ( 47, 144, 0, 0 );
+                    break;
+            }
+            //switch ( dieElement )
+            //{
+            //    case DieElements.DieContainer:
+            //        _thickness = new Thickness ( ( 60.0 + ( dieNum * 130 ) ), 365.0, 0.0, 0.0 );
+            //        break;
+            //    case DieElements.TopFace:
+            //        _thickness = new Thickness ( 48, 1, 0, 0 );
+            //        break;
+            //    case DieElements.LeftFace:
+            //        _thickness = new Thickness ( 47, 102, 0, 0 );
+            //        break;
+            //    // Right face.
+            //    default:
+            //        _thickness = new Thickness ( 47, 144, 0, 0 );
+            //        break;
+            //}
+            return _thickness;
+        }
 
+
+        TransformGroup GetTransformGroup ( int i )
+        {
+            var _transformGroup = new TransformGroup ();
+
+            switch ( i )
+            {
+                case 1:
+                    _transformGroup.Children.Add ( new RotateTransform ( 45.0 ) );
+                    _transformGroup.Children.Add ( new ScaleTransform ( 1.45, 1.45 ) );
+                    _transformGroup.Children.Add ( new SkewTransform ( 0, 0 ) );
+                    break;
+                case 2:
+                    _transformGroup.Children.Add ( new RotateTransform ( 100.0 ) );
+                    _transformGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
+                    _transformGroup.Children.Add ( new SkewTransform ( 10.0, 40.0 ) );
+                    break;
+                default:
+                    _transformGroup.Children.Add ( new RotateTransform ( -101.0 ) );
+                    _transformGroup.Children.Add ( new ScaleTransform ( .99, .99 ) );
+                    _transformGroup.Children.Add ( new SkewTransform ( -11.0, -39.0 ) );
+                    break;
+            }
+            return _transformGroup;
         }
 
     }
 
 
+
+
+
+
+    public class VisualCommitButton
+    {
+
+        // Constructor
+        public VisualCommitButton ()
+        {
+            BuildCommitControl ();
+        }
+
+        // Properties
+
+        public Button CommitBtn { get; set; }
+
+        public Grid ContentGrid { get; set; }
+
+        public TextBlock PlayerNameTxtBlk { get; set; }
+
+        public TextBlock ActionTxtBlk { get; set; }
+
+        public TextBlock DescriptionTxtBlk { get; set; }
+
+
+        public Brush PlayerColor
+        {
+            set
+            {
+                PlayerNameTxtBlk.Background = value;
+            }
+        }
+
+        public string PlayerName
+        {
+            set
+            {
+                PlayerNameTxtBlk.Text = value;
+            }
+        }
+
+        public string Action
+        {
+            set
+            {
+                ActionTxtBlk.Text = value;
+            }
+        }
+
+        public string Description
+        {
+            set
+            {
+                DescriptionTxtBlk.Text = value;
+            }
+        }
+
+
+
+        public void BuildCommitControl ()
+        {
+            var _button = new Button
+            {
+                Background = Brushes.Beige,
+                Margin = new Thickness ( 10, 10, 0, 0 ),
+                Height = 150,
+                Width = 730,
+                BorderThickness = new Thickness ( 2 ),
+                BorderBrush = Brushes.Black,
+                FontSize = 22,
+                FontWeight = FontWeights.Medium,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                VerticalContentAlignment = VerticalAlignment.Stretch,
+            };
+            CommitBtn = _button;
+
+            var _grid = GetGrid ();
+            _button.Content = _grid;
+
+            for ( int i = 0; i < 3; i++ )
+            {
+                var _textBlock = new TextBlock ()
+                {
+                    Text = "Play Game   ",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                };
+                _grid.Children.Add ( _textBlock );
+                Grid.SetColumn ( _textBlock, 1 );
+                Grid.SetRow ( _textBlock, ( 1 + ( i * 2 ) ) );
+                switch ( i )
+                {
+                    case 0:
+                        PlayerNameTxtBlk = _textBlock;
+                        _textBlock.Background = Brushes.GreenYellow;
+                        break;
+                    case 1:
+                        ActionTxtBlk = _textBlock;
+                        _textBlock.FontSize = 28;
+                        _textBlock.FontWeight = FontWeights.Bold;
+                        break;
+                    default:
+                        DescriptionTxtBlk = _textBlock;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maybe I can use loops to build the definition.
+        /// </summary>
+        /// <returns></returns>
+        Grid GetGrid ()
+        {
+            var _grid = new Grid ();
+            {
+
+            };
+            //_button.Content = _grid;
+            var colSpacer = new ColumnDefinition ()
+            {
+                Width = new GridLength ( 1, GridUnitType.Star ),
+            };
+            var colSpacer1 = new ColumnDefinition ()
+            {
+                Width = new GridLength ( 1, GridUnitType.Star ),
+            };
+            var colContent = new ColumnDefinition ()
+            {
+                Width = new GridLength ( 40, GridUnitType.Star ),
+            };
+
+            _grid.ColumnDefinitions.Add ( colSpacer );
+            _grid.ColumnDefinitions.Add ( colContent );
+            _grid.ColumnDefinitions.Add ( colSpacer1 );
+
+            var rowspacerOuter = new RowDefinition ()
+            {
+                Height = new GridLength ( 2, GridUnitType.Star ),
+            };
+            var rowspacerOuter1 = new RowDefinition ()
+            {
+                Height = new GridLength ( 2, GridUnitType.Star ),
+            };
+            var rowspacerInner = new RowDefinition ()
+            {
+                Height = new GridLength ( 1, GridUnitType.Star ),
+            };
+            var rowspacerInner1 = new RowDefinition ()
+            {
+                Height = new GridLength ( 1, GridUnitType.Star ),
+            };
+            var rowcontent = new RowDefinition ()
+            {
+                Height = new GridLength ( 10, GridUnitType.Star ),
+            };
+            var rowcontent1 = new RowDefinition ()
+            {
+                Height = new GridLength ( 10, GridUnitType.Star ),
+            };
+            var rowcontent2 = new RowDefinition ()
+            {
+                Height = new GridLength ( 10, GridUnitType.Star ),
+            };
+            _grid.RowDefinitions.Add ( rowspacerOuter );
+            _grid.RowDefinitions.Add ( rowcontent );
+            _grid.RowDefinitions.Add ( rowspacerInner );
+            _grid.RowDefinitions.Add ( rowcontent1 );
+            _grid.RowDefinitions.Add ( rowspacerInner1 );
+            _grid.RowDefinitions.Add ( rowcontent2 );
+            _grid.RowDefinitions.Add ( rowspacerOuter1 );
+            return _grid;
+        }
+
+
+
+    }
+    // End VisualCommitButton class
+
+
+
+
+
+
+
+
+    public class VisDie : Button
+{
+
+    //public Button Container { get; set; }  IS VisDie!!!!!!!!!!!!!!!!!!??????????????????????????!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public Button LeftFace { get; set; }
+    public Button RightFace { get; set; }
+    public Button TopFace { get; set; }
+    public Canvas ContentContainer { get; set; }
+}
+
+
+
+
+public class VisDice
+{
+
+    public VisDie Die1
+    {
+        get;
+        set;
+    }
+    public VisDie Die2
+    {
+        get;
+        set;
+    }
+    public VisDie Die3
+    {
+        get;
+        set;
+    }
+    public VisDie Die4
+    {
+        get;
+        set;
+    }
+    public VisDie Die5
+    {
+        get;
+        set;
+    }
+
+    public void MoveThisOrThat ()
+    {
+        // Probably return destinations for animations.
+    }
+
+}
 
 
 
