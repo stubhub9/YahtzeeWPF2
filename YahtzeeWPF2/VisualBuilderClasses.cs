@@ -888,43 +888,4 @@ namespace YahtzeeWPF2
 
 
 
-
-    public class VisDice
-    {
-
-        public VisDie Die1
-        {
-            get;
-            set;
-        }
-        public VisDie Die2
-        {
-            get;
-            set;
-        }
-        public VisDie Die3
-        {
-            get;
-            set;
-        }
-        public VisDie Die4
-        {
-            get;
-            set;
-        }
-        public VisDie Die5
-        {
-            get;
-            set;
-        }
-
-        public void MoveThisOrThat ()
-        {
-            // Probably return destinations for animations.
-        }
-
-    }
-
-
-
 }
