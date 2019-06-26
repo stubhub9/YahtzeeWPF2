@@ -2,8 +2,8 @@
 Learning project for C#, WPF and Git ( and Entity, ASP, ... ).
 
 Currently:
-  focused on clearing the MainWindow.cs of everything that isn't required to be there.
-  Refactoring existing code into smaller blocks.
+  Replacing GameDice with a Property heavy version with GameDie as a struct.
+  Adding VisualModel and Visual Dice/ Die classes; for an upgraded diceBox.
   
 Next, will probably be: 
   change method calls from the view to Async, 
