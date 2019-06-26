@@ -42,35 +42,30 @@ namespace YahtzeeWPF2
         #endregion Constructor
 
         #region Properties and Indexers
-        // Properties and Indexers   
+        // Properties 
         public static int [] ValueIndexedMultiples
         {
-            get { return valueIndexedMultiples; }
-            set { }
+            get =>  valueIndexedMultiples; 
         }
 
         public static int  MaxStraight
         {
             get { return maxStraight; }
-            set { }
         }
 
         public static List < Die > DieList
         {
-            get { return dice;  }
-            set { }
+            get => dice;  
         }
 
         public static List < List < bool >> FiltersList
         {
             get { return filtersList; }
-            set { }
         }
 
         public static List<int []> MultiplesList
         {
             get { return multiplesList; }
-            set { }
         }
 
         public static int Sum
@@ -96,8 +91,8 @@ namespace YahtzeeWPF2
 
         public static void RollDice ()
         {
-            Die _die = new Die ();
-
+            //Die _die = new Die ();
+            // Query expression
             var subset = from i in dice where i.Held == false select i;
             foreach ( var item in subset )
             {
