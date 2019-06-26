@@ -21,13 +21,6 @@ namespace DiceBoxWpf
     public static class GameDice1
     {
         // Fields
-        //static int faceValue = 0;
-        //static int [] faceValues;
-        //static bool [] filterList;
-        //static int maxStraight;
-        //static List<int []> pairsList;
-        //static int sum;
-        //static int [] valueIndexedMultiples;
         static Random randomDieValue = new Random ();
 
         // Constructor
@@ -90,14 +83,20 @@ namespace DiceBoxWpf
 
         public static void RollDice ()
         {
-            // LINQ -- Query expression.       
-            var subset = from i in DieStructs where i.Held == false select i;
-            foreach ( var item in subset )
+            //// LINQ -- Query expression.       
+            //var subset = from i in DieStructs where i.Held == false select i;
+            //foreach ( var item in subset )
+            //{
+            //    //        Not allowed to change members of search items.  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!         I backdoor did it, but might be a bad idea/ habit.
+            //    //item.FaceValue = RollDie ();
+            //    // Had to add a method to the struct, that does the same thing.
+            //    item.RollDie ();
+            //}
+
+            for ( int i = 0; i < 5; i++ )
             {
-                //        Not allowed to change members of search items.  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!         I backdoor did it, but might be a bad idea/ habit.
-                //item.FaceValue = RollDie ();
-                // Had to add a method to the struct, that does the same thing.
-                item.RollDie ();
+                if ( ! DieStructs [ i ].Held )
+                    DieStructs [ i ].FaceValue = RollDie ();
             }
             SortDice ();
             UpdateSumAndValueIndexedMultiples ();
@@ -209,10 +208,10 @@ namespace DiceBoxWpf
             public int Ordinal;
 
             // Method
-            public void RollDie ()
-            {
-                FaceValue = GameDice1.RollDie ();
-            }
+            //public void RollDie ()
+            //{
+            //    FaceValue = GameDice1.RollDie ();
+            //}
         }
 
     }
