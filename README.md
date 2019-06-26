@@ -2,6 +2,7 @@
 Learning project for C#, WPF and Git ( and Entity, ASP, ... ).
 
 Currently:
+
   Replacing GameDice with a Property heavy version with GameDie as a struct.
   Adding VisualModel and Visual Dice/ Die classes; for an upgraded diceBox.
   
