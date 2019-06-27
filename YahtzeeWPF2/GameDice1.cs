@@ -1,36 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-
-
-//namespace DiceBoxWpf
 namespace YahtzeeWPF2
 {
     public static class GameDice1
     {
-        // Fields
+        // Field
+        //Error:  Can't use var here for Random.
+        //static var randomDieValue = new Random ();
         static Random randomDieValue = new Random ();
+
 
         // Constructor
         static GameDice1 ()
         {
-            BuildGameDice ();
+            DieStructs = new DieStruct [ 5 ];
+            for ( int i = 0; i < 5; i++ )
+            {
+                DieStructs [ i ] = new DieStruct ();
+            }
         }
 
 
-        // Properties
+        #region Properties
+
         //TODO: Used by Vim and this class.
         // Five data models of a die.
         public static DieStruct [] DieStructs
@@ -44,7 +37,7 @@ namespace YahtzeeWPF2
 
         // Used by GameScoring, and maybe Vim AI
         public static int MaxStraight
-        { get; set; } 
+        { get; set; }
 
         // Used by GameScoring
         //public static int [] [] PairsOrBetter
@@ -62,23 +55,9 @@ namespace YahtzeeWPF2
         public static int [] ValueIndexedMultiples
         { get; set; }
 
+        #endregion Properties
 
-
-        // Methods
-
-        /// <summary>
-        /// Only called by constructor.
-        /// </summary>
-        static void BuildGameDice ()
-        {
-            DieStructs = new DieStruct [ 5 ];
-            for ( int i = 0; i < 5; i++ )
-            {
-                DieStructs [ i ] = new DieStruct ();
-            }
-            //NewDice ();
-        }
-
+        #region Methods
 
         /// <summary>
         /// Called for each new player.
@@ -96,21 +75,11 @@ namespace YahtzeeWPF2
 
         public static void RollDice ()
         {
-            //// LINQ -- Query expression.       
-            //var subset = from i in DieStructs where i.Held == false select i;
-            //foreach ( var item in subset )
-            //{
-            //    //ERROR:        Not allowed to change members of search items.  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!         I backdoor did it, but might be a bad idea/ habit.
-            //    //item.FaceValue = RollDie ();
-            //    // Had to add a method to the struct, that does the same thing.
-            //    item.RollDie ();
-            //}
-
             for ( int i = 0; i < 5; i++ )
             {
                 if ( !DieStructs [ i ].Held )
                     DieStructs [ i ].FaceValue = RollDie ();
-                // Test
+                // Test for large straight.
                 //DieStructs [ i ].FaceValue = i + 2;
             }
 
@@ -127,6 +96,7 @@ namespace YahtzeeWPF2
         static int RollDie ()
         {
             int _faceValue = randomDieValue.Next ( 1, 7 );
+            //Test blocks
             //if ( GameModel.GameClock.GameRound == 17 )
             //    faceValue = 0;
             //faceValue = 6;
@@ -192,8 +162,9 @@ namespace YahtzeeWPF2
             /* Let VimDice: 
             * trim ones or sixes from straight list, 
             * choose a filterList for three or more of a kind,
-            * Build a filterList for full house. ( VimDice ),
-            * Build a filterList for chance??  (?All sixes or all >3?). */
+            * build a filterList for full house,
+            * build a filterList for chance??  (?All sixes or all >3?).
+            * */
         }
 
 
@@ -204,7 +175,7 @@ namespace YahtzeeWPF2
         {
             // Multiples list, iterate through valueIndexedMultiples recording doubles or better.
             //PairsOrBetter = new int [ 2 ] [];
-            PairsOrBetter = new List<int[]> ();
+            PairsOrBetter = new List<int []> ();
             // For each die face value ( one through six ), check for two of a kind or better.
             for ( int _faceVal = 1; _faceVal < 7; _faceVal++ )
             {
@@ -214,8 +185,7 @@ namespace YahtzeeWPF2
                     _valueMultiple [ 0 ] = _faceVal;
                     _valueMultiple [ 1 ] = ValueIndexedMultiples [ _faceVal ];
 
-
-                    if (( PairsOrBetter.Count > 0 ) && ( _valueMultiple [ 1 ] > PairsOrBetter [ 0 ] [ 1 ] ) )
+                    if ( ( PairsOrBetter.Count > 0 ) && ( _valueMultiple [ 1 ] > PairsOrBetter [ 0 ] [ 1 ] ) )
                     {
                         // Higher face values are more important than a pair of lower face values.
                         PairsOrBetter.Insert ( 0, _valueMultiple );
@@ -237,7 +207,6 @@ namespace YahtzeeWPF2
 
             for ( int _thisDie = 0; _thisDie < 5; _thisDie++ )
             {
-                //var _die = DieStructs [ _thisDie ];
                 var _dieValue = DieStructs [ _thisDie ].FaceValue;
 
                 if ( _dieValue != _previousDieValue )
@@ -265,7 +234,7 @@ namespace YahtzeeWPF2
                 }
                 _previousDieValue = _dieValue;
             }
-            // The straight list is stored last.
+            // The straight filter is stored after the ones through sixes filters.
             FiltersMatrix [ 6 ] = _dieFilter;
             MaxStraight = _maxStraight;
         }
@@ -285,32 +254,21 @@ namespace YahtzeeWPF2
                 SumOfAllDice += _die.FaceValue;
                 ValueIndexedMultiples [ _die.FaceValue ]++;
             }
-
         }
 
-
-
-
-
+        #endregion Methods
 
 
         // Struct
-
+        /// <summary>
+        /// Provides params for model classes.
+        /// </summary>
         public struct DieStruct
         {
             // Fields
             public int DieId;
             public int FaceValue;
             public bool Held;
-            //public Point TopLeft;
-
-            // Method
-
-            // Moved to GameDice!
-            //public void RollDie ()
-            //{
-            //    FaceValue = GameDice1.RollDie ();
-            //}
         }
 
     }

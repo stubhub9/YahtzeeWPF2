@@ -68,6 +68,7 @@ namespace YahtzeeWPF2
         }
         #endregion Properties
 
+
         #region Methods
         // Methods
         void BuildControl ()
