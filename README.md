@@ -15,10 +15,10 @@
       begin AI reasoning, assistance, and players. 
   
 #### Next, will probably be: 
-  *  change method calls from the view to Async,  
-    * spinning the 2D dice for rolling, and other simple animations; 
-    better dice layout, held vs active; 
-    implementing row filters for enhanced (AI assisted) row or dice selection;
+  *  change method calls from the view to Async;  
+     spinning the 2D dice for rolling, and other simple animations;  
+   better dice layout, held vs active;   
+      implementing row filters for enhanced (AI assisted) row or dice selection;  
        mulligan/ cntrl Z;
          taking score with rolls remaining;  
   Are you sure dialogs;
