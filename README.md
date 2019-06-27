@@ -3,9 +3,9 @@
 
   ### Update existing classes:  
       refactor long methods and classes:
-        * by chaining shorter methods;
-        + adding helper classes with tighter focus;
-        - better readability.
+        by chaining shorter methods;
+        adding helper classes with tighter focus;
+        better readability.
         
   ### Work on view models  ( M V VM ).
   
@@ -14,8 +14,8 @@
       begin AI reasoning, assistance, and players. 
   
 #### Next, will probably be: 
-  * change method calls from the view to Async, 
-     * spinning the 2D dice for rolling, and other simple animations;
+  *  change method calls from the view to Async, 
+    * spinning the 2D dice for rolling, and other simple animations;
   better dice layout, held vs active;
     implementing row filters for enhanced (AI assisted) row or dice selection;
   mulligan/ cntrl Z;
@@ -31,7 +31,7 @@
   quick save;
   options dialog for colors and names.
   
- Possible Future:
+ #### Possible Future:
   C# server/ XAML heavy client;
   More expression blend practice;
   Entity or other database ( advisories from histories, other )
