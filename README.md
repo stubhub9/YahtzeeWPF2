@@ -1,21 +1,21 @@
 # YahtzeeWPF2
-##Learning project for C#, WPF and Git ( and Entity, ASP, ... ).
+## Learning project for C#, WPF and Git ( and Entity, ASP, ... ).
 
-  ###Update existing classes:  
+  ### Update existing classes:  
       refactor long methods and classes:
         *by chaining shorter methods;
         +adding helper classes with tighter focus;
         -better readability.
         
-  ###Work on view models  ( M V VM ).
+  ### Work on view models  ( M V VM ).
   
-  ###Improve game play:
+  ### Improve game play:
       implement dice filter and highlights; 
       begin AI reasoning, assistance, and players. 
   
-####Next, will probably be: 
-  *change method calls from the view to Async, 
-  spinning the 2D dice for rolling, and other simple animations;
+#### Next, will probably be: 
+  * change method calls from the view to Async, 
+     * spinning the 2D dice for rolling, and other simple animations;
   better dice layout, held vs active;
   implementing row filters for enhanced (AI assisted) row or dice selection;
   mulligan/ cntrl Z;
