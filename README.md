@@ -21,20 +21,20 @@
       implementing row filters for enhanced (AI assisted) row or dice selection;  
        mulligan/ cntrl Z;
          taking score with rolls remaining;  
-  Are you sure dialogs;
-  AI  for 1 -3 players;
-  list views, data templates;
-  Bindings;
-  3D dice, animated pencil;
-  tablet and resize  support;
-  more consideration for enums and dictionaries as documentation;
-  IValueConverters;
-  quick save;
+  Are you sure dialogs;  
+  AI  for 1 -3 players;  
+  list views, data templates;  
+  Bindings;  
+  3D dice, animated pencil;  
+  tablet and resize  support;  
+  more consideration for enums and dictionaries as documentation;  
+  IValueConverters;  
+  quick save;  
   options dialog for colors and names.
   
  #### Possible Future:
-  C# server/ XAML heavy client;
-  More expression blend practice;
+  C# server/ XAML heavy client;  
+  More expression blend practice;  
   Entity or other database ( advisories from histories, other )
   
   
