@@ -33,7 +33,7 @@
   options dialog for colors and names.
   
  #### Possible Future:
-  C# server/ XAML heavy client;  
+   * C# server/ XAML heavy client;  
   More expression blend practice;  
   Entity or other database ( advisories from histories, other )
   
