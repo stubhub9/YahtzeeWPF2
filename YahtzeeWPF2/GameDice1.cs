@@ -44,10 +44,11 @@ namespace YahtzeeWPF2
 
         // Used by GameScoring, and maybe Vim AI
         public static int MaxStraight
-        { get; set; } = 0;
+        { get; set; } 
 
         // Used by GameScoring
-        public static int [] [] PairsList
+        //public static int [] [] PairsOrBetter
+        public static List<int []> PairsOrBetter
         { get; set; }
 
         // Used by GameScoring
@@ -75,7 +76,7 @@ namespace YahtzeeWPF2
             {
                 DieStructs [ i ] = new DieStruct ();
             }
-            NewDice ();
+            //NewDice ();
         }
 
 
@@ -109,6 +110,8 @@ namespace YahtzeeWPF2
             {
                 if ( !DieStructs [ i ].Held )
                     DieStructs [ i ].FaceValue = RollDie ();
+                // Test
+                //DieStructs [ i ].FaceValue = i + 2;
             }
 
             SortDice ();
@@ -200,7 +203,8 @@ namespace YahtzeeWPF2
         static void UpdatePairsList ()
         {
             // Multiples list, iterate through valueIndexedMultiples recording doubles or better.
-            PairsList = new int [ 2 ] [];
+            //PairsOrBetter = new int [ 2 ] [];
+            PairsOrBetter = new List<int[]> ();
             // For each die face value ( one through six ), check for two of a kind or better.
             for ( int _faceVal = 1; _faceVal < 7; _faceVal++ )
             {
@@ -210,16 +214,15 @@ namespace YahtzeeWPF2
                     _valueMultiple [ 0 ] = _faceVal;
                     _valueMultiple [ 1 ] = ValueIndexedMultiples [ _faceVal ];
 
-                    // If the lower value is three of a kind, ADD the higher face value pair as the second entry.
-                    if ( _valueMultiple [ 1 ] < PairsList [ 0 ] [ 1 ] )
+
+                    if (( PairsOrBetter.Count > 0 ) && ( _valueMultiple [ 1 ] > PairsOrBetter [ 0 ] [ 1 ] ) )
                     {
-                        PairsList [ 1 ] = _valueMultiple;
+                        // Higher face values are more important than a pair of lower face values.
+                        PairsOrBetter.Insert ( 0, _valueMultiple );
                     }
                     else
                     {
-                        // Higher face values are more important than a pair of lower face values.
-                        PairsList [ 1 ] = PairsList [ 0 ];
-                        PairsList [ 0 ] = _valueMultiple;
+                        PairsOrBetter.Add ( _valueMultiple );
                     }
                 }
             }
@@ -228,25 +231,30 @@ namespace YahtzeeWPF2
 
         static void UpdateMaxStraightAndStraightFilterList ()
         {
-            int _previousDieValue = -1;
             var _dieFilter = new bool [ 5 ];
             int _maxStraight = 1;
+            int _previousDieValue = -1;
 
             for ( int _thisDie = 0; _thisDie < 5; _thisDie++ )
             {
-                var _die = DieStructs [ _thisDie ];
-                if ( _die.FaceValue != _previousDieValue )
+                //var _die = DieStructs [ _thisDie ];
+                var _dieValue = DieStructs [ _thisDie ].FaceValue;
+
+                if ( _dieValue != _previousDieValue )
                 {
                     // Add all non-recurring  dice to straight filter list.
                     _dieFilter [ _thisDie ] = true;
-                    if ( _die.FaceValue == ( _previousDieValue + 1 ) )
+                    // If non- recurring and sequenced, increment maxStraight.
+                    if ( _dieValue == ( _previousDieValue + 1 ) )
                     {
                         // For each consecutive face value.
                         _maxStraight++;
                     }
                     else if ( _maxStraight < 4 )
                     {
-                        // Because there was a gap in the sequence, and the current sequence was less than a small straight.
+                        /* Because there was a gap in the sequence ( or for the first die checked)
+                         * and the current sequence was less than a small straight ( no points )
+                         * maxStraight equals one for this die ( new start )*/
                         _maxStraight = 1;
                     }
                 }
@@ -255,10 +263,11 @@ namespace YahtzeeWPF2
                     // Looking for sequential, not multiples.
                     _dieFilter [ _thisDie ] = false;
                 }
-                _previousDieValue = _die.FaceValue;
+                _previousDieValue = _dieValue;
             }
             // The straight list is stored last.
             FiltersMatrix [ 6 ] = _dieFilter;
+            MaxStraight = _maxStraight;
         }
 
 
@@ -290,9 +299,10 @@ namespace YahtzeeWPF2
         public struct DieStruct
         {
             // Fields
-            public bool Held;
-            public int FaceValue;
             public int DieId;
+            public int FaceValue;
+            public bool Held;
+            //public Point TopLeft;
 
             // Method
 

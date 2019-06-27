@@ -20,7 +20,7 @@ namespace YahtzeeWPF2
     {
         #region Fields
         //      Fields.
-        
+
         static int? [,] scoreTable;
         #endregion Fields
 
@@ -31,8 +31,8 @@ namespace YahtzeeWPF2
             scoreTable = new int? [ 3, 21 ];
         }
         #endregion Constructor
-        
-        
+
+
 
         #region Properties
         // Properties
@@ -58,7 +58,7 @@ namespace YahtzeeWPF2
             GameScoring.UpdateGameRows ();
             CommitDetails.NextPlayer ();
             CommitDetails.RollText ();
-            
+            DiceBoxVM.UpdateDiceVisMod ();
         }
 
 
@@ -102,6 +102,7 @@ namespace YahtzeeWPF2
             else
                 CommitDetails.ChooseText ();
 
+            DiceBoxVM.UpdateDiceVisMod ();
             // ?????????If a  "can't do better than 5OK/ 5Str, ..." then a score needs to/ could be taken.  TRIGGERED BY GameStatus  ????????
         }
 
@@ -128,13 +129,13 @@ namespace YahtzeeWPF2
             CommitDetails.UpdateResults ( ConvertPlayerUpToScoresheetColumn (), 0 );
 
             // Update the entry selected.
-            scoreTable [ _col, _row ] =_scoreDelta;
+            scoreTable [ _col, _row ] = _scoreDelta;
             CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( _row ), _scoreDelta );
             // 5OK section.
-            if (( _row >= 14 ) && ( _row <= 17 ))
+            if ( ( _row >= 14 ) && ( _row <= 17 ) )
             {
-                scoreTable [ _col, 18 ] = (scoreTable [ _col, 18 ] ?? 0 )+ _scoreDelta;
-                CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( 18 ), (int) scoreTable [ _col, 18 ] );
+                scoreTable [ _col, 18 ] = ( scoreTable [ _col, 18 ] ?? 0 ) + _scoreDelta;
+                CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( 18 ), ( int ) scoreTable [ _col, 18 ] );
 
             }
 
@@ -142,7 +143,7 @@ namespace YahtzeeWPF2
             {
                 // If the entry was in the upper section, update  the Upper Total and upper bonus.
                 // Check for upper section >63 bonus for 35 points.
-                if (( scoreTable [ _col, 6 ] != 35 ) && (( scoreTable [ _col, 7 ] + _scoreDelta ) > 63 ))
+                if ( ( scoreTable [ _col, 6 ] != 35 ) && ( ( scoreTable [ _col, 7 ] + _scoreDelta ) > 63 ) )
                 {
                     _scoreDelta += 35;
                     scoreTable [ _col, 6 ] = 35;
@@ -206,7 +207,7 @@ namespace YahtzeeWPF2
             return _takeScoreRow;
         }
 
-        static int ConvertPlayerUpToScoresheetColumn ( )
+        static int ConvertPlayerUpToScoresheetColumn ()
         {
             int _column = GameClock.PlayerUp + 1;
             return _column;
@@ -221,14 +222,14 @@ namespace YahtzeeWPF2
             {
                 _postRow = row + 2;
             }
-            
+
             return _postRow;
         }
 
 
-        static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow)
+        static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow )
         {
-            int _row = ( takeScoreRow < 6 )? takeScoreRow : (takeScoreRow + 2);
+            int _row = ( takeScoreRow < 6 ) ? takeScoreRow : ( takeScoreRow + 2 );
             return _row;
         }
 
@@ -254,7 +255,7 @@ namespace YahtzeeWPF2
             return _row;
         }
 
-        
+
         #endregion GameModel Methods
 
 
@@ -300,7 +301,7 @@ namespace YahtzeeWPF2
             /// </summary>
             public static void NextRoll ()
             {
-                    DiceRoll++;
+                DiceRoll++;
             }
 
             /// <summary>
@@ -378,7 +379,7 @@ namespace YahtzeeWPF2
             }
             // End  GameStrings Constructor
             #endregion GameStrings  Constructor
-            
+
             // Indexers 
             public static string [] CommitActionStrings { get; set; }
 
@@ -414,7 +415,7 @@ namespace YahtzeeWPF2
             }
 
 
-            public static string GetHeaderString  ( int column, int row )
+            public static string GetHeaderString ( int column, int row )
             {
                 string text = headerLabels [ ( ( column * 20 ) + row ) ];
                 return text;
@@ -435,7 +436,7 @@ namespace YahtzeeWPF2
 
 
 
-        
+
         public static class CommitDetails
         {
             //      Fields

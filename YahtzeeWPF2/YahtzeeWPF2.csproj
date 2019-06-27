@@ -55,9 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DiceBoxVM.cs" />
     <Compile Include="GameDice1.cs" />
     <Compile Include="GameScoring.cs" />
-    <Compile Include="VimDice.cs" />
     <Compile Include="VisDice.cs" />
     <Compile Include="VisDie.cs" />
     <Compile Include="VisualBuilderClasses.cs" />

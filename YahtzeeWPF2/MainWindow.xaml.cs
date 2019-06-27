@@ -78,25 +78,24 @@ namespace YahtzeeWPF2
             string name = $"{visDie.Name [ 3 ]}";
             int dieNum = int.Parse ( name );
             //BEGIN:  GameDice1 kluge!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            Point _topLeft = VimDice.DieWasClicked ( dieNum );
+            Point _topLeft = DiceBoxVM.DieWasClicked ( dieNum );
+            visDie.Margin = new Thickness ( _topLeft.X, _topLeft.Y, 0, 0 );
 
 
+            //Die _die = GameDice.DieList [ dieNum ];
+            //double x = 60 + ( dieNum * 130 );
+            //double y1 = 365;
+            //double y2 = 550;
 
-            
-            Die _die = GameDice.DieList [ dieNum ];
-            double x = 60 + ( dieNum * 130 );
-            double y1 = 365;
-            double y2 = 550;
-
-            if ( _die.Held )
-            {
-                visDie.Margin = new Thickness ( x, y1, 0.0, 0.0 );
-            }
-            else
-            {
-                visDie.Margin = new Thickness ( x, y2, 0.0, 0.0 );
-            }
-            _die.Held = !_die.Held;
+            //if ( _die.Held )
+            //{
+            //    visDie.Margin = new Thickness ( x, y1, 0.0, 0.0 );
+            //}
+            //else
+            //{
+            //    visDie.Margin = new Thickness ( x, y2, 0.0, 0.0 );
+            //}
+            //_die.Held = !_die.Held;
 
         }
         // End of Die_Click
@@ -180,22 +179,30 @@ namespace YahtzeeWPF2
         /// </summary>
         public void UpdateDiceVisual ()
         {
-            Die _die;
-            Button _visDie;
-            double y1 = 365;
-            double y2 = 550;
-            double x;
-            for ( int dieNum = 0; dieNum < 5; dieNum++ )
+            for ( int _thisDie = 0; _thisDie < 5; _thisDie++ )
             {
-                _die = new Die ();
-                _die = GameDice.DieList [ dieNum ];
-                _visDie = new Button ();
-                _visDie = visualDiceList [ dieNum ] [ 1 ];
-                _visDie.Content = _die.FaceValue;
-                x = 60 + ( dieNum * 130 );
-
-                visualDiceList [ dieNum ] [ 0 ].Margin = ( _die.Held ) ? new Thickness ( x, y2, 0.0, 0.0 ) : new Thickness ( x, y1, 0.0, 0.0 );
+                var _visDie = visualDiceList [ _thisDie ];
+                var _vimDie = DiceBoxVM.VimDice [ _thisDie ];
+                _visDie [ 0 ].Margin = new Thickness ( _vimDie.Left, _vimDie.Top, 0, 0 );
+                _visDie [ 1 ].Content = _vimDie.FaceValue;
             }
+            
+            //Die _die;
+            //Button _visDie;
+            //double y1 = 365;
+            //double y2 = 550;
+            //double x;
+            //for ( int dieNum = 0; dieNum < 5; dieNum++ )
+            //{
+            //    _die = new Die ();
+            //    _die = GameDice.DieList [ dieNum ];
+            //    _visDie = new Button ();
+            //    _visDie = visualDiceList [ dieNum ] [ 1 ];
+            //    _visDie.Content = _die.FaceValue;
+            //    x = 60 + ( dieNum * 130 );
+
+            //    visualDiceList [ dieNum ] [ 0 ].Margin = ( _die.Held ) ? new Thickness ( x, y2, 0.0, 0.0 ) : new Thickness ( x, y1, 0.0, 0.0 );
+            //}
 
         }
 

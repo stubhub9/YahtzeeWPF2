@@ -103,7 +103,8 @@ namespace YahtzeeWPF2
         /// <param name="pointsList"></param>
         static void CheckTheAcesThruSixes ( ref List <int> pointsList )
         {
-            int [] _valueIndexedMultiples = GameDice.ValueIndexedMultiples;
+            //int [] _valueIndexedMultiples = GameDice.ValueIndexedMultiples;
+            int [] _valueIndexedMultiples = GameDice1.ValueIndexedMultiples;
 
             for ( int _dieFaceValue = 1; _dieFaceValue < 7; _dieFaceValue++ )
             {
@@ -123,8 +124,11 @@ namespace YahtzeeWPF2
             int _fiveOfAKind = ( ( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == null )
                     || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0 ) ) ? 50 : 100 );
             int _fullHouse = 25;
-            List<int []> _pairsOrBetter = GameDice.MultiplesList;
-            int _sumOfAllDice = GameDice.Sum;
+            
+            //List<int []> _pairsOrBetter = GameDice.MultiplesList; 
+            List<int []> _pairsOrBetter = GameDice1.PairsOrBetter;
+            //int _sumOfAllDice = GameDice.Sum;
+            int _sumOfAllDice = GameDice1.SumOfAllDice;
 
             int [] _points = { 0, 0, 0, 0 };
 
@@ -145,7 +149,8 @@ namespace YahtzeeWPF2
                         _points [ 3 ] = _fiveOfAKind;
                     }
                 }
-                else if ( GameDice.MultiplesList.Count > 1 )
+                else if ( GameDice1.PairsOrBetter.Count > 1 )
+                //else if ( GameDice.MultiplesList.Count > 1 )
                     // Score full house for three of a kind and a pair.
                     _points [ 2 ] = _fullHouse;
             }
@@ -163,9 +168,12 @@ namespace YahtzeeWPF2
         /// <param name="pointsList"></param>
         static void CheckTheStraightsPlusChance ( ref List < int > pointsList )
         {
-            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 ) );
-            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 ) );
-            pointsList.Insert ( ( pointsList.Count - 1 ), GameDice.Sum );
+            //pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 ) );
+            //pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 ) );
+            //pointsList.Insert ( ( pointsList.Count - 1 ), GameDice.Sum );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice1.MaxStraight >= 4 ) ? 30 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice1.MaxStraight == 5 ) ? 40 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), GameDice1.SumOfAllDice );
         }
 
 
