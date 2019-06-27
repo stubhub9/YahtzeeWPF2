@@ -55,9 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DiceBoxVM.cs" />
     <Compile Include="GameDice1.cs" />
     <Compile Include="GameScoring.cs" />
-    <Compile Include="VimDice.cs" />
     <Compile Include="VisDice.cs" />
     <Compile Include="VisDie.cs" />
     <Compile Include="VisualBuilderClasses.cs" />
@@ -70,7 +70,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameDice.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

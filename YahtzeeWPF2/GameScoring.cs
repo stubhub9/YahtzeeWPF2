@@ -1,35 +1,27 @@
-﻿using System;
+﻿//using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
 namespace YahtzeeWPF2
 {
     public static class GameScoring
     {
         // Fields
-        static List <bool>  scoringRowsOpen;
+        static List<bool> scoringRowsOpen;
         static List<int> pointsList;
+
 
         // Default Constructor
 
-        // No Properties. 
+
+        // Properties. 
 
         public static List<GameRow> GameRows { get; set; }
 
-        // Methods
 
-        /// <summary>
-        /// Main entry for GameScoring.
-        /// Called by GameModel after dice are rolled.
-        /// </summary>
-        public static void UpdateGameRows ()
-        {
-            CheckIfRowIsOpen ();
-            CheckForPointsAvailable ( ref pointsList );
-            BuildGameRows ();
-        }
+        #region Methods
 
 
         static void BuildGameRows ()
@@ -64,26 +56,6 @@ namespace YahtzeeWPF2
 
 
         /// <summary>
-        /// Build the scoringRowsOpen list for this player's column in the ScoreTable.
-        /// </summary>
-        static void CheckIfRowIsOpen ()
-        {
-            scoringRowsOpen = new List<bool> ();
-            int _column = GameModel.GameClock.PlayerUp - 1;
-            for ( int _row = 0; _row < 18; _row++ )
-            {
-                // Jump from ">63 bonus" to 3OK.
-                if ( _row == 6 )
-                    _row = 8;
-                scoringRowsOpen.Add  (( GameModel.ScoreTable [ _column, _row ] == null ) ? true : false);
-            }
-            // If any 5OK entry is open, then flag index 12 to true. 
-            if ( ( scoringRowsOpen [ 12 ] ) || ( scoringRowsOpen [ 13 ] ) || ( scoringRowsOpen [ 14 ] ) || ( scoringRowsOpen [ 15 ] ) )
-                scoringRowsOpen [ 12 ] = true;
-        }
-        
-        
-        /// <summary>
         /// Builds a list of the points available, for each row, using the current dice.
         /// </summary>
         /// <param name="pointsList"></param>
@@ -98,12 +70,32 @@ namespace YahtzeeWPF2
 
 
         /// <summary>
+        /// Build the scoringRowsOpen list for this player's column in the ScoreTable.
+        /// </summary>
+        static void CheckIfRowIsOpen ()
+        {
+            scoringRowsOpen = new List<bool> ();
+            int _column = GameModel.GameClock.PlayerUp - 1;
+            for ( int _row = 0; _row < 18; _row++ )
+            {
+                // Jump from ">63 bonus" to 3OK.
+                if ( _row == 6 )
+                    _row = 8;
+                scoringRowsOpen.Add ( ( GameModel.ScoreTable [ _column, _row ] == null ) ? true : false );
+            }
+            // If any 5OK entry is open, then flag index 12 to true. 
+            if ( ( scoringRowsOpen [ 12 ] ) || ( scoringRowsOpen [ 13 ] ) || ( scoringRowsOpen [ 14 ] ) || ( scoringRowsOpen [ 15 ] ) )
+                scoringRowsOpen [ 12 ] = true;
+        }
+
+
+        /// <summary>
         /// Get the points for the Aces through Sixes rows.
         /// </summary>
         /// <param name="pointsList"></param>
-        static void CheckTheAcesThruSixes ( ref List <int> pointsList )
+        static void CheckTheAcesThruSixes ( ref List<int> pointsList )
         {
-            int [] _valueIndexedMultiples = GameDice.ValueIndexedMultiples;
+            int [] _valueIndexedMultiples = GameDice1.ValueIndexedMultiples;
 
             for ( int _dieFaceValue = 1; _dieFaceValue < 7; _dieFaceValue++ )
             {
@@ -117,18 +109,19 @@ namespace YahtzeeWPF2
         /// Get the points for all of the "of a Kind" rows.
         /// </summary>
         /// <param name="pointsList"></param>
-        static void CheckThePairsOrBetter (  ref List < int > pointsList )
+        static void CheckThePairsOrBetter ( ref List<int> pointsList )
         {
             // Score 50 for the first five of a kind or 100 for any additional five of a kind.
             int _fiveOfAKind = ( ( ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == null )
                     || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0 ) ) ? 50 : 100 );
             int _fullHouse = 25;
-            List<int []> _pairsOrBetter = GameDice.MultiplesList;
-            int _sumOfAllDice = GameDice.Sum;
+
+            List<int []> _pairsOrBetter = GameDice1.PairsOrBetter;
+            int _sumOfAllDice = GameDice1.SumOfAllDice;
 
             int [] _points = { 0, 0, 0, 0 };
 
-            if (( _pairsOrBetter.Count != 0 ) && ( _pairsOrBetter [ 0 ] [ 1 ] >=3 ))
+            if ( ( _pairsOrBetter.Count != 0 ) && ( _pairsOrBetter [ 0 ] [ 1 ] >= 3 ) )
             {
                 // Score three of a kind.11
                 _points [ 0 ] = _sumOfAllDice;
@@ -145,7 +138,7 @@ namespace YahtzeeWPF2
                         _points [ 3 ] = _fiveOfAKind;
                     }
                 }
-                else if ( GameDice.MultiplesList.Count > 1 )
+                else if ( GameDice1.PairsOrBetter.Count > 1 )
                     // Score full house for three of a kind and a pair.
                     _points [ 2 ] = _fullHouse;
             }
@@ -161,14 +154,27 @@ namespace YahtzeeWPF2
         /// Get the points for straights and chance.
         /// </summary>
         /// <param name="pointsList"></param>
-        static void CheckTheStraightsPlusChance ( ref List < int > pointsList )
+        static void CheckTheStraightsPlusChance ( ref List<int> pointsList )
         {
-            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 ) );
-            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 ) );
-            pointsList.Insert ( ( pointsList.Count - 1 ), GameDice.Sum );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice1.MaxStraight >= 4 ) ? 30 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice1.MaxStraight == 5 ) ? 40 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), GameDice1.SumOfAllDice );
         }
 
 
+        /// <summary>
+        /// Main entry for GameScoring.
+        /// Called by GameModel after dice are rolled.
+        /// </summary>
+        public static void UpdateGameRows ()
+        {
+            CheckIfRowIsOpen ();
+            CheckForPointsAvailable ( ref pointsList );
+            BuildGameRows ();
+        }
+
+
+        #endregion Methods
 
 
         /// <summary>
@@ -179,11 +185,10 @@ namespace YahtzeeWPF2
             // No Fields 
 
 
-            // Default Constructor  
+            // Constructor  
 
             public GameRow ()
             {
-                //RowDiceFilter = new List<bool> ();
                 RowHighlight = HighlightStyle.Filled;
                 TakeScoreString = "   ";
                 TakeScoreValue = 0;
@@ -203,10 +208,8 @@ namespace YahtzeeWPF2
                 Insist
             }
 
-            // Properties 
 
-            //public List<bool> RowDiceFilter { get; set; }
-            //public List<List<bool>> RowDiceFilter { get; set; }
+            // Properties 
 
             public HighlightStyle RowHighlight
             { get; set; }
@@ -220,6 +223,6 @@ namespace YahtzeeWPF2
             public bool TakeScoreVisible
             { get; set; }
         }
-        
+
     }
 }

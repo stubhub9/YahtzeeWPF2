@@ -1,64 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
+//using System.Windows;
+//using System.Windows.Controls;
+//using System.Windows.Data;
+//using System.Windows.Documents;
+//using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+//using System.Windows.Media.Imaging;
+//using System.Windows.Navigation;
+//using System.Windows.Shapes;
 
 
 namespace YahtzeeWPF2
 {
     public static class GameModel
     {
-        #region Fields
         //      Fields.
-        
-        static int? [,] scoreTable;
-        #endregion Fields
 
-        #region Constructor
-        // Static constructor 
+        static int? [,] scoreTable;
+
+
+        // Constructor 
+
         static GameModel ()
         {
             scoreTable = new int? [ 3, 21 ];
         }
-        #endregion Constructor
-        
-        
 
-        #region Properties
+
+
         // Properties
 
         public static int? [,] ScoreTable
         {
-            get
-            { return scoreTable; }
+            get => scoreTable;
             set
             { }
         }
-        #endregion Properties
+
 
         #region GameModel  Methods
-        //      Methods
-
-        public static void NewGame ()
-        {
-            scoreTable = new int? [ 3, 21 ];
-            GameClock.NewGame ();
-            GameDice.NewDice ();
-            GameScoring.UpdateGameRows ();
-            CommitDetails.NextPlayer ();
-            CommitDetails.RollText ();
-            
-        }
 
 
         public static void CommitClickedHandler ()
@@ -77,14 +61,13 @@ namespace YahtzeeWPF2
                 }
                 RecordScore ();
                 GameClock.NextPlayer ();
-                GameDice.NewDice ();
+                GameDice1.NewDice ();
             }
             else
             {
                 GameClock.NextRoll ();
-                GameDice.RollDice ();
+                GameDice1.RollDice ();
             }
-            //GameStatus.UpdateGameRows ();
             GameScoring.UpdateGameRows ();
 
             if ( GameClock.DiceRoll < 3 )
@@ -99,8 +82,60 @@ namespace YahtzeeWPF2
             else
                 CommitDetails.ChooseText ();
 
+            DiceBoxVM.UpdateDiceVisMod ();
             // ?????????If a  "can't do better than 5OK/ 5Str, ..." then a score needs to/ could be taken.  TRIGGERED BY GameStatus  ????????
         }
+        //  CommitClickedHandler ()
+
+
+        static int ConvertPlayerUpToScoresheetColumn ()
+        {
+            int _column = GameClock.PlayerUp + 1;
+            return _column;
+        }
+
+
+        static int ConvertScoreTableRowToPostRow ( int row )
+        {
+            // Upper section _row = row +1.
+            int _postRow = row + 1;
+            if ( row >= 8 )
+            {
+                _postRow = row + 2;
+            }
+
+            return _postRow;
+        }
+
+
+        static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow )
+        {
+            int _row = ( takeScoreRow < 6 ) ? takeScoreRow : ( takeScoreRow + 2 );
+            return _row;
+        }
+
+
+        static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow, int score )
+        {
+            int _row = 0;
+            if ( takeScoreRow < 12 )
+            {
+                _row = ( takeScoreRow < 6 ) ? takeScoreRow : ( takeScoreRow + 2 );
+            }
+            else
+            {
+                var _open5OkRows = new List<int> ();
+                for ( int i = 14; i < 18; i++ )
+                {
+                    if ( ScoreTable [ ( GameClock.PlayerUp - 1 ), i ] == null )
+                        _open5OkRows.Add ( i );
+                }
+
+                _row = ( score > 0 ) ? _open5OkRows [ 0 ] : _open5OkRows [ ( _open5OkRows.Count - 1 ) ];
+            }
+            return _row;
+        }
+
 
         static int GetWinner ()
         {
@@ -115,6 +150,19 @@ namespace YahtzeeWPF2
             return _winner;
         }
 
+
+        public static void NewGame ()
+        {
+            scoreTable = new int? [ 3, 21 ];
+            GameClock.NewGame ();
+            GameDice1.NewDice ();
+            GameScoring.UpdateGameRows ();
+            CommitDetails.NextPlayer ();
+            CommitDetails.RollText ();
+            DiceBoxVM.UpdateDiceVisMod ();
+        }
+
+
         static void RecordScore ()
         {
             GameScoring.GameRow _gamerow = GameScoring.GameRows [ CommitDetails.TakeScoreRow ];
@@ -125,13 +173,13 @@ namespace YahtzeeWPF2
             CommitDetails.UpdateResults ( ConvertPlayerUpToScoresheetColumn (), 0 );
 
             // Update the entry selected.
-            scoreTable [ _col, _row ] =_scoreDelta;
+            scoreTable [ _col, _row ] = _scoreDelta;
             CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( _row ), _scoreDelta );
             // 5OK section.
-            if (( _row >= 14 ) && ( _row <= 17 ))
+            if ( ( _row >= 14 ) && ( _row <= 17 ) )
             {
-                scoreTable [ _col, 18 ] = (scoreTable [ _col, 18 ] ?? 0 )+ _scoreDelta;
-                CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( 18 ), (int) scoreTable [ _col, 18 ] );
+                scoreTable [ _col, 18 ] = ( scoreTable [ _col, 18 ] ?? 0 ) + _scoreDelta;
+                CommitDetails.UpdateResults ( ConvertScoreTableRowToPostRow ( 18 ), ( int ) scoreTable [ _col, 18 ] );
 
             }
 
@@ -139,7 +187,7 @@ namespace YahtzeeWPF2
             {
                 // If the entry was in the upper section, update  the Upper Total and upper bonus.
                 // Check for upper section >63 bonus for 35 points.
-                if (( scoreTable [ _col, 6 ] != 35 ) && (( scoreTable [ _col, 7 ] + _scoreDelta ) > 63 ))
+                if ( ( scoreTable [ _col, 6 ] != 35 ) && ( ( scoreTable [ _col, 7 ] + _scoreDelta ) > 63 ) )
                 {
                     _scoreDelta += 35;
                     scoreTable [ _col, 6 ] = 35;
@@ -161,12 +209,10 @@ namespace YahtzeeWPF2
 
 
         public static void RowClickedHandler ( string buttonName )
-        //public static void RowClickedHandler ( int visualScoresheetRow )
         {
             int visualScoresheetRow = VisualScoresheetButtonNameToRowNumberConverter ( buttonName );
             int _takeScoreRow = VisualScoresheetToTakeScoreRowConverter ( visualScoresheetRow );
             GameScoring.GameRow _gamerow = GameScoring.GameRows [ _takeScoreRow ];
-            //GameStatus.GameRow _gamerow = GameStatus.GameRows [ _takeScoreRow ];
             // If TakeScore button is not visible then return.
             if ( !_gamerow.TakeScoreVisible )
             {
@@ -182,6 +228,7 @@ namespace YahtzeeWPF2
         }
         // End RowClickedHandler.
 
+
         static int VisualScoresheetButtonNameToRowNumberConverter ( string buttonName )
         {
             int result = 0;
@@ -196,6 +243,7 @@ namespace YahtzeeWPF2
             return result;
         }
 
+
         static int VisualScoresheetToTakeScoreRowConverter ( int visualScoresheetRow )
         {
             int _visRow = visualScoresheetRow;
@@ -203,84 +251,37 @@ namespace YahtzeeWPF2
             return _takeScoreRow;
         }
 
-        static int ConvertPlayerUpToScoresheetColumn ( )
-        {
-            int _column = GameClock.PlayerUp + 1;
-            return _column;
-        }
 
-
-        static int ConvertScoreTableRowToPostRow ( int row )
-        {
-            // Upper section _row = row +1.
-            int _postRow = row + 1;
-            if ( row >= 8 )
-            {
-                _postRow = row + 2;
-            }
-            
-            return _postRow;
-        }
-
-
-        static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow)
-        {
-            int _row = ( takeScoreRow < 6 )? takeScoreRow : (takeScoreRow + 2);
-            return _row;
-        }
-
-
-        static int ConvertTakeScoreRowToScoreTableRow ( int takeScoreRow, int score )
-        {
-            int _row = 0;
-            if ( takeScoreRow < 12 )
-            {
-                _row = ( takeScoreRow < 6 ) ? takeScoreRow : ( takeScoreRow + 2 );
-            }
-            else
-            {
-                List<int> _open5OkRows = new List<int> ();
-                for ( int i = 14; i < 18; i++ )
-                {
-                    if ( ScoreTable [ ( GameClock.PlayerUp - 1 ), i ] == null )
-                        _open5OkRows.Add ( i );
-                }
-
-                _row = ( score > 0 ) ? _open5OkRows [ 0 ] : _open5OkRows [ ( _open5OkRows.Count - 1 ) ];
-            }
-            return _row;
-        }
-
-        
         #endregion GameModel Methods
 
 
 
+        // Support Classes
 
-
-        #region GameClockClass
         /// <summary>
         /// Tracks:   GameRound, PlayerUp and DiceRoll.
         /// </summary>
         public static class GameClock
         {
+            // Properties
+
             /// <summary>
             /// Integer 1 to 3, advances PlayerUp
             /// </summary>
             public static int DiceRoll { get; set; }
+
             /// <summary>
             /// Game over after 16 rounds
             /// </summary>
             public static int GameRound { get; set; }
+
             /// <summary>
             ///  The player with the dice
             /// </summary>
             public static int PlayerUp { get; set; }
 
-            static GameClock ()
-            {
-                //NewGame ();
-            }
+
+            #region Methods
 
             /// <summary>
             /// Resets to first player up.
@@ -292,13 +293,6 @@ namespace YahtzeeWPF2
                 PlayerUp = 1;
             }
 
-            /// <summary>
-            ///  Call after Player rolls dice.
-            /// </summary>
-            public static void NextRoll ()
-            {
-                    DiceRoll++;
-            }
 
             /// <summary>
             /// Call when player takes score and next player rolls.
@@ -318,9 +312,18 @@ namespace YahtzeeWPF2
                 }
                 CommitDetails.NextPlayer ();
             }
+
+
+            /// <summary>
+            ///  Call after Player rolls dice.
+            /// </summary>
+            public static void NextRoll ()
+            {
+                DiceRoll++;
+            }
         }
-        //      End GameClock class.  
-        #endregion GameClockClass
+        #endregion GameClock Methods
+
 
         //#region GameColors class
         //    /// <summary>
@@ -344,19 +347,88 @@ namespace YahtzeeWPF2
 
 
 
-        #region GameStrings Class
-        //      GameStrings class.      ********              GameStrings class.      ********              GameStrings class.      ********        
+        public static class CommitDetails
+        {
+            //      Fields
+            //      Constructor
+
+
+            //      Properties
+            // Commit button parameters.
+            public static string Action { get; set; }
+            public static string Description { get; set; }
+            public static Color PlayerColor { get; set; }
+            public static string PlayerName { get; set; }
+            // Scoresheet parameters.
+            public static List<int []> ResultsList { get; set; }
+            public static int TakeScoreRow { get; set; }
+
+
+            #region Methods
+
+            public static void ChooseText ()
+            {
+                int _rollsRemaining = 3 - GameClock.DiceRoll;
+                Action = GameStrings.CommitActionStrings [ 1 ];
+                Description = $"{ GameStrings.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings.CommitDescriptionStrings [ 1 ]}";
+            }
+
+
+            public static void DeclareWinner ()
+            {
+                PlayerName = GameStrings.PlayerNames [ GameModel.GetWinner () ];
+                Action = GameStrings.CommitActionStrings [ 3 ];
+                Description = GameStrings.CommitDescriptionStrings [ 3 ];
+            }
+
+
+            public static void NextPlayer ()
+            {
+                PlayerName = GameStrings.PlayerNames [ ( GameClock.PlayerUp - 1 ) ];
+                //PlayerColor = GameColors.PlayerColors [ ( GameClock.PlayerUp - 1 ) ];
+                // Setting TakeScoreRow to -1 as a flag for unused.
+                TakeScoreRow = -1;
+            }
+
+
+            public static void RollText ()
+            {
+                int _rollsRemaining = 3 - GameClock.DiceRoll;
+                Action = GameStrings.CommitActionStrings [ 0 ];
+                Description = $"{ GameStrings.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings.CommitDescriptionStrings [ 1 ]}";
+            }
+
+
+            public static void ScoringSelected ( string takeScoreString, int takeScoreRow )
+            {
+                Action = $"{GameStrings.CommitActionStrings [ 2 ]}";
+                Description = $"{ GameStrings.CommitDescriptionStrings [ 2 ]} {takeScoreString}";
+                CommitDetails.TakeScoreRow = takeScoreRow;
+            }
+
+
+            public static void UpdateResults ( int row, int value )
+            {
+                int [] _rowValue = new int [ 2 ];
+                _rowValue [ 0 ] = row;
+                _rowValue [ 1 ] = value;
+                ResultsList.Add ( _rowValue );
+            }
+        }
+        #endregion Methods
+        // End CommitDetails class.
+
+
+        /// <summary>
+        /// Source of all game strings.
+        /// </summary>
         public static class GameStrings
         {
-            #region Fields
             //      Fields
-            //static string [] commitStrings;
             static string [] headerLabels;
-            //static string [] playerNames;
             static string [] scoringStrings;
-            #endregion Fields
 
-            #region GameStrings  Constructor
+
             //      Constructor
             static GameStrings ()
             {
@@ -373,10 +445,10 @@ namespace YahtzeeWPF2
                 PlayerNames = new string [] { "Player 1", "Player 2", "Player 3" };
                 scoringStrings = new string [] { "Scratch", "Take", "for", "points." };
             }
-            // End  GameStrings Constructor
-            #endregion GameStrings  Constructor
-            
-            // Indexers 
+
+
+            // Properties 
+
             public static string [] CommitActionStrings { get; set; }
 
             public static string [] CommitDescriptionStrings { get; set; }
@@ -385,7 +457,6 @@ namespace YahtzeeWPF2
 
 
             #region GameStrings Methods
-            // Methods
 
             public static string GetTakeScoreString ( int takeScoreRow, int score )
             {
@@ -411,7 +482,7 @@ namespace YahtzeeWPF2
             }
 
 
-            public static string GetHeaderString  ( int column, int row )
+            public static string GetHeaderString ( int column, int row )
             {
                 string text = headerLabels [ ( ( column * 20 ) + row ) ];
                 return text;
@@ -428,75 +499,8 @@ namespace YahtzeeWPF2
             #endregion GameStrings Methods
         }
         // End GameStrings class
-        #endregion GameStrings Class
 
 
 
-        
-        public static class CommitDetails
-        {
-            //      Fields
-            //      Constructor
-            static CommitDetails ()
-            { }
-            //      Properties
-            // Commit button parameters.
-            public static string PlayerName { get; set; }
-            public static string Action { get; set; }
-            public static string Description { get; set; }
-            public static Color PlayerColor { get; set; }
-            // Scoresheet parameters.
-            public static List<int []> ResultsList { get; set; }
-            public static int TakeScoreRow { get; set; }
-
-            //      Methods
-            // 
-            public static void DeclareWinner ()
-            {
-                PlayerName = GameStrings.PlayerNames [ GameModel.GetWinner () ];
-                Action = GameStrings.CommitActionStrings [ 3 ];
-                Description = GameStrings.CommitDescriptionStrings [ 3 ];
-            }
-
-            public static void NextPlayer ()
-            {
-                PlayerName = GameStrings.PlayerNames [ ( GameClock.PlayerUp - 1 ) ];
-                //PlayerColor = GameColors.PlayerColors [ ( GameClock.PlayerUp - 1 ) ];
-                // Setting TakeScoreRow to -1 as a flag for unused.
-                TakeScoreRow = -1;
-            }
-
-            public static void UpdateResults ( int row, int value )
-            {
-                int [] _rowValue = new int [ 2 ];
-                _rowValue [ 0 ] = row;
-                _rowValue [ 1 ] = value;
-                ResultsList.Add ( _rowValue );
-            }
-
-            public static void RollText ()
-            {
-                int _rollsRemaining = 3 - GameClock.DiceRoll;
-                Action = GameStrings.CommitActionStrings [ 0 ];
-                Description = $"{ GameStrings.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings.CommitDescriptionStrings [ 1 ]}";
-            }
-
-            public static void ChooseText ()
-            {
-                int _rollsRemaining = 3 - GameClock.DiceRoll;
-                Action = GameStrings.CommitActionStrings [ 1 ];
-                Description = $"{ GameStrings.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings.CommitDescriptionStrings [ 1 ]}";
-            }
-
-            public static void ScoringSelected ( string takeScoreString, int takeScoreRow )
-            {
-                //CommitScore = true;
-                Action = $"{GameStrings.CommitActionStrings [ 2 ]}";
-                Description = $"{ GameStrings.CommitDescriptionStrings [ 2 ]} {takeScoreString}";
-                CommitDetails.TakeScoreRow = takeScoreRow;
-            }
-        }
-        // End CommitDetails.
     }
-
 }

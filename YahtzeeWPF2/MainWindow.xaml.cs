@@ -1,18 +1,18 @@
-﻿using System;
+﻿//using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+//using System.Windows.Data;
+//using System.Windows.Documents;
+//using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+//using System.Windows.Media.Animation;
+//using System.Windows.Media.Imaging;
+//using System.Windows.Navigation;
+//using System.Windows.Shapes;
 
 namespace YahtzeeWPF2
 {
@@ -66,30 +66,20 @@ namespace YahtzeeWPF2
         #region Events
         // Events
 
+        /// <summary>
+        /// Moves the die across the hold line when clicked  Y/ top; X/ left doesn't change.
+        /// FUTURE: X will change for group sliding.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Die_Click ( object sender, RoutedEventArgs e )
         {
-            Button visDie = ( Button ) sender;
-
-            string name = $"{visDie.Name [ 3 ]}";
+            var visDie = ( Button ) sender;
+            var name = $"{visDie.Name [ 3 ]}";
             int dieNum = int.Parse ( name );
-
-            Duration duration = new Duration ( TimeSpan.FromMilliseconds ( 750 ) );
-            Die _die = GameDice.DieList [ dieNum ];
-            double x = 60 + ( dieNum * 130 );
-            double y1 = 365;
-            double y2 = 550;
-            if ( _die.Held )
-            {
-                visDie.Margin = new Thickness ( x, y1, 0.0, 0.0 );
-            }
-            else
-            {
-                visDie.Margin = new Thickness ( x, y2, 0.0, 0.0 );
-            }
-            _die.Held = !_die.Held;
-
+            Point _topLeft = DiceBoxVM.DieWasClicked ( dieNum );
+            visDie.Margin = new Thickness ( _topLeft.X, _topLeft.Y, 0, 0 );
         }
-        // End of Die_Click
 
 
         private void Commit_Click ( object sender, RoutedEventArgs e )
@@ -163,29 +153,37 @@ namespace YahtzeeWPF2
             visCommit.Description = GameModel.CommitDetails.Description;
         }
 
-        
+
 
         /// <summary>
         /// Updates dice that weren't held, and TakeScore displays.
         /// </summary>
         public void UpdateDiceVisual ()
         {
-            Die _die;
-            Button _visDie;
-            double y1 = 365;
-            double y2 = 550;
-            double x;
-            for ( int dieNum = 0; dieNum < 5; dieNum++ )
+            for ( int _thisDie = 0; _thisDie < 5; _thisDie++ )
             {
-                _die = new Die ();
-                _die = GameDice.DieList [ dieNum ];
-                _visDie = new Button ();
-                _visDie = visualDiceList [ dieNum ] [ 1 ];
-                _visDie.Content = _die.FaceValue;
-                x = 60 + ( dieNum * 130 );
-
-                visualDiceList [ dieNum ] [ 0 ].Margin = ( _die.Held ) ? new Thickness ( x, y2, 0.0, 0.0 ) : new Thickness ( x, y1, 0.0, 0.0 );
+                var _visDie = visualDiceList [ _thisDie ];
+                var _vimDie = DiceBoxVM.VimDice [ _thisDie ];
+                _visDie [ 0 ].Margin = new Thickness ( _vimDie.Left, _vimDie.Top, 0, 0 );
+                _visDie [ 1 ].Content = _vimDie.FaceValue;
             }
+
+            //Die _die;
+            //Button _visDie;
+            //double y1 = 365;
+            //double y2 = 550;
+            //double x;
+            //for ( int dieNum = 0; dieNum < 5; dieNum++ )
+            //{
+            //    _die = new Die ();
+            //    _die = GameDice.DieList [ dieNum ];
+            //    _visDie = new Button ();
+            //    _visDie = visualDiceList [ dieNum ] [ 1 ];
+            //    _visDie.Content = _die.FaceValue;
+            //    x = 60 + ( dieNum * 130 );
+
+            //    visualDiceList [ dieNum ] [ 0 ].Margin = ( _die.Held ) ? new Thickness ( x, y2, 0.0, 0.0 ) : new Thickness ( x, y1, 0.0, 0.0 );
+            //}
 
         }
 
@@ -283,7 +281,7 @@ namespace YahtzeeWPF2
                 die [ 0 ].Click += Die_Click;
             }
         }
-        
+
 
 
 

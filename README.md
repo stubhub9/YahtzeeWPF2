@@ -1,10 +1,17 @@
 # YahtzeeWPF2
 Learning project for C#, WPF and Git ( and Entity, ASP, ... ).
 
-Currently:
-
-  Replacing GameDice with a Property heavy version with GameDie as a struct.
-  Adding VisualModel and Visual Dice/ Die classes; for an upgraded diceBox.
+  Update existing classes:  
+      refactor long methods and classes:
+        by chaining shorter methods;
+        adding helper classes with tighter focus;
+        better readability.
+        
+  Work on view models  ( M V VM ).
+  
+  Improve game play:
+      implement dice filter and highlights; 
+      begin AI reasoning, assistance, and players. 
   
 Next, will probably be: 
   change method calls from the view to Async, 
@@ -27,6 +34,6 @@ Next, will probably be:
  Possible Future:
   C# server/ XAML heavy client;
   More expression blend practice;
-  Entity or other database ( histories, table mappings, other )
+  Entity or other database ( advisories from histories, other )
   
   
