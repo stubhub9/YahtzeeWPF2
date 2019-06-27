@@ -35,11 +35,14 @@ namespace YahtzeeWPF2
 
 
         // Method
-        public static void DieWasClicked ()
+        public static Point DieWasClicked ( int dieClicked )
         {
-            // Set Die#.Held to false.
+            var _topLeft = new Point ();
+            // Toggle Die#.Held 
             // Set VisDie#.Point to new target.
 
+
+            return _topLeft;
         }
 
 

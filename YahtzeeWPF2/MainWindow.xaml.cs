@@ -66,18 +66,28 @@ namespace YahtzeeWPF2
         #region Events
         // Events
 
+        /// <summary>
+        /// Moves the die across the hold line when clicked  Y/ top; X/ left doesn't change.
+        /// FUTURE: X will change for group sliding.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Die_Click ( object sender, RoutedEventArgs e )
         {
-            Button visDie = ( Button ) sender;
-
+            var visDie = ( Button ) sender;
             string name = $"{visDie.Name [ 3 ]}";
             int dieNum = int.Parse ( name );
+            //BEGIN:  GameDice1 kluge!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Point _topLeft = VimDice.DieWasClicked ( dieNum );
 
-            Duration duration = new Duration ( TimeSpan.FromMilliseconds ( 750 ) );
+
+
+            
             Die _die = GameDice.DieList [ dieNum ];
             double x = 60 + ( dieNum * 130 );
             double y1 = 365;
             double y2 = 550;
+
             if ( _die.Held )
             {
                 visDie.Margin = new Thickness ( x, y1, 0.0, 0.0 );
