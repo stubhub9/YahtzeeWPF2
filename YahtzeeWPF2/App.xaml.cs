@@ -14,17 +14,9 @@ namespace YahtzeeWPF2
     public partial class App : Application
     {
 
-        public enum RowHighlight
-        {
-            Filled = 0,
-            Open,
-            Scratch,
-            Points,
-            BestChoice,
-            // What the player is choosing, OR enforced take 5OK or 5Str. 
-            Insist
-        }
 
-        
+
+
+
     }
 }

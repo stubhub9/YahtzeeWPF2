@@ -193,6 +193,7 @@ namespace YahtzeeWPF2
         /// </summary>
         void UpdateScoresheetEntriesVisual ()
         {
+            
             List<int []> _results = GameModel.CommitDetails.ResultsList;
             int [] _result = _results [ 0 ];
             int _col = _result [ 0 ];
