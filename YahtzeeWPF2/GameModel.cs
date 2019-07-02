@@ -61,12 +61,12 @@ namespace YahtzeeWPF2
                 }
                 RecordScore ();
                 GameClock.NextPlayer ();
-                GameDice1.NewDice ();
+                GameDice.NewDice ();
             }
             else
             {
                 GameClock.NextRoll ();
-                GameDice1.RollDice ();
+                GameDice.RollDice ();
             }
             GameScoring.UpdateGameRows ();
 
@@ -155,7 +155,7 @@ namespace YahtzeeWPF2
         {
             scoreTable = new int? [ 3, 21 ];
             GameClock.NewGame ();
-            GameDice1.NewDice ();
+            GameDice.NewDice ();
             GameScoring.UpdateGameRows ();
             CommitDetails.NextPlayer ();
             CommitDetails.RollText ();

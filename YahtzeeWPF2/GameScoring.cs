@@ -23,6 +23,21 @@ namespace YahtzeeWPF2
 
         #region Methods
 
+        // Public Method
+
+        /// <summary>
+        /// Main entry for GameScoring.
+        /// Called by GameModel after dice are rolled.
+        /// </summary>
+        public static void UpdateGameRows ()
+        {
+            CheckIfRowIsOpen ();
+            CheckForPointsAvailable ( ref pointsList );
+            BuildGameRows ();
+        }
+
+
+        // Private Methods
 
         static void BuildGameRows ()
         {
@@ -37,19 +52,22 @@ namespace YahtzeeWPF2
 
                 if ( pointsList [ _row ] > 0 )
                 {
-                    _gameRow.RowHighlight = GameRow.HighlightStyle.Points;
+                    //_gameRow.RowHighlight = GameRow.HighlightStyle.Points;
+                    _gameRow.RowHighlight = HighlightStyle.Points;
                     _gameRow.TakeScoreValue = pointsList [ _row ];
                     _gameRow.TakeScoreString = GameModel.GameStrings.GetTakeScoreString ( _row, _gameRow.TakeScoreValue );
                     _gameRow.TakeScoreVisible = true;
                 }
                 else if ( GameModel.GameClock.DiceRoll == 3 )
                 {
-                    _gameRow.RowHighlight = GameRow.HighlightStyle.Scratch;
+                    //_gameRow.RowHighlight = GameRow.HighlightStyle.Scratch;
+                    _gameRow.RowHighlight = HighlightStyle.Scratch;
                     _gameRow.TakeScoreString = GameModel.GameStrings.GetTakeScoreString ( _row, _gameRow.TakeScoreValue );
                     _gameRow.TakeScoreVisible = true;
                 }
                 else
-                    _gameRow.RowHighlight = GameRow.HighlightStyle.Open;
+                    _gameRow.RowHighlight = HighlightStyle.Open;
+                //_gameRow.RowHighlight = GameRow.HighlightStyle.Open;
             }
 
         }
@@ -95,7 +113,7 @@ namespace YahtzeeWPF2
         /// <param name="pointsList"></param>
         static void CheckTheAcesThruSixes ( ref List<int> pointsList )
         {
-            int [] _valueIndexedMultiples = GameDice1.ValueIndexedMultiples;
+            int [] _valueIndexedMultiples = GameDice.ValueIndexedMultiples;
 
             for ( int _dieFaceValue = 1; _dieFaceValue < 7; _dieFaceValue++ )
             {
@@ -116,8 +134,8 @@ namespace YahtzeeWPF2
                     || ( GameModel.ScoreTable [ ( GameModel.GameClock.PlayerUp - 1 ), 18 ] == 0 ) ) ? 50 : 100 );
             int _fullHouse = 25;
 
-            List<int []> _pairsOrBetter = GameDice1.PairsOrBetter;
-            int _sumOfAllDice = GameDice1.SumOfAllDice;
+            List<int []> _pairsOrBetter = GameDice.PairsOrBetter;
+            int _sumOfAllDice = GameDice.SumOfAllDice;
 
             int [] _points = { 0, 0, 0, 0 };
 
@@ -138,7 +156,7 @@ namespace YahtzeeWPF2
                         _points [ 3 ] = _fiveOfAKind;
                     }
                 }
-                else if ( GameDice1.PairsOrBetter.Count > 1 )
+                else if ( GameDice.PairsOrBetter.Count > 1 )
                     // Score full house for three of a kind and a pair.
                     _points [ 2 ] = _fullHouse;
             }
@@ -156,22 +174,11 @@ namespace YahtzeeWPF2
         /// <param name="pointsList"></param>
         static void CheckTheStraightsPlusChance ( ref List<int> pointsList )
         {
-            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice1.MaxStraight >= 4 ) ? 30 : 0 ) );
-            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice1.MaxStraight == 5 ) ? 40 : 0 ) );
-            pointsList.Insert ( ( pointsList.Count - 1 ), GameDice1.SumOfAllDice );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight >= 4 ) ? 30 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), ( ( GameDice.MaxStraight == 5 ) ? 40 : 0 ) );
+            pointsList.Insert ( ( pointsList.Count - 1 ), GameDice.SumOfAllDice );
         }
 
-
-        /// <summary>
-        /// Main entry for GameScoring.
-        /// Called by GameModel after dice are rolled.
-        /// </summary>
-        public static void UpdateGameRows ()
-        {
-            CheckIfRowIsOpen ();
-            CheckForPointsAvailable ( ref pointsList );
-            BuildGameRows ();
-        }
 
 
         #endregion Methods
@@ -197,16 +204,16 @@ namespace YahtzeeWPF2
 
             // Enum
 
-            public enum HighlightStyle
-            {
-                Filled = 0,
-                Open,
-                Scratch,
-                Points,
-                BestChoice,
-                // What the player is choosing, OR enforced take 5OK or 5Str. 
-                Insist
-            }
+            //public enum HighlightStyle
+            //{
+            //    Filled = 0,
+            //    Open,
+            //    Scratch,
+            //    Points,
+            //    BestChoice,
+            //    // What the player is choosing, OR enforced take 5OK or 5Str. 
+            //    Insist
+            //}
 
 
             // Properties 

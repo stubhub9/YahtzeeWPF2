@@ -238,7 +238,7 @@ namespace YahtzeeWPF2
                 button = new Button ();
                 button = entryColumn [ _row ];
                 button.Visibility = ( gamerow.TakeScoreVisible ) ? Visibility.Visible : Visibility.Hidden;
-                if ( gamerow.RowHighlight == GameScoring.GameRow.HighlightStyle.Scratch )
+                if ( gamerow.RowHighlight == HighlightStyle.Scratch )
                 //if ( gamerow.RowHighlight == GameStatus.GameRow.HighlightStyle.Scratch )
                 {
                     button.Background = Brushes.LightPink;

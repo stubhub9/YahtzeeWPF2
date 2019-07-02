@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace YahtzeeWPF2
 {
-    public static class GameDice1
+    public static class GameDice
     {
         // Field
         //Error:  Can't use var here for Random.
@@ -12,7 +12,7 @@ namespace YahtzeeWPF2
 
 
         // Constructor
-        static GameDice1 ()
+        static GameDice ()
         {
             DieStructs = new DieStruct [ 5 ];
             for ( int i = 0; i < 5; i++ )
@@ -59,6 +59,8 @@ namespace YahtzeeWPF2
 
         #region Methods
 
+        // Public Methods
+
         /// <summary>
         /// Called for each new player.
         /// </summary>
@@ -89,6 +91,8 @@ namespace YahtzeeWPF2
             UpdateMaxStraightAndStraightFilterList ();
         }
 
+
+        // Private Methods
 
         /// <summary>
         /// Returns a new die face value.
