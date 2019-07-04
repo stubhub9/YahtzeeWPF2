@@ -191,7 +191,8 @@ namespace YahtzeeWPF2
 
                     if ( ( PairsOrBetter.Count > 0 ) && ( _valueMultiple [ 1 ] > PairsOrBetter [ 0 ] [ 1 ] ) )
                     {
-                        // Higher face values are more important than a pair of lower face values.
+                        /* Three clones are more important than a pair.
+                         * Higher face values are more important than a pair of lower face values.*/
                         PairsOrBetter.Insert ( 0, _valueMultiple );
                     }
                     else
