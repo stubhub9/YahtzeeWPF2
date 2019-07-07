@@ -32,13 +32,11 @@ namespace YahtzeeWPF2
 
 
 
-        // Properties
+        // Property
 
         public static int? [,] ScoreTable
         {
             get => scoreTable;
-            set
-            { }
         }
 
 

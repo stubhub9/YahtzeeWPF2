@@ -17,7 +17,9 @@ namespace YahtzeeWPF2
 
     internal enum Row
     {
-        Ones, Twos, Threes, Fours, Fives, Sixes,
+        Unselected = -1,
+        Ones = 0,
+        Twos, Threes, Fours, Fives, Sixes,
         Score63, ScoreUpper,
         ThreeX, FourX, FullHouse, FourStr, FiveStr, Chance,
         FiveX1, FiveX2, FiveX3, FiveX4,
@@ -53,10 +55,19 @@ namespace YahtzeeWPF2
         /// <summary>
         /// How many times the dice have been rolled, this turn.
         /// Value 1 to 3
+        ///  Should I use the Roll enum where the value equals the rolls remaining????????????????????????????????????????????????
         /// </summary>
         public static int CurrentDiceRoll
         {
             get => GameClock.diceRoll;
+        }
+
+        /// <summary>
+        /// How many entries have been filled by end of turn.
+        /// </summary>
+        public static int GameRound
+        {
+            get => GameClock.gameRound;
         }
 
         /// <summary>
@@ -67,13 +78,9 @@ namespace YahtzeeWPF2
             get => GameClock.player;
         }
 
-        /// <summary>
-        /// How many entries have been filled by end of turn.
-        /// </summary>
-        static int GameRound
-        {
-            get => GameClock.gameRound;
-        }
+
+        public static Row RowSelected
+        { get; set; }
 
 
         public static int? [] [] ScoreTable
@@ -87,6 +94,22 @@ namespace YahtzeeWPF2
 
         // Public Methods
 
+
+        public static Player GetWinner ()
+        //public static int GetWinner ()
+        {
+            int _winner = 0;
+            if ( ( ScoreTable [ 0 ] [ 20 ] > ScoreTable [ 1 ] [ 20 ] ) && ( ScoreTable [ 0 ] [ 20 ] > ScoreTable [ 2 ] [ 20 ] ) )
+                _winner = 0;
+            else if ( ScoreTable [ 1 ] [ 20 ] > ScoreTable [ 2 ] [ 20 ] )
+                _winner = 1;
+            else
+                _winner = 2;
+            //GameClock.PlayerUp = _winner + 1;
+            //return _winner;
+            return ( Player ) _winner;
+        }
+
         /* Reset GameClock and ScoreTable
          * Call for new dice and dice evaluation.
          */
@@ -96,6 +119,7 @@ namespace YahtzeeWPF2
             GameScores.NewGame ();
             GameDice.NewDice ();
             GameScoring1.UpdateScoringList ();
+            RowSelected = Row.Unselected;
         }
 
 
@@ -131,6 +155,20 @@ namespace YahtzeeWPF2
             GameClock.NextDiceRoll ();
             GameDice.RollDice ();
             GameScoring1.UpdateScoringList ();
+        }
+
+        // 
+        public static void RowClicked ( Row rowClicked)
+        {
+            // If rowClicked is an invalid choice then ignore and/ or set to Unselected
+            if ( ScoreTable [ (int) PlayerUp] [ (int) rowClicked] != null )
+            {
+                RowSelected = Row.Unselected;
+            }
+            else
+            {
+                RowSelected = rowClicked;
+            }
         }
 
         #endregion Methods
@@ -224,7 +262,7 @@ namespace YahtzeeWPF2
                 // Get this players scores.
                 int? [] scores = scoreTable [ ( int ) PlayerUp ];
                 var scoringItems = new List<ResultsItem> ();
-                
+
             }
 
 

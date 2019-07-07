@@ -34,13 +34,24 @@ namespace YahtzeeWPF2
         List<TextBlock> postColumn;
         public List<List<TextBlock>> posts;
 
+        public List<List<TextBlock>> posts1;
+
         // List of five "dice" button lists.=> List of four buttons ( parent - container button holding the top, left and "right die" face buttons).
         List<List<Button>> visualDiceList;
 
 
         SolidColorBrush pointsBrush = new SolidColorBrush ( Color.FromArgb ( 255, 0, 255, 0 ) );
         SolidColorBrush player1Brush = new SolidColorBrush ( Color.FromArgb ( 255, 150, 0, 0 ) );
-        //LinearGradientBrush linearGradientBrush;
+
+        Color colorPlayer1;
+        Color colorPlayer2;
+        Color colorPlayer3;
+
+        Color colorOpen;
+        Color colorScratch;
+        Color colorPoints;
+        Color colorFilled;
+        Color colorInsist;
         #endregion Fields
 
 
@@ -52,12 +63,16 @@ namespace YahtzeeWPF2
         {
             InitializeComponent ();
             NameScope.SetNameScope ( this, new NameScope () );
+            InitialColors ();
             InitializeScoresheetVisual ();
             InitializeDiceBox ();
             GameModel.NewGame ();
             UpdateDiceVisual ();
             UpdateTakeScoresVisual ();
             UpdateCommitVisual1 ();
+
+
+            //KlugeBuildPosts1 ();
         }
         #endregion MainWindow Constructor
 
@@ -96,6 +111,20 @@ namespace YahtzeeWPF2
         }
 
 
+        private void Commit_Click1 ( object sender, RoutedEventArgs e )
+        {
+            VimModel.CommitWasClicked ();
+            if ( GameModel.CommitDetails.ResultsList.Count != 0 )
+            {
+                UpdateScoresheetEntriesVisual ();
+            }
+            UpdateDiceVisual ();
+            UpdateTakeScoresVisual ();
+            UpdateCommitVisual1 ();
+            //UpdateCommitVisual ();
+        }
+
+
         private void NewGame_Click ( object sender, RoutedEventArgs e )
         {
             // Reset the visual, then call GameModel.NewGame.
@@ -113,11 +142,16 @@ namespace YahtzeeWPF2
         {
             Button _button = ( Button ) sender;
             GameModel.RowClickedHandler ( _button.Name );
+            VimModel.RowClicked ( _button.Name );
             //UpdateCommitVisual ();
             UpdateCommitVisual1 ();
         }
+
+
+
         #endregion Events
 
+        
 
 
         #region Methods
@@ -146,7 +180,6 @@ namespace YahtzeeWPF2
             {
                 Color = Color.FromArgb ( 255, 255, 0, 0 ),
             };
-            //visCommit.PlayerNameTxtBlk.Background = _playerBrush;
             visCommit.PlayerColor = _playerBrush;
             visCommit.PlayerName = GameModel.CommitDetails.PlayerName;
             visCommit.Action = GameModel.CommitDetails.Action;
@@ -167,24 +200,6 @@ namespace YahtzeeWPF2
                 _visDie [ 0 ].Margin = new Thickness ( _vimDie.Left, _vimDie.Top, 0, 0 );
                 _visDie [ 1 ].Content = _vimDie.FaceValue;
             }
-
-            //Die _die;
-            //Button _visDie;
-            //double y1 = 365;
-            //double y2 = 550;
-            //double x;
-            //for ( int dieNum = 0; dieNum < 5; dieNum++ )
-            //{
-            //    _die = new Die ();
-            //    _die = GameDice.DieList [ dieNum ];
-            //    _visDie = new Button ();
-            //    _visDie = visualDiceList [ dieNum ] [ 1 ];
-            //    _visDie.Content = _die.FaceValue;
-            //    x = 60 + ( dieNum * 130 );
-
-            //    visualDiceList [ dieNum ] [ 0 ].Margin = ( _die.Held ) ? new Thickness ( x, y2, 0.0, 0.0 ) : new Thickness ( x, y1, 0.0, 0.0 );
-            //}
-
         }
 
 
@@ -212,6 +227,14 @@ namespace YahtzeeWPF2
         }
 
 
+        void UpdateScoresheetEntriesVisual1 ()
+        {
+
+        }
+
+
+
+
         /// <summary>
         ///  Update the TakeScore buttons.
         /// </summary>
@@ -223,7 +246,6 @@ namespace YahtzeeWPF2
             postColumn = posts [ 5 ];
             int _postRow = 0;
             GameScoring.GameRow gamerow;
-            //GameStatus.GameRow gamerow;
             TextBlock textBlock;
             Button button;
 
@@ -232,14 +254,11 @@ namespace YahtzeeWPF2
             {
                 gamerow = new GameScoring.GameRow ();
                 gamerow = GameScoring.GameRows [ _row ];
-                //gamerow = new GameStatus.GameRow ();
-                //gamerow = GameStatus.GameRows [ _row ];
 
                 button = new Button ();
                 button = entryColumn [ _row ];
                 button.Visibility = ( gamerow.TakeScoreVisible ) ? Visibility.Visible : Visibility.Hidden;
                 if ( gamerow.RowHighlight == HighlightStyle.Scratch )
-                //if ( gamerow.RowHighlight == GameStatus.GameRow.HighlightStyle.Scratch )
                 {
                     button.Background = Brushes.LightPink;
                 }
@@ -256,21 +275,39 @@ namespace YahtzeeWPF2
         // End  UpdateTakeScoresVisual
 
 
-
+       /// <summary>
+       /// Logic should be moved to Vim!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       /// </summary>
         void UpdatePlayerHighlight ()
         {
             int _player = GameModel.GameClock.PlayerUp;
-            player1HighlightRect.Fill = Brushes.Transparent;
-            player2HighlightRect.Fill = Brushes.Transparent;
-            player3HighlightRect.Fill = Brushes.Transparent;
+            //player1HighlightRect.Fill = Brushes.Transparent;
+            //player2HighlightRect.Fill = Brushes.Transparent;
+            //player3HighlightRect.Fill = Brushes.Transparent;
+            player1HighlightRect.Fill = Brushes.Gray;
+            player2HighlightRect.Fill = Brushes.Gray;
+            player3HighlightRect.Fill = Brushes.Gray;
             if ( _player == 1 )
                 player1HighlightRect.Fill = Brushes.Goldenrod;
             else if ( _player == 2 )
                 player2HighlightRect.Fill = Brushes.Goldenrod;
             else
-                player3HighlightRect.Fill = Brushes.Goldenrod;
+                player3HighlightRect.Fill = Brushes.Gold;
         }
 
+
+        void InitialColors ()
+        {
+            colorPlayer1 = Color.FromRgb ( 80, 0, 0 );
+            colorPlayer2 = Color.FromRgb ( 0, 140, 0 );
+            colorPlayer3 = Color.FromRgb ( 0, 0, 110 );
+
+            colorFilled = Color.FromRgb ( 80, 80, 80 );
+            colorOpen = Color.FromRgb ( 120, 120, 120 );
+            colorScratch = Color.FromRgb ( 100, 20, 20 );
+             colorPoints = Color.FromRgb ( 200, 180, 20 );
+            colorInsist = Color.FromRgb ( 220, 200, 40 );
+        }
 
         void InitializeDiceVisual1 ()
         {
@@ -320,6 +357,27 @@ namespace YahtzeeWPF2
                 }
             }
         }
+
+
+        /// <summary>
+        /// Does this change Posts because of reference??????????????????????????????????????????????????????????????????????????????????????????
+        /// </summary>
+        //void KlugeBuildPosts1 ()
+        //{
+        //    posts1 = new List<List<TextBlock>> ();
+        //    for ( int _col = 2; _col < 5; _col++ )
+        //    {
+        //        var column = new List<TextBlock> ();
+        //        column =    posts [ _col ];
+        //        column.RemoveAt ( 9 );
+        //        column.RemoveAt ( 0 );
+        //        posts1.Add ( column );
+        //        if ( posts [0].Count != posts [_col].Count )
+        //        {
+        //            throw new System.Exception ( "ERROR:  Its a reference thing; add the items I want.  Or............" );
+        //        }
+        //    }
+        //}
 
         #endregion MainWindow methods
 
