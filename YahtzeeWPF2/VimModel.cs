@@ -25,7 +25,7 @@ namespace YahtzeeWPF2
     }
 
 
-    static class VimModel
+    public static class VimModel
     {
         // Fields
         //static List<VimDie1> visDice;
@@ -74,7 +74,7 @@ namespace YahtzeeWPF2
         }
 
 
-        enum VisColumn
+        public enum VisColumn
         {
             Unselected = -1,
             RowHeader1 = 0,
@@ -85,7 +85,7 @@ namespace YahtzeeWPF2
             TakeScore = 5,
         }
 
-        enum VisRow
+        public enum VisRow
         {
             Unselected = -1,
             UpperHeader = 0,
@@ -197,48 +197,48 @@ namespace YahtzeeWPF2
         }
 
 
-        //// Convert RowX between  int row values between GameModel score table and Vis GameSheet.
-        //[ValueConversion ( typeof ( Row ), typeof ( VisRow ) )]
-        //public class RowVisRowConverter : IValueConverter
-        //{
-        //    public object Convert ( object value, Type targetType, object parameter, CultureInfo culture )
-        //    {
-        //        Row row = ( Row ) value;
-        //        VisRow visRow;
-        //        Enum.TryParse ( row.ToString (), false, out visRow );
-        //        return visRow;
-        //    }
+        ////// Convert RowX between  int row values between GameModel score table and Vis GameSheet.
+        ////[ValueConversion ( typeof ( Row ), typeof ( VisRow ) )]
+        ////public class RowVisRowConverter : IValueConverter
+        ////{
+        ////    public object Convert ( object value, Type targetType, object parameter, CultureInfo culture )
+        ////    {
+        ////        Row row = ( Row ) value;
+        ////        VisRow visRow;
+        ////        Enum.TryParse ( row.ToString (), false, out visRow );
+        ////        return visRow;
+        ////    }
 
-        //    public object ConvertBack ( object value, Type targetType, object parameter, CultureInfo culture )
-        //    {
-        //        Row row;
-        //        VisRow visRow = ( VisRow ) value;
-        //        Enum.TryParse ( visRow.ToString (), false, out row );
-        //        return visRow;
-        //    }
-        //}
+        ////    public object ConvertBack ( object value, Type targetType, object parameter, CultureInfo culture )
+        ////    {
+        ////        Row row;
+        ////        VisRow visRow = ( VisRow ) value;
+        ////        Enum.TryParse ( visRow.ToString (), false, out row );
+        ////        return visRow;
+        ////    }
+        ////}
 
 
-        //// Convert PlayerX int column values between GameModel score table and Vis GameSheet.
-        //[ValueConversion ( typeof ( Player ), typeof ( VisColumn ) )]
-        //public class PlayerVisColumnConverter : IValueConverter
-        //{
-        //    public object Convert ( object value, Type targetType, object parameter, CultureInfo culture )
-        //    {
-        //        Player player = ( Player ) value;
-        //        VisColumn visColumn;
-        //        visColumn = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), player.ToString () );
-        //        return visColumn;
-        //    }
+        ////// Convert PlayerX int column values between GameModel score table and Vis GameSheet.
+        ////[ValueConversion ( typeof ( Player ), typeof ( VisColumn ) )]
+        ////public class PlayerVisColumnConverter : IValueConverter
+        ////{
+        ////    public object Convert ( object value, Type targetType, object parameter, CultureInfo culture )
+        ////    {
+        ////        Player player = ( Player ) value;
+        ////        VisColumn visColumn;
+        ////        visColumn = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), player.ToString () );
+        ////        return visColumn;
+        ////    }
 
-        //    public object ConvertBack ( object value, Type targetType, object parameter, CultureInfo culture )
-        //    {
-        //        Player player;
-        //        VisColumn visColumn = ( VisColumn ) value;
-        //        player = ( Player ) Enum.Parse ( typeof ( Player ), visColumn.ToString () );
-        //        return player;
-        //    }
-        //}
+        ////    public object ConvertBack ( object value, Type targetType, object parameter, CultureInfo culture )
+        ////    {
+        ////        Player player;
+        ////        VisColumn visColumn = ( VisColumn ) value;
+        ////        player = ( Player ) Enum.Parse ( typeof ( Player ), visColumn.ToString () );
+        ////        return player;
+        ////    }
+        ////}
 
 
 
@@ -259,7 +259,7 @@ namespace YahtzeeWPF2
             //      Constructor
 
             //      Properties
-
+            
             // Commit button parameters.
 
             // Sets color 
@@ -269,87 +269,105 @@ namespace YahtzeeWPF2
             }
 
             // Set the Commit button texts.
+
             public static string PlayerName
             {
-                get => PlayerUp.ToString ();
+                //get => PlayerUp.ToString ();
+                get => GameStrings1.PlayerNames [(int) PlayerUp];
             }
 
             // Larger center string
-            public static string Action { get; set; }
-            public static string Description { get; set; }
+            public static string Action
+            {
+                get => GameStrings1.GetActionString ();
+            }
+            public static string Description
+            {
+                get => GameStrings1.GetDescriptionString ();
+            }
 
             // Scoresheet parameters, needs to get built before rolling dice.
-            public static List<VisScoresheetResult> VisScoresheetResults { get; set; }
+            public static List<VisScoresheetResult> VisScoresheetResults
+            {
+                get => BuildVisScoresheetResults ();
+            }
 
 
 
 
             // Methods
 
-            public static void BuildVisScoresheetResults ()
+            public static List<VisScoresheetResult> BuildVisScoresheetResults ()
             {
-
+                // ResultsItem Row Row; IsFilled;t Value;
+                // VisScoresheetResult   VisColumn Column;     VisRow Row;   string Value;   var _results = GameModel1.;
+                var _visResults = new List<VisScoresheetResult> ();
+                foreach ( var resultItem in GameModel1.ResultsList )
+                {
+                    VisScoresheetResult _vResult = new VisScoresheetResult ();
+                    //   visColumn = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), player.ToString () );
+                    _vResult.Column = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), GameModel1.PlayerUp.ToString () );
+                    //    Enum.TryParse ( row.ToString (), false, out visRow );
+                    _vResult.Row = (VisRow) Enum.Parse ( typeof ( VisRow ), resultItem.Row.ToString () );
+                    _vResult.Value = resultItem.Value.ToString ();
+                    _visResults.Add ( _vResult );
+                }
+                return _visResults;
             }
-
-            // Clear old ResultsList,
-            public static void ClearDetails ()
-            {
-                ResultsList = new List<int []> ();
-
-            }
+            
 
 
 
 
 
-            public static void ChooseText ()
-            {
-                int _rollsRemaining = 3 - GameModel1.CurrentDiceRoll;
-                Action = GameStrings1.CommitActionStrings [ 1 ];
-                Description = $"{ GameStrings1.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings1.CommitDescriptionStrings [ 1 ]}";
-            }
+            //public static void ChooseText ()
+            //{
+            //    int _rollsRemaining = 3 - GameModel1.CurrentDiceRoll;
+            //    Action = GameStrings1.CommitActionStrings [ 1 ];
+            //    Description = $"{ GameStrings1.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings1.CommitDescriptionStrings [ 1 ]}";
+            //}
 
 
-            public static void DeclareWinner ()
-            {
-                PlayerName = GameStrings1.PlayerNames [ ( int ) GameModel1.GetWinner () ];
-                Action = GameStrings1.CommitActionStrings [ 3 ];
-                Description = GameStrings1.CommitDescriptionStrings [ 3 ];
-            }
+            //public static void DeclareWinner ()
+            //{
+            //    PlayerName = GameStrings1.PlayerNames [ ( int ) GameModel1.GetWinner () ];
+            //    Action = GameStrings1.CommitActionStrings [ 3 ];
+            //    Description = GameStrings1.CommitDescriptionStrings [ 3 ];
+            //}
 
 
-            public static void NextPlayer ()
-            {
-                PlayerName = GameStrings1.PlayerNames [ ( int ) GameModel1.PlayerUp ];
-                //PlayerColor = GameColors.PlayerColors [ ( GameClock.PlayerUp - 1 ) ];
-                // Setting TakeScoreRow to -1 as a flag for unused.
-                TakeScoreRow = -1;
-            }
+            //public static void NextPlayer ()
+            //{
+            //    PlayerName = GameStrings1.PlayerNames [ ( int ) GameModel1.PlayerUp ];
+            //    //PlayerColor = GameColors.PlayerColors [ ( GameClock.PlayerUp - 1 ) ];
+            //    // Setting TakeScoreRow to -1 as a flag for unused.
+            //    TakeScoreRow = -1;
+            //}
 
 
-            public static void RollText ()
-            {
-                int _rollsRemaining = 3 - GameClock.DiceRoll;
-                Action = GameStrings1.CommitActionStrings [ 0 ];
-                Description = $"{ GameStrings1.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings1.CommitDescriptionStrings [ 1 ]}";
-            }
+            //public static void RollText ()
+            //{
+            //    int _rollsRemaining = 3 - GameClock.DiceRoll;
+            //    Action = GameStrings1.CommitActionStrings [ 0 ];
+            //    Description = $"{ GameStrings1.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings1.CommitDescriptionStrings [ 1 ]}";
+            //}
 
 
-            public static void ScoringSelected ( string takeScoreString, int takeScoreRow )
-            {
-                Action = $"{GameStrings1.CommitActionStrings [ 2 ]}";
-                Description = $"{ GameStrings1.CommitDescriptionStrings [ 2 ]} {takeScoreString}";
-                CommitDetails.TakeScoreRow = takeScoreRow;
-            }
+            //public static void ScoringSelected ( string takeScoreString, int takeScoreRow )
+            //{
+            //    Action = $"{GameStrings1.CommitActionStrings [ 2 ]}";
+            //    Description = $"{ GameStrings1.CommitDescriptionStrings [ 2 ]} {takeScoreString}";
+            //    CommitDetails.TakeScoreRow = takeScoreRow;
+            //}
 
 
-            public static void UpdateResults ( int row, int value )
-            {
-                int [] _rowValue = new int [ 2 ];
-                _rowValue [ 0 ] = row;
-                _rowValue [ 1 ] = value;
-                ResultsList.Add ( _rowValue );
-            }
+            //public static void UpdateResults ( int row, int value )
+            //{
+            //    int [] _rowValue = new int [ 2 ];
+            //    _rowValue [ 0 ] = row;
+            //    _rowValue [ 1 ] = value;
+            //    ResultsList.Add ( _rowValue );
+            //}
 
 
             #endregion Methods
@@ -357,9 +375,9 @@ namespace YahtzeeWPF2
 
             public struct VisScoresheetResult
             {
-                VisColumn Column;
-                VisRow Row;
-                string Value;
+                public VisColumn Column;
+                public VisRow Row;
+                public string Value;
             }
 
         }

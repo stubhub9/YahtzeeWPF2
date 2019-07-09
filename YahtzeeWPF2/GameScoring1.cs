@@ -117,6 +117,7 @@ namespace YahtzeeWPF2
             AddResultsItemToScoringList ( Row.FiveStr, _value );
 
             AddResultsItemToScoringList ( Row.Chance,  sumOfAllDice );
+            
         }
 
 
@@ -146,56 +147,6 @@ namespace YahtzeeWPF2
 
 
         #endregion Methods
-
-
-
-
-        /// <summary>
-        /// Supplies GameModel with info for each scorable row.
-        ///// </summary>
-        //public class GameRow
-        //{
-        //    // No Fields 
-
-
-        //    // Constructor  
-
-        //    public GameRow ()
-        //    {
-        //        RowHighlight = HighlightStyle.Filled;
-        //        TakeScoreString = "   ";
-        //        TakeScoreValue = 0;
-        //        TakeScoreVisible = false;
-
-        //    }
-
-        //    // Enum
-
-        //    //public enum HighlightStyle
-        //    //{
-        //    //    Filled = 0,
-        //    //    Open,
-        //    //    Scratch,
-        //    //    Points,
-        //    //    BestChoice,
-        //    //    // What the player is choosing, OR enforced take 5OK or 5Str. 
-        //    //    Insist
-        //    //}
-
-
-        //    // Properties 
-
-        //    public HighlightStyle RowHighlight
-        //    { get; set; }
-
-        //    public string TakeScoreString
-        //    { get; set; }
-
-        //    public int TakeScoreValue
-        //    { get; set; }
-
-        //    public bool TakeScoreVisible
-        //    { get; set; }
-        //}
+        
     }
 }

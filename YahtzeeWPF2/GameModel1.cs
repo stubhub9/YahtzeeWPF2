@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace YahtzeeWPF2
 {
 
-    enum Player
+    public enum Player
     {
         PlayerOne, PlayerTwo, PlayerThree,
     }
@@ -15,7 +15,7 @@ namespace YahtzeeWPF2
     enum Roll
     { Third, Second, First }
 
-    internal enum Row
+    public enum Row
     {
         Unselected = -1,
         Ones = 0,
@@ -35,7 +35,7 @@ namespace YahtzeeWPF2
     }
 
 
-     internal struct ResultsItem
+     public struct ResultsItem
     {
         public Row Row;
         public bool IsFilled;
@@ -89,6 +89,8 @@ namespace YahtzeeWPF2
         }
 
 
+        public static List <ResultsItem> ResultsList
+        { get; set; }
 
         #region Methods
 
@@ -136,10 +138,11 @@ namespace YahtzeeWPF2
          * RowEnum and value for each score sheet entry changed or updated.
          * ie The score taken and all Totals and Bonuses that were updated.
          * */
-        public static List < ResultsItem > RecordScore ( ResultsItem scoringItem )
+        //public static List<ResultsItem> RecordScore ( ResultsItem scoringItem )
+        public static void  RecordScore ( ResultsItem scoringItem )
         {
-            List<ResultsItem> ResultsList = GameScores.RecordScore ( scoringItem );
-            return ResultsList;
+            GameScores.RecordScore ( scoringItem );
+            //List<ResultsItem> ResultsList = GameScores.RecordScore ( scoringItem );
         }
 
 
@@ -155,6 +158,8 @@ namespace YahtzeeWPF2
             GameClock.NextDiceRoll ();
             GameDice.RollDice ();
             GameScoring1.UpdateScoringList ();
+            // On scoring ResultsList and NewDice; else Roll dice and clear list;
+            ResultsList.Clear ();
         }
 
         // 
@@ -251,6 +256,8 @@ namespace YahtzeeWPF2
         {
             // Field
 
+           static List<ResultsItem> resultsList;
+
             // Three player columns with a row for each Row enum; 21 total.
             public static int? [] [] scoreTable;
 
@@ -280,11 +287,11 @@ namespace YahtzeeWPF2
             /// Updates the score table, 
             /// Returns all entries that have changed for the Vis
             /// </summary>
-            public static List<ResultsItem> RecordScore ( ResultsItem item )
+            public static void RecordScore ( ResultsItem item )
             {
                 // Get this players scores.
                 int? [] scores = scoreTable [ ( int ) PlayerUp ];
-                var resultsList = new List<ResultsItem> ();
+                resultsList = new List<ResultsItem> ();
 
                 if ( scores [ ( int ) item.Row ] != null )
                 {
@@ -297,7 +304,7 @@ namespace YahtzeeWPF2
                 UpdatePostings ( item.Row, item.Value, ref scores, ref resultsList );
 
                 scoreTable [ ( int ) PlayerUp ] = scores;
-                return resultsList;
+                ResultsList = resultsList;
             }
 
 
