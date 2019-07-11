@@ -62,7 +62,7 @@ namespace YahtzeeWPF2
 
         // Enum
 
-        enum HighlightStyle
+        public enum HighlightStyle
         {
             Filled = 0,
             Open,
@@ -101,43 +101,25 @@ namespace YahtzeeWPF2
 
         #region Methods
 
-        /* Button appears when the Commit button should have a second option.
+        /*NYI:  Button appears when the Commit button should have a second option.
          */
         public static void CommitOptionWasClicked ()
         {
             // NYI
         }
 
-        /* Expose Properties to the Visual
-         * Dice params
-         * Scoresheet params
-         * OnReturn of [STAThread] from models, the Visual will implement the changes.
-         */
+        
+
         public static void CommitWasClicked ()
         {
-            // RBC:  Dialog => must choose row to score
-            // RBC:  Dialog => are you sure ( accidental double click, poor dice selection, poor game scoring )
-
-            // Return Bad Click:  Must choose a scoring option.
-            /* Using Row.TotalScore as undefined flag, */
-
-
-
-
-            // Roll Dice Click
-            /* Return updated dice visual
-             *  Return updated take score game rows*/
-
-            // Take Score Click
-            /* Return Scoresheet update based on List of Result Items
-             Return updated dice visual
-             *  Return updated take score game rows*/
-
+            // The model should process the click!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            GameModel1.CommitWasClicked ();
 
         }
 
 
-        // Toggle die.Held
+        //NYI:  SEE VisDice.
+        //Toggle die.Held
         public static void DieWasClicked ( int DieOrdinalClicked )
         {
 
@@ -153,14 +135,16 @@ namespace YahtzeeWPF2
 
 
         // New game OnInit or clicked.
-        public static void NewGameWasClicked ()
+        public static void NewGame ()
         {
             GameModel1.NewGame ();
+
+            //NYI:  Vim/ Vis dice needs to be thought out!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             VimDice.NewDice ();
         }
 
 
-        /* Visual should call a dialog/ subwindow; and then 
+        /*NYI:  Visual should call a dialog/ subwindow; and then 
          * pass changes made to here. 
          */
         public static void OptionsWasClicked ()
@@ -169,96 +153,38 @@ namespace YahtzeeWPF2
         }
 
 
-        /* Visual should pass info on row clicked
-         * 
-         * Update takescore row highlights
-         */
+        /// <summary>
+        ///  Pass the row clicked to the game model.
+        /// </summary>
         public static void RowClicked ( string buttonName )
         {
-            /* Convert button name to enum for row numbers;
-             *  If the takescore row shouldn't be clickable; then return  (Was only clickable on roll 3 and visible );
-             * Vis then updates the commit visual.
-             */
+            // Convert button name to Row enum.
             VisRow _visRow = ( VisRow ) Int32.Parse ( buttonName.Remove ( 0, 8 ) );
             Row _row = ( Row ) Enum.Parse ( typeof ( Row ), _visRow.ToString () );
 
+            // Process the clicked row.
             GameModel1.RowClicked ( _row );
-            if ( GameModel1.RowSelected != Row.Unselected )
-            {
-
-            }
-            //  If GameModel1.RowSelected remains Unselected:  Ignore
         }
 
 
+        /* Unused:  Game model will update all fields;
+         *  OnReturn:  the Visual calls the viewmodel;
+         *  which will translate the model's properties to Visual parameters.
+         **/
         public static void UpdateCommitDetails ()
         {
 
         }
 
-
-        ////// Convert RowX between  int row values between GameModel score table and Vis GameSheet.
-        ////[ValueConversion ( typeof ( Row ), typeof ( VisRow ) )]
-        ////public class RowVisRowConverter : IValueConverter
-        ////{
-        ////    public object Convert ( object value, Type targetType, object parameter, CultureInfo culture )
-        ////    {
-        ////        Row row = ( Row ) value;
-        ////        VisRow visRow;
-        ////        Enum.TryParse ( row.ToString (), false, out visRow );
-        ////        return visRow;
-        ////    }
-
-        ////    public object ConvertBack ( object value, Type targetType, object parameter, CultureInfo culture )
-        ////    {
-        ////        Row row;
-        ////        VisRow visRow = ( VisRow ) value;
-        ////        Enum.TryParse ( visRow.ToString (), false, out row );
-        ////        return visRow;
-        ////    }
-        ////}
-
-
-        ////// Convert PlayerX int column values between GameModel score table and Vis GameSheet.
-        ////[ValueConversion ( typeof ( Player ), typeof ( VisColumn ) )]
-        ////public class PlayerVisColumnConverter : IValueConverter
-        ////{
-        ////    public object Convert ( object value, Type targetType, object parameter, CultureInfo culture )
-        ////    {
-        ////        Player player = ( Player ) value;
-        ////        VisColumn visColumn;
-        ////        visColumn = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), player.ToString () );
-        ////        return visColumn;
-        ////    }
-
-        ////    public object ConvertBack ( object value, Type targetType, object parameter, CultureInfo culture )
-        ////    {
-        ////        Player player;
-        ////        VisColumn visColumn = ( VisColumn ) value;
-        ////        player = ( Player ) Enum.Parse ( typeof ( Player ), visColumn.ToString () );
-        ////        return player;
-        ////    }
-        ////}
+        #endregion Methods
 
 
 
-        // Private Methods
-
-
-
-
-
-
-
-        //#endregion Methods
-
-
+        /// <summary>
+        ///  Supply Visual parameters on demand.
+        /// </summary>
         public static class CommitDetails
         {
-            //      Fields
-            //      Constructor
-
-            //      Properties
             
             // Commit button parameters.
 
@@ -268,28 +194,39 @@ namespace YahtzeeWPF2
                 get => GameModel1.PlayerUp;
             }
 
-            // Set the Commit button texts.
 
+            // Set the Commit button texts.
             public static string PlayerName
             {
                 //get => PlayerUp.ToString ();
                 get => GameStrings1.PlayerNames [(int) PlayerUp];
             }
 
-            // Larger center string
+
+            // String for Larger center textbox.
             public static string Action
             {
                 get => GameStrings1.GetActionString ();
             }
+
+            // String for lower textbox.
             public static string Description
             {
                 get => GameStrings1.GetDescriptionString ();
             }
 
-            // Scoresheet parameters, needs to get built before rolling dice.
+
+            // Scoresheet parameters.  
             public static List<VisScoresheetResult> VisScoresheetResults
             {
                 get => BuildVisScoresheetResults ();
+            }
+
+
+            // Takescore rows params
+            public static List<VisGameRow> VisGameRows
+            {
+                get => BuildVisGameRows ();
             }
 
 
@@ -314,63 +251,18 @@ namespace YahtzeeWPF2
                 }
                 return _visResults;
             }
+
+
+            public static List <VisGameRow> BuildVisGameRows ()
+            {
+                var _visGameRows = new List <VisGameRow> ();
+
+
+
+
+                return _visGameRows;
+            }
             
-
-
-
-
-
-            //public static void ChooseText ()
-            //{
-            //    int _rollsRemaining = 3 - GameModel1.CurrentDiceRoll;
-            //    Action = GameStrings1.CommitActionStrings [ 1 ];
-            //    Description = $"{ GameStrings1.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings1.CommitDescriptionStrings [ 1 ]}";
-            //}
-
-
-            //public static void DeclareWinner ()
-            //{
-            //    PlayerName = GameStrings1.PlayerNames [ ( int ) GameModel1.GetWinner () ];
-            //    Action = GameStrings1.CommitActionStrings [ 3 ];
-            //    Description = GameStrings1.CommitDescriptionStrings [ 3 ];
-            //}
-
-
-            //public static void NextPlayer ()
-            //{
-            //    PlayerName = GameStrings1.PlayerNames [ ( int ) GameModel1.PlayerUp ];
-            //    //PlayerColor = GameColors.PlayerColors [ ( GameClock.PlayerUp - 1 ) ];
-            //    // Setting TakeScoreRow to -1 as a flag for unused.
-            //    TakeScoreRow = -1;
-            //}
-
-
-            //public static void RollText ()
-            //{
-            //    int _rollsRemaining = 3 - GameClock.DiceRoll;
-            //    Action = GameStrings1.CommitActionStrings [ 0 ];
-            //    Description = $"{ GameStrings1.CommitDescriptionStrings [ 0 ]} { _rollsRemaining } { GameStrings1.CommitDescriptionStrings [ 1 ]}";
-            //}
-
-
-            //public static void ScoringSelected ( string takeScoreString, int takeScoreRow )
-            //{
-            //    Action = $"{GameStrings1.CommitActionStrings [ 2 ]}";
-            //    Description = $"{ GameStrings1.CommitDescriptionStrings [ 2 ]} {takeScoreString}";
-            //    CommitDetails.TakeScoreRow = takeScoreRow;
-            //}
-
-
-            //public static void UpdateResults ( int row, int value )
-            //{
-            //    int [] _rowValue = new int [ 2 ];
-            //    _rowValue [ 0 ] = row;
-            //    _rowValue [ 1 ] = value;
-            //    ResultsList.Add ( _rowValue );
-            //}
-
-
-            #endregion Methods
 
 
             public struct VisScoresheetResult
@@ -380,16 +272,26 @@ namespace YahtzeeWPF2
                 public string Value;
             }
 
+
+            //    enum HighlightStyle   Filled = 0,   Open,    Scratch,    Points,  BestChoice,   Insist
+            public struct VisGameRow
+            {
+                public bool IsVisible;
+                public HighlightStyle Highlight;
+                public string Text;
+
+            }
+
+
         }
 
 
-
+        //NYI:  Do I need this??????????????????????????????????????????????????????????????????????????????????????????????????????
         /*  public struct DieStruct 
          *  int DieId  int FaceValue  public bool Held */
         // Convert  DieHeld to Y value; DieClicked to toggle held;
         // RowHighlighted to DiceHighlight; RowClicked to DiceHeld and Highlight
         // 5 dice held detection, 5 dice match a row highlight
-
         private static class VimDice
         {
 
@@ -410,17 +312,6 @@ namespace YahtzeeWPF2
 
 
             // Public Methods
-
-            public static void NewDice ()
-            {
-
-            }
-
-
-            public static void RollDice ()
-            {
-
-            }
 
 
             // Private Methods
@@ -454,52 +345,6 @@ namespace YahtzeeWPF2
 
 
         }
-
-
-
-
-
-
-        //TODO:  Refactor this into VimModel
-        /*  Move GetTakeScoreString into Vim
-         
-         */
-
-        //static void BuildGameRows ()
-        //{
-        //    GameRows = new List<GameRow> ();
-        //    for ( int _row = 0; _row < 13; _row++ )
-        //    {
-        //        var _gameRow = new GameRow ();
-        //        GameRows.Add ( _gameRow );
-
-        //        if ( !scoringRowsOpen [ _row ] )
-        //            continue;
-
-        //        if ( pointsList [ _row ] > 0 )
-        //        {
-        //            //_gameRow.RowHighlight = GameRow.HighlightStyle.Points;
-        //            _gameRow.RowHighlight = HighlightStyle.Points;
-        //            _gameRow.TakeScoreValue = pointsList [ _row ];
-        //            _gameRow.TakeScoreString = GameModel.GameStrings.GetTakeScoreString ( _row, _gameRow.TakeScoreValue );
-        //            _gameRow.TakeScoreVisible = true;
-        //        }
-        //        else if ( GameModel.GameClock.DiceRoll == 3 )
-        //        {
-        //            //_gameRow.RowHighlight = GameRow.HighlightStyle.Scratch;
-        //            _gameRow.RowHighlight = HighlightStyle.Scratch;
-        //            _gameRow.TakeScoreString = GameModel.GameStrings.GetTakeScoreString ( _row, _gameRow.TakeScoreValue );
-        //            _gameRow.TakeScoreVisible = true;
-        //        }
-        //        else
-        //            _gameRow.RowHighlight = HighlightStyle.Open;
-        //        //_gameRow.RowHighlight = GameRow.HighlightStyle.Open;
-        //    }
-
-        //}
-
-
-
 
 
 

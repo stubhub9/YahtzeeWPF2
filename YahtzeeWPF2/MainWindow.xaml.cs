@@ -97,21 +97,21 @@ namespace YahtzeeWPF2
         }
 
 
+        //private void Commit_Click ( object sender, RoutedEventArgs e )
+        //{
+        //    GameModel.CommitClickedHandler ();
+        //    if ( GameModel.CommitDetails.ResultsList.Count != 0 )
+        //    {
+        //        UpdateScoresheetEntriesVisual ();
+        //    }
+        //    UpdateDiceVisual ();
+        //    UpdateTakeScoresVisual ();
+        //    UpdateCommitVisual1 ();
+        //    //UpdateCommitVisual ();
+        //}
+
+
         private void Commit_Click ( object sender, RoutedEventArgs e )
-        {
-            GameModel.CommitClickedHandler ();
-            if ( GameModel.CommitDetails.ResultsList.Count != 0 )
-            {
-                UpdateScoresheetEntriesVisual ();
-            }
-            UpdateDiceVisual ();
-            UpdateTakeScoresVisual ();
-            UpdateCommitVisual1 ();
-            //UpdateCommitVisual ();
-        }
-
-
-        private void Commit_Click1 ( object sender, RoutedEventArgs e )
         {
             VimModel.CommitWasClicked ();
             if ( GameModel.CommitDetails.ResultsList.Count != 0 )

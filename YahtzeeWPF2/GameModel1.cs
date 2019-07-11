@@ -52,6 +52,8 @@ namespace YahtzeeWPF2
 
         // Properties
 
+        #region Properties
+
         /// <summary>
         /// How many times the dice have been rolled, this turn.
         /// Value 1 to 3
@@ -92,9 +94,18 @@ namespace YahtzeeWPF2
         public static List <ResultsItem> ResultsList
         { get; set; }
 
+
+
+        #endregion Properties
+
         #region Methods
 
         // Public Methods
+
+        public static void CommitWasClicked ()
+        {
+
+        }
 
 
         public static Player GetWinner ()
@@ -166,14 +177,19 @@ namespace YahtzeeWPF2
         public static void RowClicked ( Row rowClicked)
         {
             // If rowClicked is an invalid choice then ignore and/ or set to Unselected
-            if ( ScoreTable [ (int) PlayerUp] [ (int) rowClicked] != null )
-            {
-                RowSelected = Row.Unselected;
-            }
-            else
+            if ( ScoreTable [ (int) PlayerUp] [ (int) rowClicked] == null )
+            ////{
+
+            ////    RowSelected = Row.Unselected;
+            ////}
+            ////else
+
+
+            // RowSelected should either be unselected or a valid choice.
             {
                 RowSelected = rowClicked;
             }
+            // Else Return.
         }
 
         #endregion Methods
