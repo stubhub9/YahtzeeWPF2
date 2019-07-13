@@ -1,7 +1,7 @@
 # YahtzeeWPF2
 ## Learning project for C#, WPF and Git ( and Entity, ASP, ... ).
 
-## Current tasks
+## Current tasks: Make all classes read like GameScoring1!
   ### Update existing classes:  
       refactor long methods and classes:
         by chaining shorter methods;
