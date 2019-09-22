@@ -10,6 +10,48 @@ using System.Windows.Data;
 namespace YahtzeeWPF2
 {
 
+    public enum HighlightStyle
+    {
+        Filled = 0,
+        Open,
+        Scratch,
+        Points,
+        BestChoice,
+        // What the player is choosing, OR enforced take 5OK or 5Str. 
+        Insist
+    }
+
+
+
+    public enum VisColumn
+    {
+        Unselected = -1,
+        RowHeader1 = 0,
+        RowHeader2 = 1,
+        PlayerOne = 2,
+        PlayerTwo = 3,
+        PlayerThree = 4,
+        TakeScore = 5,
+        //Unselected = -1,
+        //RowHeader1 = 0,
+        //RowHeader2 = 1,
+        //Player1 = 2,
+        //Player2 = 3,
+        //Player3 = 4,
+        //TakeScore = 5,
+    }
+
+    public enum VisRow
+    {
+        Unselected = -1,
+        UpperHeader = 0,
+        Ones, Twos, Threes, Fours, Fives, Sixes,
+        Score63, ScoreUpper,
+        LowerHeader,
+        ThreeX, FourX, FullHouse, FourStr, FiveStr, Chance,
+        FiveX1, FiveX2, FiveX3, FiveX4,
+        ScoreFiveX, ScoreLower, ScoreTotal
+    }
 
     struct VimDie1
     {
@@ -28,18 +70,14 @@ namespace YahtzeeWPF2
     public static class VimModel
     {
         // Fields
-        //static List<VimDie1> visDice;
-        static int [] klugeScoresheetUpdate;
-        static List<int []> klugeScoresheetUpdates;
+
         // Documented Magic Numbers
 
+        // Maybe these belong in the visual as a style????????????????????????????????????????????????????????????????????????????????????
         const double DieHeldY = 550.0;
         const double DieNotHeldY = 365.0;
         const double DieOffsetX = 60.0;
         const double DieSpaceX = 130.0;
-
-        //const double
-        //const int
 
 
         // Constructor
@@ -52,50 +90,12 @@ namespace YahtzeeWPF2
 
 
         // Properties
-
-        static VimDie1 [] Dice
-        {
-            get => VimDice.dice;
-        }
-
+        
 
 
         // Enum
 
-        public enum HighlightStyle
-        {
-            Filled = 0,
-            Open,
-            Scratch,
-            Points,
-            BestChoice,
-            // What the player is choosing, OR enforced take 5OK or 5Str. 
-            Insist
-        }
 
-
-        public enum VisColumn
-        {
-            Unselected = -1,
-            RowHeader1 = 0,
-            RowHeader2 = 1,
-            Player1 = 2,
-            Player2 = 3,
-            Player3 = 4,
-            TakeScore = 5,
-        }
-
-        public enum VisRow
-        {
-            Unselected = -1,
-            UpperHeader = 0,
-            Ones, Twos, Threes, Fours, Fives, Sixes,
-            Score63, ScoreUpper,
-            LowerHeader,
-            ThreeX, FourX, FullHouse, FourStr, FiveStr, Chance,
-            FiveX1, FiveX2, FiveX3, FiveX4,
-            ScoreFiveX, ScoreLower, ScoreTotal
-        }
 
 
 
@@ -108,21 +108,22 @@ namespace YahtzeeWPF2
             // NYI
         }
 
-        
+
 
         public static void CommitWasClicked ()
         {
-            // The model should process the click!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             GameModel1.CommitWasClicked ();
+            DiceBoxVM.UpdateDiceVisMod ();
 
         }
 
 
         //NYI:  SEE VisDice.
         //Toggle die.Held
-        public static void DieWasClicked ( int DieOrdinalClicked )
+        public static void DieWasClicked ( int OrdinalOfDieClicked )
         {
 
+            DiceBoxVM.DieWasClicked (OrdinalOfDieClicked);
 
             //var _topLeft = new Point ();
             //GameDice.DieStruct _die = GameDice.DieStructs [ thisDie ];
@@ -138,9 +139,7 @@ namespace YahtzeeWPF2
         public static void NewGame ()
         {
             GameModel1.NewGame ();
-
-            //NYI:  Vim/ Vis dice needs to be thought out!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            VimDice.NewDice ();
+            DiceBoxVM.UpdateDiceVisMod ();
         }
 
 
@@ -171,10 +170,10 @@ namespace YahtzeeWPF2
          *  OnReturn:  the Visual calls the viewmodel;
          *  which will translate the model's properties to Visual parameters.
          **/
-        public static void UpdateCommitDetails ()
-        {
+        //public static void UpdateCommitDetails ()
+        //{
 
-        }
+        //}
 
         #endregion Methods
 
@@ -185,7 +184,7 @@ namespace YahtzeeWPF2
         /// </summary>
         public static class CommitDetails
         {
-            
+
             // Commit button parameters.
 
             // Sets color 
@@ -199,7 +198,7 @@ namespace YahtzeeWPF2
             public static string PlayerName
             {
                 //get => PlayerUp.ToString ();
-                get => GameStrings1.PlayerNames [(int) PlayerUp];
+                get => GameStrings1.PlayerNames [ ( int ) PlayerUp ];
             }
 
 
@@ -243,27 +242,63 @@ namespace YahtzeeWPF2
                 {
                     VisScoresheetResult _vResult = new VisScoresheetResult ();
                     //   visColumn = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), player.ToString () );
-                    _vResult.Column = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), GameModel1.PlayerUp.ToString () );
+                    _vResult.Column = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), GameModel1.PlayerScored.ToString () );
+                    //_vResult.Column = ( VisColumn ) Enum.Parse ( typeof ( VisColumn ), GameModel1.PlayerUp.ToString () );
                     //    Enum.TryParse ( row.ToString (), false, out visRow );
-                    _vResult.Row = (VisRow) Enum.Parse ( typeof ( VisRow ), resultItem.Row.ToString () );
-                    _vResult.Value = resultItem.Value.ToString ();
+                    _vResult.Row = ( VisRow ) Enum.Parse ( typeof ( VisRow ), resultItem.Row.ToString () );
+
+                    VisRow _row = _vResult.Row;
+                    if ( ( _row == VisRow.FiveX1 ) || ( _row == VisRow.FiveX2 ) || ( _row == VisRow.FiveX3 ) || ( _row == VisRow.FiveX4 ) )
+                    {
+                        _vResult.Value = ( resultItem.Value == 0 ) ? "X" : "V";
+                    }
+                    else
+                        _vResult.Value = resultItem.Value.ToString ();
+
                     _visResults.Add ( _vResult );
                 }
                 return _visResults;
             }
 
 
-            public static List <VisGameRow> BuildVisGameRows ()
+
+            //    public struct ResultsItem     public Row Row;     public bool IsFilled;    public int Value;
+            public static List<VisGameRow> BuildVisGameRows ()
             {
-                var _visGameRows = new List <VisGameRow> ();
+                var _visGameRows = new List<VisGameRow> ();
+                var _scoring = GameScoring1.ScoringList;
+                foreach ( var item in _scoring )
+                {
+                    var _gameRow = new VisGameRow ();
+                    //_vResult.Row = ( VisRow ) Enum.Parse ( typeof ( VisRow ), resultItem.Row.ToString () );
+                    _gameRow.VisRow = ( VisRow ) Enum.Parse ( typeof ( VisRow ), item.Row.ToString () );
+                    _gameRow.Text = item.Value.ToString ();
 
+                    if ( item.IsFilled )
+                    {
+                        _gameRow.Highlight = HighlightStyle.Filled;
+                    }
+                    else if ( item.Value == 0 )
+                    {
+                        _gameRow.Highlight = ( GameModel1.CurrentDiceRoll == 3 ) ? HighlightStyle.Scratch : HighlightStyle.Open;
+                    }
+                    else
+                    {
+                        _gameRow.Highlight = HighlightStyle.Points;
+                    }
 
+                    if ( item.Row == GameModel1.RowSelected )
+                        _gameRow.Highlight = HighlightStyle.Insist;
+
+                    _visGameRows.Add ( _gameRow );
+                }
 
 
                 return _visGameRows;
             }
-            
 
+
+            // structs
 
             public struct VisScoresheetResult
             {
@@ -273,79 +308,26 @@ namespace YahtzeeWPF2
             }
 
 
-            //    enum HighlightStyle   Filled = 0,   Open,    Scratch,    Points,  BestChoice,   Insist
             public struct VisGameRow
             {
-                public bool IsVisible;
+                // Set in visual based on style.     //False if the row is filled.
+                //public bool IsVisible;
+
+                // Highlight enum:     Filled = 0,  Open, Scratch, Points
                 public HighlightStyle Highlight;
+
                 public string Text;
 
+                //  Using the VisRow enum to identify the scoresheet row, and to convert to and from the GameModel Row enum values.
+                public VisRow VisRow;
+                // Notes:
+                //  public GameRow ()    RowHighlight = HighlightStyle.Filled;      TakeScoreString = "   ";     TakeScoreValue = 0;    TakeScoreVisible = false;
+                //    enum HighlightStyle   Filled = 0,   Open,    Scratch,    Points,  BestChoice,   Insist
             }
 
 
         }
-
-
-        //NYI:  Do I need this??????????????????????????????????????????????????????????????????????????????????????????????????????
-        /*  public struct DieStruct 
-         *  int DieId  int FaceValue  public bool Held */
-        // Convert  DieHeld to Y value; DieClicked to toggle held;
-        // RowHighlighted to DiceHighlight; RowClicked to DiceHeld and Highlight
-        // 5 dice held detection, 5 dice match a row highlight
-        private static class VimDice
-        {
-
-            // Fields
-
-            public static VimDie1 [] dice;
-
-
-            // Constructor
-
-            static VimDice ()
-            {
-                BuildDice ();
-            }
-
-
-            // Property
-
-
-            // Public Methods
-
-
-            // Private Methods
-
-            /// <summary>
-            ///REDACT:  VisualBuilder does this???????????????????????????????????????????????????????????
-            /// </summary>
-            static void BuildDice ()
-            {
-
-            }
-
-
-
-        }
-
-
-
-        // Convert ResultItems to GameRow output to Vis, ?VimDice
-        // Row clicked, inferred, recommended adjust highlights
-        // Build take score strings, commit accept/ recommended strings
-        // dice X groupings, Roll dice new values, dice X new values (slide)
-        private static class GameRow
-        {
-            /* Choose and Build Row Highlight/ List of highlights
-             Color, Opacity?, Visibility
-             */
-
-
-            // TakeScore string
-
-
-        }
-
+        
 
 
     }

@@ -67,6 +67,9 @@ namespace YahtzeeWPF2
                     FaceValue = _gDie.FaceValue.ToString (),
                     Left = ( _thisDie * 130.0 ) + 60.0,
                     Top = ( _gDie.Held ) ? 550.0 : 365.0,
+
+                    LeftValue = " ",
+                    RightValue = " ",
                 };
                 VimDice [ _thisDie ] = _vDie;
             }

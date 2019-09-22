@@ -64,7 +64,7 @@ namespace YahtzeeWPF2
 
 
         /// <summary>
-        /// Builds a List of lists.
+        /// Builds a List of 6 lists, 2X row header columns, 3X player scores columns, and the takescore column. 
         /// </summary>
         void BuildColumns ()
         {
@@ -84,7 +84,7 @@ namespace YahtzeeWPF2
 
 
         /// <summary>
-        /// Builds a List of items.
+        /// Build a list of  scoresheet column controls.
         /// </summary>
         void BuildColumn ( int column )
         {

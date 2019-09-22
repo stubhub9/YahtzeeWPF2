@@ -23,8 +23,7 @@ namespace YahtzeeWPF2
             //CommitActionStrings = new string [] { ">>>  Press to Roll Dice  <<<", "<<<<<<<  Choose a scoring option",
             //        ">>>  Press to Accept  <<<",  "^^^^  HAS WON THE GAME (no ties)  ^^^^",  /*"Press to start a new game."*/ };
 
-            CommitDescriptionStrings = new string [] { "Rolling for", "Take", "for", "points.", "Press the New Game button or Quit" };
-            //CommitDescriptionStrings = new string [] { "You have", "rolls left.", "Take", "Press the New Game button or Quit" };
+            CommitDescriptionStrings = new string [] { "Rolling for", "Take", "for", "points.", "No scoring option selected", "Press the New Game button or Quit" };
 
             //TODO: headerLabels will only be used as row header texts for the first two columns, and for string building elsewhere.
             headerLabels = new string [] { "Upper Section", "Aces", "Deuces", "Threes", "Fours", "Fives", "Sixes", "> 63 Bonus", "Upper Score", "Lower Section",
@@ -71,28 +70,12 @@ namespace YahtzeeWPF2
 
             return _string;
         }
-
-
-        //public static string GetTakeScoreString ( int takeScoreRow, int score )
-        //{
-        //    int _row = ( takeScoreRow < 6 ) ? ( takeScoreRow + 1 ) : ( takeScoreRow + 4 );
-        //    string _string = "";
-        //    if ( score > 0 )
-        //    {
-        //        _string = $"{ headerLabels [ _row ]} { scoringStrings [ 2 ]} { score.ToString ()} { scoringStrings [ 3 ]}";
-        //    }
-        //    else
-        //    {
-        //        _string = $"{ scoringStrings [ 0 ]} { headerLabels [ _row ]}.";
-        //    }
-
-        //    return _string;
-        //}
+        
 
         // ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-        public static string GetHeaderString1 ( VimModel.VisColumn column, VimModel.VisRow row )
+        public static string GetHeaderString1 ( VisColumn column, VisRow row )
         {
-            string text = headerLabels [ (( ( ( int ) column ) * 20 ) + ( int ) row ) ];
+            string text = headerLabels [ ( ( ( ( int ) column ) * 20 ) + ( int ) row ) ];
             return text;
         }
         /// <summary>
@@ -155,77 +138,42 @@ namespace YahtzeeWPF2
         public static string GetDescriptionString ()
         {
             //   CommitDescriptionStrings = new string [] { "Rolling for", "Take", "for", "points.", "Press the New Game button or Quit" };
-
             int _roll = GameModel1.CurrentDiceRoll;
-            int _rollsLeft = 3 - _roll;
-            Row row = GameModel1.RowSelected;
-            string _text2 = "  ";
+            //int _rollsLeft = 3 - _roll;
+            Row _row = GameModel1.RowSelected;
+            string _text = "  ";
+            string _rowText = " ";
 
+            // If Game is over =>     Press the New Game button or Quit
             if ( GameModel1.GameRound >= 17 )
             {
-                // Press the New Game button or Quit
-                _text2 = CommitDescriptionStrings [ 4 ];
+                _text = CommitDescriptionStrings [ 5 ];
             }
-            else if ( _roll < 3 )
+            else
             {
-                // Rolling for Xrow.
-                if ( row == Row.Unselected )
-                    _text2 = $"{CommitDescriptionStrings [ 0 ]} {row}.";
+                if ( _row == Row.Unselected )
+                    // "No scoring option selected"
+                    _text = $"{CommitDescriptionStrings [ 4 ]}";
+                else
+                {
+                    //int _intRow = ( int ) _row;
+                    //if ( _intRow >= 6 )
+                    //    _intRow = _intRow - 2;
+                    //ResultsItem _resultsItem = GameScoring1.ScoringList [ _intRow ];
+                    ResultsItem _resultsItem = GameScoring1.GetResultsItem ( _row );
+                    string _points = _resultsItem.Value.ToString ();
+                    _rowText = rowHeader1Labels [ (int) _row ];
+                    if ( _roll < 3 )
+                        _text = $"{CommitDescriptionStrings [ 0 ]} {_rowText}.";
+                    else
+                        _text = $"{CommitDescriptionStrings [ 1 ]} {_rowText} {CommitDescriptionStrings [ 2 ]} {_points} {CommitDescriptionStrings [ 3 ]}";
+
+                }
             }
-            else if ( row != Row.Unselected )
-            {
-                // Take Xrow for X points.
-                _text2 = $"{CommitDescriptionStrings [ 1 ]} {row} {CommitDescriptionStrings [ 2 ]} " +
-                    $"{GameScoring1.ScoringList [ ( int ) row ].Value.ToString ()} {CommitDescriptionStrings [ 3 ]}.";
-            }
-            return _text2;
+            return _text;
         }
 
-
-        //public static void GetCommitStrings ()
-        //{
-        //    // CommitActionStrings = new string [] { ">>>  Press to Roll Dice.  You have ", " rolls left.  <<<", "<<<<<<<  Choose a scoring option",
-        //    //      ">>>  Press to Accept  <<<",  "^^^^  HAS WON THE GAME (no ties)  ^^^^",  /*"Press to start a new game."*/ };
-
-        //    //   CommitDescriptionStrings = new string [] { "Rolling for", "Take", "for", "points.", "Press the New Game button or Quit" };
-
-        //    int _roll = GameModel1.CurrentDiceRoll;
-        //    int _rollsLeft = 3 - _roll;
-        //    Row row = GameModel1.RowSelected;
-        //    string _text1 = "  ";
-        //    string _text2 = "  ";
-
-        //    if ( GameModel1.GameRound >= 17 )
-        //    {
-        //        // Has won the game.
-        //        _text1 = CommitActionStrings [ 4 ];
-        //        _text2 = CommitDescriptionStrings [ 4 ];
-        //    }
-        //    else if ( _roll < 3 )
-        //    {
-        //        // Press to roll dice.  You have 2/1 rolls left.
-        //        _text1 = $"{CommitActionStrings [ 0 ]}{_rollsLeft}{CommitActionStrings [ 1 ]} ";
-        //        // Rolling for Xrow.
-        //        if ( row == Row.Unselected )
-        //            _text2 = $"{CommitDescriptionStrings [ 0 ]} {row}.";
-        //    }
-        //    else if ( row == Row.Unselected )
-        //    {
-        //        //   Choose a scoring option.
-        //        _text1 = $"{CommitActionStrings [ 2 ]}";
-        //    }
-        //    else
-        //    {
-        //        //  Press to Accept.
-        //        _text1 = $"{CommitActionStrings [ 3 ]}";
-        //        // Take Xrow for X points.
-        //        _text2 = $"{CommitDescriptionStrings [ 1 ]} {row} {CommitDescriptionStrings [ 2 ]} " +
-        //            $"{GameScoring1.ScoringList [ ( int ) row ].Value.ToString ()} {CommitDescriptionStrings [ 3 ]}.";
-        //    }
-        //    VimModel.CommitDetails.Action = _text1;
-        //    VimModel.CommitDetails.Description = _text2;
-        //}
-
+        
 
         #endregion GameStrings Methods
     }
