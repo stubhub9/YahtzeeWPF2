@@ -64,7 +64,7 @@ namespace YahtzeeWPF2
 
 
         /// <summary>
-        /// Builds a List of lists.
+        /// Builds a List of 6 lists, 2X row header columns, 3X player scores columns, and the takescore column. 
         /// </summary>
         void BuildColumns ()
         {
@@ -84,9 +84,8 @@ namespace YahtzeeWPF2
 
 
         /// <summary>
-        /// Builds a List of items.
+        /// Build a list of  scoresheet column controls.
         /// </summary>
-        /// <param name="column"></param>
         void BuildColumn ( int column )
         {
             // buttonColumn is populated in GetButton method.
@@ -115,9 +114,6 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Supplies thickness params for all borders except the 5OK buttons.
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
         double [] GetBorderStyle ( int column, int row )
         {
             double x1 = 2;
@@ -159,9 +155,6 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Supply a textbox wrapped in a border.
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
         Border GetBorder ( int column, int row )
         {
             double [] thick = GetBorderStyle ( column, row );
@@ -179,9 +172,6 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Supply a textbox(s) wrapped in a button.
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
         Button GetButton ( int column, int row )
         {
             double [] thick = GetBorderStyle ( column, row );
@@ -221,9 +211,6 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Builds the content for a five of a kind button.
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
         StackPanel Get5OkContent ( int column, int row )
         {
             var _stackPanel = new StackPanel ()
@@ -249,9 +236,6 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Builds the content for a take score button.
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
         StackPanel GetTakeScoreContent ( int column, int row )
         {
             var _stackPanel = new StackPanel ()
@@ -294,16 +278,15 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Supplies the text string for row header, player name or "unfilled".
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
         string GetText ( int column, int row )
         {
             var _text = "   ";
             if ( column <= 1 )
-                _text = GameModel.GameStrings.GetHeaderString ( column, row );
+                _text = GameStrings1.GetHeaderString ( column, row );
+            //_text = GameModel.GameStrings.GetHeaderString ( column, row );
             else if ( ( row == 0 ) && ( column <= 4 ) )
-                _text = GameModel.GameStrings.GetPlayerName ( ( column - 2 ) );
+                _text = GameStrings1.GetPlayerName ( ( column - 2 ) );
+            //_text = GameModel.GameStrings.GetPlayerName ( ( column - 2 ) );
 
             return _text;
         }
@@ -312,9 +295,6 @@ namespace YahtzeeWPF2
         /// <summary>
         /// Builds a generic textblock.
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        /// <returns></returns>
         TextBlock GetTextBlock ( int column, int row )
         {
             // NOTE: Player columns will have 3 more textboxes than other columns.
@@ -457,7 +437,7 @@ namespace YahtzeeWPF2
                     Margin = GetMarginThickness ( dieNum, i ),
                     Height = 50,
                     Width = 50,
-                    RenderTransform = GetTransformGroup ( i ),
+                    RenderTransform = GetDieFaceTransformGroup ( i ),
                 };
                 return _dieFace;
             }
@@ -477,7 +457,6 @@ namespace YahtzeeWPF2
 
 
         Thickness GetMarginThickness ( int dieNum, int i )
-        //Thickness GetMarginThickness ( int dieNum, DieElements dieElement )
         {
             var _thickness = new Thickness ();
 
@@ -501,7 +480,7 @@ namespace YahtzeeWPF2
         }
 
 
-        TransformGroup GetTransformGroup ( int i )
+        TransformGroup GetDieFaceTransformGroup ( int i )
         {
             var _transformGroup = new TransformGroup ();
 

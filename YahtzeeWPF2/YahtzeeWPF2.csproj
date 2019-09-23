@@ -56,8 +56,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DiceBoxVM.cs" />
-    <Compile Include="GameDice1.cs" />
+    <Compile Include="GameDice.cs" />
+    <Compile Include="GameModel1.cs" />
     <Compile Include="GameScoring.cs" />
+    <Compile Include="GameScoring1.cs" />
+    <Compile Include="GameStrings1.cs" />
+    <Compile Include="VimModel.cs" />
     <Compile Include="VisDice.cs" />
     <Compile Include="VisDie.cs" />
     <Compile Include="VisualBuilderClasses.cs" />

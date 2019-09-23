@@ -49,10 +49,10 @@ namespace YahtzeeWPF2
         public static Point DieWasClicked ( int thisDie )
         {
             var _topLeft = new Point ();
-            GameDice1.DieStruct _die = GameDice1.DieStructs [ thisDie ];
+            GameDice.DieStruct _die = GameDice.DieStructs [ thisDie ];
             _topLeft.X = 60.0 + ( thisDie * 130.0 );
             _topLeft.Y = ( _die.Held ) ? 365.0 : 550.0;
-            GameDice1.DieStructs [ thisDie ].Held = !_die.Held;
+            GameDice.DieStructs [ thisDie ].Held = !_die.Held;
             return _topLeft;
         }
 
@@ -61,12 +61,15 @@ namespace YahtzeeWPF2
         {
             for ( int _thisDie = 0; _thisDie < 5; _thisDie++ )
             {
-                var _gDie = GameDice1.DieStructs [ _thisDie ];
+                var _gDie = GameDice.DieStructs [ _thisDie ];
                 var _vDie = new VimDie ()
                 {
                     FaceValue = _gDie.FaceValue.ToString (),
                     Left = ( _thisDie * 130.0 ) + 60.0,
                     Top = ( _gDie.Held ) ? 550.0 : 365.0,
+
+                    LeftValue = " ",
+                    RightValue = " ",
                 };
                 VimDice [ _thisDie ] = _vDie;
             }

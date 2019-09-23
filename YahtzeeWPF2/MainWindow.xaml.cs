@@ -34,13 +34,30 @@ namespace YahtzeeWPF2
         List<TextBlock> postColumn;
         public List<List<TextBlock>> posts;
 
+        public List<List<TextBlock>> posts1;
+
         // List of five "dice" button lists.=> List of four buttons ( parent - container button holding the top, left and "right die" face buttons).
         List<List<Button>> visualDiceList;
 
 
         SolidColorBrush pointsBrush = new SolidColorBrush ( Color.FromArgb ( 255, 0, 255, 0 ) );
         SolidColorBrush player1Brush = new SolidColorBrush ( Color.FromArgb ( 255, 150, 0, 0 ) );
-        //LinearGradientBrush linearGradientBrush;
+
+        Color colorPlayerUp;
+        Color colorPlayer1;
+        Color colorPlayer2;
+        Color colorPlayer3;
+
+        Color colorOpen;
+        Color colorScratch;
+        Color colorPoints;
+        Color colorFilled;
+        Color colorInsist;
+
+
+        Color rowScratch = Colors.LightPink;
+        Color rowOdd = Colors.AliceBlue;
+        Color rowEven = Colors.Gainsboro;
         #endregion Fields
 
 
@@ -52,11 +69,17 @@ namespace YahtzeeWPF2
         {
             InitializeComponent ();
             NameScope.SetNameScope ( this, new NameScope () );
+            InitialColors ();
             InitializeScoresheetVisual ();
             InitializeDiceBox ();
-            GameModel.NewGame ();
+
+
+            //GameModel.NewGame ();
+            VimModel.NewGame ();
+
             UpdateDiceVisual ();
-            UpdateTakeScoresVisual ();
+            UpdateTakeScoresVisual1 ();
+            //UpdateTakeScoresVisual ();
             UpdateCommitVisual1 ();
         }
         #endregion MainWindow Constructor
@@ -84,13 +107,21 @@ namespace YahtzeeWPF2
 
         private void Commit_Click ( object sender, RoutedEventArgs e )
         {
-            GameModel.CommitClickedHandler ();
-            if ( GameModel.CommitDetails.ResultsList.Count != 0 )
+
+            VimModel.CommitWasClicked ();
+
+            // If a score was taken, then update the scoresheet.
+            if ( VimModel.CommitDetails.VisScoresheetResults.Count != 0 )
             {
-                UpdateScoresheetEntriesVisual ();
+                UpdateScoresheetEntriesVisual1 ();
+                //UpdateScoresheetEntriesVisual ();
             }
+
             UpdateDiceVisual ();
-            UpdateTakeScoresVisual ();
+
+            UpdateTakeScoresVisual1 ();
+            //UpdateTakeScoresVisual ();
+
             UpdateCommitVisual1 ();
             //UpdateCommitVisual ();
         }
@@ -108,15 +139,19 @@ namespace YahtzeeWPF2
             // Perhaps a subwindow with menu bars for player names, colors, human/ AI controlled, optional rules, statistics.
         }
 
-
+        // Handles clicks on the scoresheet (entry) rows.
         private void TakeScore_Click ( object sender, RoutedEventArgs e )
         {
             Button _button = ( Button ) sender;
-            GameModel.RowClickedHandler ( _button.Name );
+            VimModel.RowClicked ( _button.Name );
             //UpdateCommitVisual ();
             UpdateCommitVisual1 ();
         }
+
+
+
         #endregion Events
+
 
 
 
@@ -142,15 +177,32 @@ namespace YahtzeeWPF2
 
         public void UpdateCommitVisual1 ()
         {
+            Player playerUp = VimModel.CommitDetails.PlayerUp;
+            switch ( playerUp )
+            {
+                case Player.PlayerOne:
+                    colorPlayerUp = colorPlayer1;
+                    break;
+                case Player.PlayerTwo:
+                    colorPlayerUp = colorPlayer2;
+                    break;
+                default:
+                    colorPlayerUp = colorPlayer3;
+                    break;
+            }
+
             SolidColorBrush _playerBrush = new SolidColorBrush ()
             {
-                Color = Color.FromArgb ( 255, 255, 0, 0 ),
+                Color = colorPlayerUp,
             };
-            //visCommit.PlayerNameTxtBlk.Background = _playerBrush;
+
             visCommit.PlayerColor = _playerBrush;
-            visCommit.PlayerName = GameModel.CommitDetails.PlayerName;
-            visCommit.Action = GameModel.CommitDetails.Action;
-            visCommit.Description = GameModel.CommitDetails.Description;
+            //visCommit.PlayerName = GameModel.CommitDetails.PlayerName;
+            visCommit.PlayerName = VimModel.CommitDetails.PlayerName;
+            //visCommit.Action = GameModel.CommitDetails.Action;
+            visCommit.Action = VimModel.CommitDetails.Action;
+            //visCommit.Description = GameModel.CommitDetails.Description;
+            visCommit.Description = VimModel.CommitDetails.Description;
         }
 
 
@@ -167,107 +219,114 @@ namespace YahtzeeWPF2
                 _visDie [ 0 ].Margin = new Thickness ( _vimDie.Left, _vimDie.Top, 0, 0 );
                 _visDie [ 1 ].Content = _vimDie.FaceValue;
             }
+        }
 
-            //Die _die;
-            //Button _visDie;
-            //double y1 = 365;
-            //double y2 = 550;
-            //double x;
-            //for ( int dieNum = 0; dieNum < 5; dieNum++ )
-            //{
-            //    _die = new Die ();
-            //    _die = GameDice.DieList [ dieNum ];
-            //    _visDie = new Button ();
-            //    _visDie = visualDiceList [ dieNum ] [ 1 ];
-            //    _visDie.Content = _die.FaceValue;
-            //    x = 60 + ( dieNum * 130 );
+        
 
-            //    visualDiceList [ dieNum ] [ 0 ].Margin = ( _die.Held ) ? new Thickness ( x, y2, 0.0, 0.0 ) : new Thickness ( x, y1, 0.0, 0.0 );
-            //}
+        void UpdateScoresheetEntriesVisual1 ()
+        {
+            var _results = VimModel.CommitDetails.VisScoresheetResults;
+            foreach ( var item in _results )
+            {
+                posts [ ( int ) item.Column ] [ ( int ) item.Row ].Text = item.Value;
+            }
 
+
+        }
+
+
+        void UpdateTakeScoresVisual1 ()
+        {
+            var _gameRows = VimModel.CommitDetails.VisGameRows;
+            var _column = VisColumn.TakeScore;
+            // Get a list of takescore buttons
+            List<Button> _buttons = entries [ ( int ) _column ];
+            // Get a list of takescore textblocks.
+            List<TextBlock> _textBlocks = posts [ ( int ) _column ];
+
+            //  VisGameRow    HighlightStyle Highlight; Text;  VisRow VisRow;
+            for ( int i = 0; i < _gameRows.Count; i++ )
+            {
+                var _gameRow = _gameRows [ i ];
+                var _button = _buttons [ i ];
+                var _textBlock = _textBlocks [ ( int ) _gameRow.VisRow ];
+                _textBlock.Text = _gameRow.Text;
+                _button.Visibility = Visibility.Visible;
+
+                switch ( _gameRow.Highlight )
+                {
+                    case HighlightStyle.Filled:
+                        _button.Visibility = Visibility.Hidden;
+
+                        break;
+
+                    case HighlightStyle.Open:
+
+                        _button.Visibility = Visibility.Hidden;
+                        break;
+
+                    case HighlightStyle.Scratch:
+                        _button.Background = new SolidColorBrush ( colorScratch );
+
+                        break;
+
+                    case HighlightStyle.Points:
+                        _button.Background = new SolidColorBrush ( colorPoints );
+
+                        break;
+
+                    case HighlightStyle.Insist:
+                        _button.Background = new SolidColorBrush ( colorInsist );
+
+                        break;
+
+
+                }
+            }
+
+
+
+            //TODO:     Should these be declared here or as fields;     OR AT ALL (just fix the old method!)???????????????????????????????????????
+            //Color rowScratch = Colors.LightPink;
+            //Color rowOdd = Colors.AliceBlue;
+            //Color rowEven = Colors.Gainsboro;
         }
 
 
         /// <summary>
-        /// Updates the entry of the score taken and the column totals. 
+        /// Logic should be moved to Vim!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         /// </summary>
-        void UpdateScoresheetEntriesVisual ()
-        {
-            List<int []> _results = GameModel.CommitDetails.ResultsList;
-            int [] _result = _results [ 0 ];
-            int _col = _result [ 0 ];
-            for ( int i = 1; i < _results.Count; i++ )
-            {
-                _result = _results [ i ];
-                int _row = _result [ 0 ];
-                // If _row is 5OK.
-                if ( ( _row >= 16 ) && ( _row <= 19 ) )
-                {
-                    posts [ _col ] [ _row ].Text = ( _result [ 1 ] == 0 ) ? "X" : "V";
-                }
-                else
-                    posts [ _col ] [ _row ].Text = _result [ 1 ].ToString ();
-            }
-        }
-
-
-        /// <summary>
-        ///  Update the TakeScore buttons.
-        /// </summary>
-        void UpdateTakeScoresVisual ()
-        {
-            entryColumn = new List<Button> ();
-            entryColumn = entries [ 5 ];
-            postColumn = new List<TextBlock> ();
-            postColumn = posts [ 5 ];
-            int _postRow = 0;
-            GameScoring.GameRow gamerow;
-            //GameStatus.GameRow gamerow;
-            TextBlock textBlock;
-            Button button;
-
-
-            for ( int _row = 0; _row < 13; _row++ )
-            {
-                gamerow = new GameScoring.GameRow ();
-                gamerow = GameScoring.GameRows [ _row ];
-                //gamerow = new GameStatus.GameRow ();
-                //gamerow = GameStatus.GameRows [ _row ];
-
-                button = new Button ();
-                button = entryColumn [ _row ];
-                button.Visibility = ( gamerow.TakeScoreVisible ) ? Visibility.Visible : Visibility.Hidden;
-                if ( gamerow.RowHighlight == GameScoring.GameRow.HighlightStyle.Scratch )
-                //if ( gamerow.RowHighlight == GameStatus.GameRow.HighlightStyle.Scratch )
-                {
-                    button.Background = Brushes.LightPink;
-                }
-                else
-                    button.Background = ( _row % 2 == 0 ) ? Brushes.AliceBlue : Brushes.Gainsboro;
-
-                _postRow = ( _row < 6 ) ? _row + 1 : _row + 4;
-                textBlock = new TextBlock ();
-                textBlock = postColumn [ _postRow ];
-                textBlock.Text = gamerow.TakeScoreString;
-            }
-            UpdatePlayerHighlight ();
-        }
-        // End  UpdateTakeScoresVisual
-
-
-
         void UpdatePlayerHighlight ()
         {
-            int _player = GameModel.GameClock.PlayerUp;
-            player1HighlightRect.Fill = Brushes.Transparent;
-            player2HighlightRect.Fill = Brushes.Transparent;
-            player3HighlightRect.Fill = Brushes.Transparent;
-            if ( _player == 1 )
+            int _player = (int) VimModel.CommitDetails.PlayerUp;
+            //player1HighlightRect.Fill = Brushes.Transparent;
+            //player2HighlightRect.Fill = Brushes.Transparent;
+            //player3HighlightRect.Fill = Brushes.Transparent;
+
+            // Set last player's column to gray, by setting all columns to gray-------------------------------- ?Add a last player id to VimModel?
+            player1HighlightRect.Fill = Brushes.Gray;
+            player2HighlightRect.Fill = Brushes.Gray;
+            player3HighlightRect.Fill = Brushes.Gray;
+            if ( _player == 0 )
                 player1HighlightRect.Fill = Brushes.Goldenrod;
-            else if ( _player == 2 )
+            else if ( _player == 1 )
                 player2HighlightRect.Fill = Brushes.Goldenrod;
             else
                 player3HighlightRect.Fill = Brushes.Goldenrod;
+        }
+
+
+        void InitialColors ()
+        {
+            colorPlayer1 = Color.FromRgb ( 250, 0, 0 );
+            colorPlayer2 = Color.FromRgb ( 0, 140, 60 );
+            colorPlayer3 = Color.FromRgb ( 0, 0, 200 );
+
+            colorFilled = Color.FromRgb ( 80, 80, 80 );
+            colorOpen = Color.FromRgb ( 120, 120, 120 );
+            colorScratch = Color.FromRgb ( 220, 20, 20 );
+            colorPoints = Color.FromRgb ( 200, 180, 20 );
+            colorInsist = Color.FromRgb ( 220, 200, 40 );
         }
 
 
@@ -319,6 +378,8 @@ namespace YahtzeeWPF2
                 }
             }
         }
+
+        
 
         #endregion MainWindow methods
 
