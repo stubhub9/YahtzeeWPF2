@@ -1,7 +1,16 @@
 # YahtzeeWPF2
-## Learning project for C#, WPF and Git ( and Entity, ASP, ... ).
+It works; could be better.
+Next task one:  Remake to a generic, unlicensed dice game.
 
+## Fan Tribute:  A Learning project for C#, WPF and Git and whatever I'm learning next. 
+Next Iterations:
+Maybe AI  (or at least ODDS):  ( with ADO, Entity, ... )
+Maybe Server/ Client  (ASP, ... ).
+
+< Someday, maybe >
 ## Current tasks: Make all classes read like GameScoring1!
+???<maybe, it has been awhile>???
+
   ### Update existing classes:  
       refactor long methods and classes:
         by chaining shorter methods;
@@ -9,6 +18,7 @@
         better readability.
         
   ### Work on view models  ( M V VM ).
+  <mvc?>
   
   ### Improve game play:
       implement dice filter and highlights; 
